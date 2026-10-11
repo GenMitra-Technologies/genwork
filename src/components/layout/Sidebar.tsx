@@ -76,15 +76,19 @@ export function Sidebar() {
       )}
     >
       {/* Brand */}
-      <div className="flex h-16 items-center justify-between px-4 border-b">
+      <div className="flex h-16 items-center justify-between px-3 border-b">
         <div className="flex items-center gap-2 overflow-hidden">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-xs">
-            OS
-          </div>
+          <img
+            src="/genmitra-logo.png"
+            alt="Genmitra"
+            className={cn(
+              'object-contain dark:invert transition-all',
+              sidebarCollapsed ? 'h-7 w-7 object-left' : 'h-7 w-auto'
+            )}
+          />
           {!sidebarCollapsed && (
-            <div className="flex flex-col">
-              <span className="font-bold tracking-tight text-foreground text-sm">InternOS</span>
-              <span className="text-[10px] text-muted-foreground uppercase font-semibold">
+            <div className="flex flex-col ml-1">
+              <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                 {role} Portal
               </span>
             </div>
@@ -92,7 +96,7 @@ export function Sidebar() {
         </div>
         <button
           onClick={toggleSidebar}
-          className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground shrink-0"
           title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}

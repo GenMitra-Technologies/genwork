@@ -1,0 +1,333 @@
+// src/features/auth/StandaloneLoginPage.tsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Lock, Mail, AlertCircle, Sparkles, User, GraduationCap, Shield } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../hooks/useAuth';
+import { loginSchema, LoginInput } from '../../lib/validators';
+import { UserRole } from '../../types/database.types';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Logo } from '../../components/shared/Logo';
+import { cn } from '../../lib/utils';
+
+interface StandaloneLoginPageProps {
+  role: UserRole;
+}
+
+const ROLE_CONFIG: Record<
+  UserRole,
+  {
+    title: string;
+    subtitle: string;
+    icon: typeof User;
+    defaultEmail: string;
+    defaultPassword: string;
+    demoName: string;
+    demoDescription: string;
+    portalBadge: string;
+    themeGradient: string;
+  }
+> = {
+  intern: {
+    title: 'Intern Workspace',
+    subtitle: 'Sign in to access tasks, track streaks, and submit coursework',
+    icon: User,
+    defaultEmail: 'intern.david@internship.org',
+    defaultPassword: 'Password123!',
+    demoName: 'David Kim (Software Intern)',
+    demoDescription: 'Assigned to Alex Rivera',
+    portalBadge: 'Intern Portal',
+    themeGradient: 'from-blue-500/10 via-indigo-500/5 to-transparent',
+  },
+  mentor: {
+    title: 'Mentor Workspace',
+    subtitle: 'Sign in to review code deliverables, guide interns, and assign tasks',
+    icon: GraduationCap,
+    defaultEmail: 'mentor.alex@internship.org',
+    defaultPassword: 'Password123!',
+    demoName: 'Alex Rivera (Engineering Mentor)',
+    demoDescription: 'Mentors 3 Active Interns',
+    portalBadge: 'Mentor Portal',
+    themeGradient: 'from-emerald-500/10 via-teal-500/5 to-transparent',
+  },
+  admin: {
+    title: 'Administration Control Center',
+    subtitle: 'Sign in to manage cohorts, credentials, policies, and system audit logs',
+    icon: Shield,
+    defaultEmail: 'admin@internship.org',
+    defaultPassword: 'Password123!',
+    demoName: 'Super Administrator',
+    demoDescription: 'Full System Oversight',
+    portalBadge: 'Admin Portal',
+    themeGradient: 'from-purple-500/10 via-pink-500/5 to-transparent',
+  },
+};
+
+export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { session, role: currentRole } = useAuth();
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const config = ROLE_CONFIG[role];
+  const reason = searchParams.get('reason');
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: config.defaultEmail,
+      password: config.defaultPassword,
+      role: role,
+    },
+  });
+
+  // Ensure form role matches prop
+  useEffect(() => {
+    setValue('role', role);
+    setValue('email', config.defaultEmail);
+    setValue('password', config.defaultPassword);
+  }, [role, config, setValue]);
+
+  // If already authenticated and matches role, navigate directly
+  useEffect(() => {
+    if (session && currentRole) {
+      if (currentRole === 'intern') navigate('/intern');
+      else if (currentRole === 'mentor') navigate('/mentor');
+      else if (currentRole === 'admin') navigate('/admin');
+    }
+  }, [session, currentRole, navigate]);
+
+  const fillDemoCredentials = () => {
+    setValue('email', config.defaultEmail);
+    setValue('password', config.defaultPassword);
+    setAuthError(null);
+  };
+
+  const onSubmit = async (data: LoginInput) => {
+    setAuthError(null);
+    setIsSubmitting(true);
+
+    try {
+      const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (signInError || !authData.user) {
+        setAuthError(signInError?.message || 'Invalid email or password.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Check role verification:
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, status')
+        .eq('id', authData.user.id)
+        .maybeSingle();
+
+      const userRole = profile?.role || authData.user.user_metadata?.role;
+      const status = profile?.status || 'active';
+
+      if (status === 'inactive' || status === 'suspended') {
+        await supabase.auth.signOut();
+        setAuthError('Your account has been deactivated. Please contact an administrator.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Strict role verification against this dedicated standalone portal
+      if (userRole !== role) {
+        await supabase.auth.signOut();
+        setAuthError(
+          `Access Denied: This is the dedicated ${config.portalBadge}. Your account has the "${userRole}" role. Please use the appropriate login portal.`
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Record login event in activity logs
+      try {
+        await supabase.rpc('log_event', {
+          p_action: 'user_login',
+          p_entity_type: 'profiles',
+          p_entity_id: authData.user.id,
+          p_prev: null,
+          p_new: null,
+          p_meta: { portal: role, portal_type: 'standalone' },
+          p_user_agent: navigator.userAgent,
+        });
+      } catch {
+        // non-blocking
+      }
+
+      // Redirect to portal
+      if (role === 'intern') navigate('/intern');
+      else if (role === 'mentor') navigate('/mentor');
+      else if (role === 'admin') navigate('/admin');
+    } catch (err: any) {
+      setAuthError(err.message || 'An unexpected error occurred.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4 relative overflow-hidden">
+      {/* Background Subtle Gradient */}
+      <div className={cn('absolute inset-0 bg-gradient-to-b pointer-events-none opacity-60', config.themeGradient)} />
+
+      <div className="w-full max-w-md space-y-6 relative z-10">
+        {/* Banner reason */}
+        {reason === 'expired' && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300 flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span>Your session expired due to inactivity. Please sign in again.</span>
+          </div>
+        )}
+
+        {reason === 'deactivated' && (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span>Account deactivated. Please contact system administration.</span>
+          </div>
+        )}
+
+        {/* Main Card */}
+        <div className="rounded-2xl border bg-card p-8 shadow-xl">
+          {/* Logo & Header */}
+          <div className="text-center space-y-3 mb-6">
+            <div className="flex justify-center pb-2">
+              <Logo size="lg" className="h-14" />
+            </div>
+
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-muted border border-border">
+              <config.icon className="h-3 w-3 text-primary" />
+              <span>{config.portalBadge}</span>
+            </div>
+
+            <h1 className="text-xl font-bold tracking-tight text-foreground">{config.title}</h1>
+            <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+              {config.subtitle}
+            </p>
+          </div>
+
+          {/* Error notice */}
+          {authError && (
+            <div className="mb-4 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{authError}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <input type="hidden" {...register('role')} />
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-foreground">Work Email</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  {...register('email')}
+                  type="email"
+                  placeholder="name@internship.org"
+                  className="pl-9"
+                  disabled={isSubmitting}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-[11px] text-destructive">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-foreground">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  {...register('password')}
+                  type="password"
+                  placeholder="••••••••"
+                  className="pl-9"
+                  disabled={isSubmitting}
+                />
+              </div>
+              {errors.password && (
+                <p className="text-[11px] text-destructive">{errors.password.message}</p>
+              )}
+            </div>
+
+            <Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
+              {isSubmitting ? 'Authenticating...' : `Sign in to ${config.portalBadge}`}
+            </Button>
+          </form>
+
+          {/* Quick Demo Autofill Button */}
+          <div className="mt-5 pt-4 border-t border-border">
+            <button
+              type="button"
+              onClick={fillDemoCredentials}
+              className="w-full flex items-center justify-between p-2.5 rounded-lg border bg-muted/40 hover:bg-muted text-left transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary shrink-0" />
+                <div className="text-xs">
+                  <div className="font-semibold text-foreground">{config.demoName}</div>
+                  <div className="text-[10px] text-muted-foreground">{config.defaultEmail}</div>
+                </div>
+              </div>
+              <span className="text-[11px] font-medium text-primary hover:underline">Autofill</span>
+            </button>
+          </div>
+
+          {/* Switch Portal Navigation */}
+          <div className="mt-6 pt-4 border-t border-border text-center">
+            <span className="text-[11px] text-muted-foreground block mb-2">Switch to another login portal:</span>
+            <div className="flex items-center justify-center gap-2 text-xs">
+              {role !== 'intern' && (
+                <Link
+                  to="/login/intern"
+                  className="px-2 py-1 rounded bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground transition-colors"
+                >
+                  Intern Login
+                </Link>
+              )}
+              {role !== 'mentor' && (
+                <Link
+                  to="/login/mentor"
+                  className="px-2 py-1 rounded bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground transition-colors"
+                >
+                  Mentor Login
+                </Link>
+              )}
+              {role !== 'admin' && (
+                <Link
+                  to="/login/admin"
+                  className="px-2 py-1 rounded bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground transition-colors"
+                >
+                  Admin Login
+                </Link>
+              )}
+              <Link
+                to="/login"
+                className="px-2 py-1 rounded bg-muted hover:bg-muted/80 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                All Roles
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

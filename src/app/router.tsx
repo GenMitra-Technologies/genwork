@@ -1,6 +1,7 @@
 // src/app/router.tsx
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { LoginPage } from '../features/auth/LoginPage';
+import { StandaloneLoginPage } from '../features/auth/StandaloneLoginPage';
 import { UnauthorizedPage } from '../features/auth/UnauthorizedPage';
 import { ProtectedRoute } from '../features/auth/ProtectedRoute';
 import { RoleGuard } from '../features/auth/RoleGuard';
@@ -37,6 +38,18 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/login/intern',
+    element: <StandaloneLoginPage role="intern" />,
+  },
+  {
+    path: '/login/mentor',
+    element: <StandaloneLoginPage role="mentor" />,
+  },
+  {
+    path: '/login/admin',
+    element: <StandaloneLoginPage role="admin" />,
   },
   {
     path: '/unauthorized',

@@ -1,15 +1,15 @@
-// src/features/auth/LoginPage.tsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Lock, Mail, AlertCircle, ShieldCheck, CheckCircle2, Sparkles } from 'lucide-react';
+import { Lock, Mail, AlertCircle, ShieldCheck, CheckCircle2, Sparkles, ExternalLink } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { loginSchema, LoginInput } from '../../lib/validators';
 import { UserRole } from '../../types/database.types';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
+import { Logo } from '../../components/shared/Logo';
 import { cn } from '../../lib/utils';
 
 export function LoginPage() {
@@ -153,10 +153,10 @@ export function LoginPage() {
         <div className="rounded-2xl border bg-card p-8 shadow-xl">
           {/* Header */}
           <div className="text-center space-y-2 mb-6">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground font-black text-xl shadow-md">
-              OS
+            <div className="flex justify-center mb-1">
+              <Logo size="lg" className="h-14" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">InternOS Platform</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Genmitra Platform</h1>
             <p className="text-xs text-muted-foreground">
               Sign in to your dedicated role workspace
             </p>
@@ -260,6 +260,33 @@ export function LoginPage() {
               >
                 🛡️ Admin: Sarah
               </button>
+            </div>
+          </div>
+
+          {/* Standalone login portals */}
+          <div className="mt-5 pt-4 border-t border-dashed border-border/70">
+            <p className="text-[11px] text-muted-foreground mb-2 font-medium">
+              Direct standalone login portals:
+            </p>
+            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+              <Link
+                to="/login/intern"
+                className="rounded-lg border border-border/60 bg-muted/40 p-2 text-[11px] font-medium text-foreground hover:bg-muted transition-colors"
+              >
+                Intern Login →
+              </Link>
+              <Link
+                to="/login/mentor"
+                className="rounded-lg border border-border/60 bg-muted/40 p-2 text-[11px] font-medium text-foreground hover:bg-muted transition-colors"
+              >
+                Mentor Login →
+              </Link>
+              <Link
+                to="/login/admin"
+                className="rounded-lg border border-border/60 bg-muted/40 p-2 text-[11px] font-medium text-foreground hover:bg-muted transition-colors"
+              >
+                Admin Login →
+              </Link>
             </div>
           </div>
         </div>

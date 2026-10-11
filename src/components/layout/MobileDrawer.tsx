@@ -71,7 +71,12 @@ export function MobileDrawer() {
       />
       <div className="relative z-50 flex w-72 flex-col bg-card border-r shadow-xl">
         <div className="flex h-16 items-center justify-between px-4 border-b">
-          <span className="font-bold text-sm tracking-tight text-foreground">InternOS</span>
+          <div className="flex items-center gap-2">
+            <img src="/genmitra-logo.png" alt="Genmitra" className="h-7 w-auto dark:invert" />
+            <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+              {role} Portal
+            </span>
+          </div>
           <button
             onClick={() => setMobileDrawerOpen(false)}
             className="rounded p-1.5 text-muted-foreground hover:bg-muted"
