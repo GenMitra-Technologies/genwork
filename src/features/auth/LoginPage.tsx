@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Lock, Mail, AlertCircle, ShieldCheck, CheckCircle2, Sparkles, ExternalLink } from 'lucide-react';
+import { Lock, Mail, AlertCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { loginSchema, LoginInput } from '../../lib/validators';
-import { UserRole } from '../../types/database.types';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Logo } from '../../components/shared/Logo';
-import { cn } from '../../lib/utils';
 
 export function LoginPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { session, role: currentRole } = useAuth();
-  const [selectedRole, setSelectedRole] = useState<UserRole>('intern');
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,14 +22,12 @@ export function LoginPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
-      role: 'intern',
     },
   });
 
@@ -44,12 +39,6 @@ export function LoginPage() {
       else if (currentRole === 'admin') navigate('/admin');
     }
   }, [session, currentRole, navigate]);
-
-  const handleRoleTabChange = (role: UserRole) => {
-    setSelectedRole(role);
-    setValue('role', role);
-    setAuthError(null);
-  };
 
   const onSubmit = async (data: LoginInput) => {
     setAuthError(null);
@@ -67,28 +56,19 @@ export function LoginPage() {
         return;
       }
 
-      // Check role verification:
-      // Try to read profile
+      // Check user role from profile
       const { data: profile } = await supabase
         .from('profiles')
         .select('role, status')
         .eq('id', authData.user.id)
         .maybeSingle();
 
-      const userRole = profile?.role || authData.user.user_metadata?.role;
+      const userRole = profile?.role || authData.user.user_metadata?.role || 'intern';
       const status = profile?.status || 'active';
 
       if (status === 'inactive' || status === 'suspended') {
         await supabase.auth.signOut();
         setAuthError('Your account has been deactivated. Please contact an administrator.');
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Strict role verification against selected tab (Requirement 2.2)
-      if (userRole !== selectedRole) {
-        await supabase.auth.signOut();
-        setAuthError(`Wrong workspace for this account. This account is registered as a ${userRole}.`);
         setIsSubmitting(false);
         return;
       }
@@ -101,17 +81,17 @@ export function LoginPage() {
           p_entity_id: authData.user.id,
           p_prev: null,
           p_new: null,
-          p_meta: { portal: selectedRole },
+          p_meta: { portal: userRole },
           p_user_agent: navigator.userAgent,
         });
       } catch {
         // non-blocking
       }
 
-      // Redirect to portal
-      if (selectedRole === 'intern') navigate('/intern');
-      else if (selectedRole === 'mentor') navigate('/mentor');
-      else if (selectedRole === 'admin') navigate('/admin');
+      // Automatically route user to their respective role workspace
+      if (userRole === 'mentor') navigate('/mentor');
+      else if (userRole === 'admin') navigate('/admin');
+      else navigate('/intern');
     } catch (err: any) {
       setAuthError(err.message || 'An unexpected error occurred.');
     } finally {
@@ -146,27 +126,8 @@ export function LoginPage() {
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Genmitra Platform</h1>
             <p className="text-xs text-muted-foreground">
-              Sign in to your dedicated role workspace
+              Sign in to access your workspace
             </p>
-          </div>
-
-          {/* Role Tabs */}
-          <div className="grid grid-cols-3 gap-1 rounded-xl bg-muted p-1 mb-6">
-            {(['intern', 'mentor', 'admin'] as UserRole[]).map((role) => (
-              <button
-                key={role}
-                type="button"
-                onClick={() => handleRoleTabChange(role)}
-                className={cn(
-                  'rounded-lg py-2 text-xs font-semibold capitalize transition-all',
-                  selectedRole === role
-                    ? 'bg-card text-foreground shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                {role}
-              </button>
-            ))}
           </div>
 
           {/* Error notice */}
@@ -179,8 +140,6 @@ export function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <input type="hidden" {...register('role')} />
-
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-foreground">Work Email</label>
               <div className="relative">
@@ -216,7 +175,7 @@ export function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
-              {isSubmitting ? 'Authenticating...' : `Sign in as ${selectedRole}`}
+              {isSubmitting ? 'Authenticating...' : 'Sign In'}
             </Button>
           </form>
         </div>
