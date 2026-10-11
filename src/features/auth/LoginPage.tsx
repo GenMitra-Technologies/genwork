@@ -121,10 +121,9 @@ export function LoginPage() {
         <div className="rounded-2xl border bg-card p-8 shadow-xl">
           {/* Header */}
           <div className="text-center space-y-2 mb-6">
-            <div className="flex justify-center mb-1">
+            <div className="flex justify-center mb-2">
               <Logo size="lg" className="h-14" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Genmitra Platform</h1>
             <p className="text-xs text-muted-foreground">
               Sign in to access your workspace
             </p>
