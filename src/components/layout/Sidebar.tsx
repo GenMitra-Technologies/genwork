@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useUIStore } from '../../stores/ui.store';
+import { Logo } from '../shared/Logo';
 import { cn } from '../../lib/utils';
 
 export function Sidebar() {
@@ -78,13 +79,9 @@ export function Sidebar() {
       {/* Brand */}
       <div className="flex h-16 items-center justify-between px-3 border-b border-slate-200/80 dark:border-slate-800">
         <div className="flex items-center gap-2 overflow-hidden">
-          <img
-            src="/genmitra-logo.png"
-            alt="Genmitra"
-            className={cn(
-              'object-contain dark:invert transition-all',
-              sidebarCollapsed ? 'h-7 w-7 object-left' : 'h-7 w-auto'
-            )}
+          <Logo
+            size="sm"
+            imageClassName={sidebarCollapsed ? 'h-7 w-7 object-left' : 'h-7 w-auto'}
           />
           {!sidebarCollapsed && (
             <div className="flex flex-col ml-1">

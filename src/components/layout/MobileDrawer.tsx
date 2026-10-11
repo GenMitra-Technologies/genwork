@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useUIStore } from '../../stores/ui.store';
+import { Logo } from '../shared/Logo';
 import {
   LayoutDashboard,
   CheckSquare,
@@ -72,7 +73,7 @@ export function MobileDrawer() {
       <div className="relative z-50 flex w-72 flex-col bg-background/95 backdrop-blur-md border-r border-slate-200/80 dark:border-slate-800 shadow-xl">
         <div className="flex h-16 items-center justify-between px-4 border-b border-slate-200/80 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <img src="/genmitra-logo.png" alt="Genmitra" className="h-7 w-auto dark:invert" />
+            <Logo size="sm" imageClassName="h-7 w-auto" />
             <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">
               {role} Workspace
             </span>
