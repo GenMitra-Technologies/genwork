@@ -74,7 +74,7 @@ export function MobileDrawer() {
           <div className="flex items-center gap-2">
             <img src="/genmitra-logo.png" alt="Genmitra" className="h-7 w-auto dark:invert" />
             <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">
-              {role} Portal
+              {role} Workspace
             </span>
           </div>
           <button

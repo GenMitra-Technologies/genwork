@@ -35,7 +35,7 @@ export function UnauthorizedPage() {
         <div className="mt-6 flex flex-col gap-2">
           <Button asChild className="w-full">
             <Link to={getHomePath()}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> Return to My Portal
+              <ArrowLeft className="mr-2 h-4 w-4" /> Return to My Workspace
             </Link>
           </Button>
 

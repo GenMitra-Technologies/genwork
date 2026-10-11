@@ -100,7 +100,7 @@ export function LoginPage() {
       // Strict role verification against selected tab (Requirement 2.2)
       if (userRole !== selectedRole) {
         await supabase.auth.signOut();
-        setAuthError(`Wrong portal for this account. This account is registered as a ${userRole}.`);
+        setAuthError(`Wrong workspace for this account. This account is registered as a ${userRole}.`);
         setIsSubmitting(false);
         return;
       }
@@ -263,10 +263,10 @@ export function LoginPage() {
             </div>
           </div>
 
-          {/* Standalone login portals */}
+          {/* Standalone login workspaces */}
           <div className="mt-5 pt-4 border-t border-dashed border-border/70">
             <p className="text-[11px] text-muted-foreground mb-2 font-medium">
-              Direct standalone login portals:
+              Direct standalone login workspaces:
             </p>
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
               <Link

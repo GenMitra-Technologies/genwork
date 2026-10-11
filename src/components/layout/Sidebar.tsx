@@ -89,7 +89,7 @@ export function Sidebar() {
           {!sidebarCollapsed && (
             <div className="flex flex-col ml-1">
               <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">
-                {role} Portal
+                {role} Workspace
               </span>
             </div>
           )}

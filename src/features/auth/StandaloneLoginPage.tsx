@@ -39,7 +39,7 @@ const ROLE_CONFIG: Record<
     defaultPassword: 'Password123!',
     demoName: 'David Kim (Software Intern)',
     demoDescription: 'Assigned to Alex Rivera',
-    portalBadge: 'Intern Portal',
+    portalBadge: 'Intern Workspace',
     themeGradient: 'from-slate-500/10 via-zinc-500/5 to-transparent',
   },
   mentor: {
@@ -50,7 +50,7 @@ const ROLE_CONFIG: Record<
     defaultPassword: 'Password123!',
     demoName: 'Alex Rivera (Engineering Mentor)',
     demoDescription: 'Mentors 3 Active Interns',
-    portalBadge: 'Mentor Portal',
+    portalBadge: 'Mentor Workspace',
     themeGradient: 'from-emerald-500/10 via-teal-500/5 to-transparent',
   },
   admin: {
@@ -61,7 +61,7 @@ const ROLE_CONFIG: Record<
     defaultPassword: 'Password123!',
     demoName: 'Super Administrator',
     demoDescription: 'Full System Oversight',
-    portalBadge: 'Admin Portal',
+    portalBadge: 'Admin Workspace',
     themeGradient: 'from-purple-500/10 via-pink-500/5 to-transparent',
   },
 };
@@ -149,7 +149,7 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
       if (userRole !== role) {
         await supabase.auth.signOut();
         setAuthError(
-          `Access Denied: This is the dedicated ${config.portalBadge}. Your account has the "${userRole}" role. Please use the appropriate login portal.`
+          `Access Denied: This is the dedicated ${config.portalBadge}. Your account has the "${userRole}" role. Please use the appropriate login workspace.`
         );
         setIsSubmitting(false);
         return;
@@ -292,7 +292,7 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
 
           {/* Switch Portal Navigation */}
           <div className="mt-6 pt-4 border-t border-border text-center">
-            <span className="text-[11px] text-muted-foreground block mb-2">Switch to another login portal:</span>
+            <span className="text-[11px] text-muted-foreground block mb-2">Switch to another login workspace:</span>
             <div className="flex items-center justify-center gap-2 text-xs">
               {role !== 'intern' && (
                 <Link
