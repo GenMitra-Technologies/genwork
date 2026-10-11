@@ -30,8 +30,8 @@ export function LoginPage() {
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'intern.david@internship.org',
-      password: 'Password123!',
+      email: '',
+      password: '',
       role: 'intern',
     },
   });
@@ -49,18 +49,6 @@ export function LoginPage() {
     setSelectedRole(role);
     setValue('role', role);
     setAuthError(null);
-
-    // Auto-fill demo credentials for convenience
-    if (role === 'intern') {
-      setValue('email', 'intern.david@internship.org');
-      setValue('password', 'Password123!');
-    } else if (role === 'mentor') {
-      setValue('email', 'mentor.alex@internship.org');
-      setValue('password', 'Password123!');
-    } else if (role === 'admin') {
-      setValue('email', 'admin@internship.org');
-      setValue('password', 'Password123!');
-    }
   };
 
   const onSubmit = async (data: LoginInput) => {
@@ -231,64 +219,6 @@ export function LoginPage() {
               {isSubmitting ? 'Authenticating...' : `Sign in as ${selectedRole}`}
             </Button>
           </form>
-
-          {/* Demo account selector pill */}
-          <div className="mt-6 pt-5 border-t border-border">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span className="font-medium">Quick Demo Credentials:</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5 text-xs">
-              <button
-                type="button"
-                onClick={() => handleRoleTabChange('intern')}
-                className="px-2.5 py-1 rounded-md bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground"
-              >
-                👤 Intern: David
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRoleTabChange('mentor')}
-                className="px-2.5 py-1 rounded-md bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground"
-              >
-                🎓 Mentor: Alex
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRoleTabChange('admin')}
-                className="px-2.5 py-1 rounded-md bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground"
-              >
-                🛡️ Admin: Sarah
-              </button>
-            </div>
-          </div>
-
-          {/* Standalone login workspaces */}
-          <div className="mt-5 pt-4 border-t border-dashed border-border/70">
-            <p className="text-[11px] text-muted-foreground mb-2 font-medium">
-              Direct standalone login workspaces:
-            </p>
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <Link
-                to="/login/intern"
-                className="rounded-lg border border-border/60 bg-muted/40 p-2 text-[11px] font-medium text-foreground hover:bg-muted transition-colors"
-              >
-                Intern Login →
-              </Link>
-              <Link
-                to="/login/mentor"
-                className="rounded-lg border border-border/60 bg-muted/40 p-2 text-[11px] font-medium text-foreground hover:bg-muted transition-colors"
-              >
-                Mentor Login →
-              </Link>
-              <Link
-                to="/login/admin"
-                className="rounded-lg border border-border/60 bg-muted/40 p-2 text-[11px] font-medium text-foreground hover:bg-muted transition-colors"
-              >
-                Admin Login →
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
     </div>

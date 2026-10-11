@@ -23,10 +23,6 @@ const ROLE_CONFIG: Record<
     title: string;
     subtitle: string;
     icon: typeof User;
-    defaultEmail: string;
-    defaultPassword: string;
-    demoName: string;
-    demoDescription: string;
     portalBadge: string;
     themeGradient: string;
   }
@@ -35,10 +31,6 @@ const ROLE_CONFIG: Record<
     title: 'Intern Workspace',
     subtitle: 'Sign in to access tasks, track streaks, and submit coursework',
     icon: User,
-    defaultEmail: 'intern.david@internship.org',
-    defaultPassword: 'Password123!',
-    demoName: 'David Kim (Software Intern)',
-    demoDescription: 'Assigned to Alex Rivera',
     portalBadge: 'Intern Workspace',
     themeGradient: 'from-slate-500/10 via-zinc-500/5 to-transparent',
   },
@@ -46,10 +38,6 @@ const ROLE_CONFIG: Record<
     title: 'Mentor Workspace',
     subtitle: 'Sign in to review code deliverables, guide interns, and assign tasks',
     icon: GraduationCap,
-    defaultEmail: 'mentor.alex@internship.org',
-    defaultPassword: 'Password123!',
-    demoName: 'Alex Rivera (Engineering Mentor)',
-    demoDescription: 'Mentors 3 Active Interns',
     portalBadge: 'Mentor Workspace',
     themeGradient: 'from-emerald-500/10 via-teal-500/5 to-transparent',
   },
@@ -57,10 +45,6 @@ const ROLE_CONFIG: Record<
     title: 'Administration Control Center',
     subtitle: 'Sign in to manage cohorts, credentials, policies, and system audit logs',
     icon: Shield,
-    defaultEmail: 'admin@internship.org',
-    defaultPassword: 'Password123!',
-    demoName: 'Super Administrator',
-    demoDescription: 'Full System Oversight',
     portalBadge: 'Admin Workspace',
     themeGradient: 'from-purple-500/10 via-pink-500/5 to-transparent',
   },
@@ -84,8 +68,8 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: config.defaultEmail,
-      password: config.defaultPassword,
+      email: '',
+      password: '',
       role: role,
     },
   });
@@ -93,9 +77,7 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
   // Ensure form role matches prop
   useEffect(() => {
     setValue('role', role);
-    setValue('email', config.defaultEmail);
-    setValue('password', config.defaultPassword);
-  }, [role, config, setValue]);
+  }, [role, setValue]);
 
   // If already authenticated and matches role, navigate directly
   useEffect(() => {
@@ -105,12 +87,6 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
       else if (currentRole === 'admin') navigate('/admin');
     }
   }, [session, currentRole, navigate]);
-
-  const fillDemoCredentials = () => {
-    setValue('email', config.defaultEmail);
-    setValue('password', config.defaultPassword);
-    setAuthError(null);
-  };
 
   const onSubmit = async (data: LoginInput) => {
     setAuthError(null);
@@ -272,59 +248,14 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
             </Button>
           </form>
 
-          {/* Quick Demo Autofill Button */}
-          <div className="mt-5 pt-4 border-t border-border">
-            <button
-              type="button"
-              onClick={fillDemoCredentials}
-              className="w-full flex items-center justify-between p-2.5 rounded-lg border bg-muted/40 hover:bg-muted text-left transition-colors"
+          {/* Back to Unified Login */}
+          <div className="mt-5 pt-4 border-t border-border/70 text-center">
+            <Link
+              to="/genmitraworkspace"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium inline-flex items-center gap-1"
             >
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary shrink-0" />
-                <div className="text-xs">
-                  <div className="font-semibold text-foreground">{config.demoName}</div>
-                  <div className="text-[10px] text-muted-foreground">{config.defaultEmail}</div>
-                </div>
-              </div>
-              <span className="text-[11px] font-medium text-primary hover:underline">Autofill</span>
-            </button>
-          </div>
-
-          {/* Switch Portal Navigation */}
-          <div className="mt-6 pt-4 border-t border-border text-center">
-            <span className="text-[11px] text-muted-foreground block mb-2">Switch to another login workspace:</span>
-            <div className="flex items-center justify-center gap-2 text-xs">
-              {role !== 'intern' && (
-                <Link
-                  to="/login/intern"
-                  className="px-2 py-1 rounded bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground transition-colors"
-                >
-                  Intern Login
-                </Link>
-              )}
-              {role !== 'mentor' && (
-                <Link
-                  to="/login/mentor"
-                  className="px-2 py-1 rounded bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground transition-colors"
-                >
-                  Mentor Login
-                </Link>
-              )}
-              {role !== 'admin' && (
-                <Link
-                  to="/login/admin"
-                  className="px-2 py-1 rounded bg-muted hover:bg-muted/80 text-[11px] font-medium text-foreground transition-colors"
-                >
-                  Admin Login
-                </Link>
-              )}
-              <Link
-                to="/login"
-                className="px-2 py-1 rounded bg-muted hover:bg-muted/80 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                All Roles
-              </Link>
-            </div>
+              ← Back to Unified Login
+            </Link>
           </div>
         </div>
       </div>

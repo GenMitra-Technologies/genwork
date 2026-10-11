@@ -35,21 +35,39 @@ import { SettingsPage } from '../features/admin/settings/SettingsPage';
 import { NotificationsPage } from '../features/notifications/NotificationsPage';
 
 export const router = createBrowserRouter([
+  // Primary Genmitra Workspace Login Routes
   {
-    path: '/login',
+    path: '/genmitraworkspace',
     element: <LoginPage />,
   },
   {
-    path: '/login/intern',
+    path: '/genmitraworkspace/intern',
     element: <StandaloneLoginPage role="intern" />,
   },
   {
-    path: '/login/mentor',
+    path: '/genmitraworkspace/mentor',
     element: <StandaloneLoginPage role="mentor" />,
   },
   {
-    path: '/login/admin',
+    path: '/genmitraworkspace/admin',
     element: <StandaloneLoginPage role="admin" />,
+  },
+  // Backward-compatible redirects
+  {
+    path: '/login',
+    element: <Navigate to="/genmitraworkspace" replace />,
+  },
+  {
+    path: '/login/intern',
+    element: <Navigate to="/genmitraworkspace/intern" replace />,
+  },
+  {
+    path: '/login/mentor',
+    element: <Navigate to="/genmitraworkspace/mentor" replace />,
+  },
+  {
+    path: '/login/admin',
+    element: <Navigate to="/genmitraworkspace/admin" replace />,
   },
   {
     path: '/unauthorized',
@@ -128,6 +146,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/genmitraworkspace" replace />,
   },
 ]);

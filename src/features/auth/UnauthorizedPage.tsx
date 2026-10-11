@@ -10,14 +10,14 @@ export function UnauthorizedPage() {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/login');
+    navigate('/genmitraworkspace');
   };
 
   const getHomePath = () => {
     if (role === 'intern') return '/intern';
     if (role === 'mentor') return '/mentor';
     if (role === 'admin') return '/admin';
-    return '/login';
+    return '/genmitraworkspace';
   };
 
   return (
