@@ -30,6 +30,40 @@ describe('Internship Platform Validation Schemas', () => {
       }
     });
 
+    it('validates test@intern, test@mentor, test@admin with password 123', () => {
+      const internRes = loginSchema.safeParse({
+        email: 'test@intern',
+        password: '123',
+        role: 'intern',
+      });
+      expect(internRes.success).toBe(true);
+
+      const mentorRes = loginSchema.safeParse({
+        email: 'test@mentor',
+        password: '123',
+        role: 'mentor',
+      });
+      expect(mentorRes.success).toBe(true);
+
+      const adminRes = loginSchema.safeParse({
+        email: 'test@admin',
+        password: '123',
+        role: 'admin',
+      });
+      expect(adminRes.success).toBe(true);
+    });
+
+    it('correctly maps findTestAccount for all roles', async () => {
+      const { findTestAccount } = await import('../lib/testAuth');
+      expect(findTestAccount('test@intern')?.role).toBe('intern');
+      expect(findTestAccount('test@intern.com')?.role).toBe('intern');
+      expect(findTestAccount('test@mentor')?.role).toBe('mentor');
+      expect(findTestAccount('test@mentor.com')?.role).toBe('mentor');
+      expect(findTestAccount('test@admin')?.role).toBe('admin');
+      expect(findTestAccount('test@admin.com')?.role).toBe('admin');
+      expect(findTestAccount('unknown@domain.com')).toBeNull();
+    });
+
     it('rejects empty password', () => {
       const result = loginSchema.safeParse({
         email: 'intern.david@internship.org',

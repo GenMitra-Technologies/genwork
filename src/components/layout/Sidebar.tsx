@@ -1,5 +1,6 @@
 // src/components/layout/Sidebar.tsx
-import { NavLink } from 'react-router-dom';
+import React from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   CheckSquare,
@@ -10,14 +11,15 @@ import {
   Eye,
   Activity,
   GraduationCap,
-  Briefcase,
+  Award,
   KeyRound,
   FileSpreadsheet,
   Settings,
   ChevronLeft,
   ChevronRight,
-  Shield,
-  Award,
+  LogOut,
+  Calendar,
+  CalendarCheck,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useUIStore } from '../../stores/ui.store';
@@ -25,15 +27,22 @@ import { Logo } from '../shared/Logo';
 import { cn } from '../../lib/utils';
 
 export function Sidebar() {
-  const { role } = useAuth();
+  const { role, profile, signOut } = useAuth();
   const { sidebarCollapsed, toggleSidebar, unreadCount } = useUIStore();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/genmitraworkspace');
+  };
 
   const getNavItems = () => {
     if (role === 'intern') {
       return [
         { label: 'Dashboard', to: '/intern', icon: LayoutDashboard },
-        { label: 'Assignments', to: '/intern/assignments', icon: FileText },
         { label: 'Tasks', to: '/intern/tasks', icon: CheckSquare },
+        { label: 'Assignments', to: '/intern/assignments', icon: FileText },
+        { label: 'Attendance', to: '/intern/attendance', icon: CalendarCheck },
         { label: 'Notifications', to: '/intern/notifications', icon: Bell, badge: unreadCount },
         { label: 'Profile', to: '/intern/profile', icon: User },
       ];
@@ -42,6 +51,7 @@ export function Sidebar() {
       return [
         { label: 'Dashboard', to: '/mentor', icon: LayoutDashboard },
         { label: 'My Interns', to: '/mentor/interns', icon: Users },
+        { label: 'Attendance', to: '/mentor/attendance', icon: CalendarCheck },
         { label: 'Tasks', to: '/mentor/tasks', icon: CheckSquare },
         { label: 'Assignments', to: '/mentor/assignments', icon: FileText },
         { label: 'Reviews', to: '/mentor/reviews', icon: Eye },
@@ -56,6 +66,7 @@ export function Sidebar() {
       { label: 'Internships', to: '/admin/internships', icon: GraduationCap },
       { label: 'Interns', to: '/admin/interns', icon: Users },
       { label: 'Mentors', to: '/admin/mentors', icon: Award },
+      { label: 'Attendance', to: '/admin/attendance', icon: CalendarCheck },
       { label: 'Logins & Credentials', to: '/admin/credentials', icon: KeyRound },
       { label: 'Tasks', to: '/admin/tasks', icon: CheckSquare },
       { label: 'Assignments', to: '/admin/assignments', icon: FileText },
@@ -72,20 +83,20 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'hidden md:flex flex-col fixed top-0 bottom-0 left-0 z-30 border-r border-slate-200/80 dark:border-slate-800 bg-transparent backdrop-blur-md transition-all duration-300',
-        sidebarCollapsed ? 'w-18' : 'w-64'
+        'hidden md:flex flex-col fixed top-0 bottom-0 left-0 z-30 border-r border-slate-200/90 bg-white shadow-xs transition-all duration-300 select-none',
+        sidebarCollapsed ? 'w-[72px]' : 'w-[256px]'
       )}
     >
-      {/* Brand */}
-      <div className="flex h-16 items-center justify-between px-3 border-b border-slate-200/80 dark:border-slate-800">
-        <div className="flex items-center gap-2 overflow-hidden">
+      {/* Brand Header */}
+      <div className="flex h-16 items-center justify-between px-4 border-b border-slate-200/90">
+        <div className="flex items-center gap-2.5 overflow-hidden">
           <Logo
             size="sm"
             imageClassName={sidebarCollapsed ? 'h-7 w-7 object-left' : 'h-7 w-auto'}
           />
           {!sidebarCollapsed && (
-            <div className="flex flex-col ml-1">
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">
+            <div className="flex flex-col">
+              <span className="text-[11px] font-bold text-slate-900 tracking-wide uppercase">
                 {role} Workspace
               </span>
             </div>
@@ -93,7 +104,7 @@ export function Sidebar() {
         </div>
         <button
           onClick={toggleSidebar}
-          className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100 shrink-0"
+          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 shrink-0 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
           title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -111,10 +122,10 @@ export function Sidebar() {
               end={item.to === '/intern' || item.to === '/mentor' || item.to === '/admin'}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all relative group',
+                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all relative group',
                   isActive
-                    ? 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 font-semibold border border-slate-200/90 dark:border-slate-700/80 shadow-2xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
+                    ? 'bg-indigo-50 text-indigo-700 font-medium border-l-[3px] border-indigo-600 rounded-l-none'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-normal'
                 )
               }
               title={sidebarCollapsed ? item.label : undefined}
@@ -124,17 +135,46 @@ export function Sidebar() {
               {item.badge !== undefined && item.badge > 0 && (
                 <span
                   className={cn(
-                    'ml-auto rounded-full px-2 py-0.5 text-xs font-bold',
-                    sidebarCollapsed ? 'absolute top-1.5 right-1.5 h-2 w-2 p-0 bg-rose-500' : 'bg-rose-500 text-white'
+                    'ml-auto rounded-full px-2 py-0.5 text-[11px] font-bold',
+                    sidebarCollapsed
+                      ? 'absolute top-1.5 right-1.5 h-2 w-2 p-0 bg-rose-500'
+                      : 'bg-rose-500 text-white'
                   )}
                 >
-                  {!sidebarCollapsed && item.badge}
+                  {!sidebarCollapsed && (item.badge > 9 ? '9+' : item.badge)}
                 </span>
               )}
             </NavLink>
           );
         })}
       </nav>
+
+      {/* Bottom Footer: Cohort Card & Sign Out */}
+      <div className="p-3 border-t border-slate-200/90 bg-slate-50/50 space-y-2">
+        {!sidebarCollapsed && (
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-2xs space-y-1">
+            <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">
+              <Calendar className="h-3.5 w-3.5 text-indigo-600" />
+              <span className="font-medium text-slate-700">Engineering Cohort</span>
+            </div>
+            <p className="text-[11px] text-slate-500 truncate">
+              {profile?.full_name || 'David Kim'}
+            </p>
+          </div>
+        )}
+
+        <button
+          onClick={handleSignOut}
+          className={cn(
+            'flex items-center gap-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-600 w-full p-2 transition-colors',
+            sidebarCollapsed && 'justify-center p-2'
+          )}
+          title="Sign out"
+        >
+          <LogOut className="h-4 w-4 shrink-0" />
+          {!sidebarCollapsed && <span>Sign out</span>}
+        </button>
+      </div>
     </aside>
   );
 }

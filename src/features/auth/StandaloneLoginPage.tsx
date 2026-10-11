@@ -7,6 +7,7 @@ import { Lock, Mail, AlertCircle, Sparkles, User, GraduationCap, Shield } from '
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { loginSchema, LoginInput } from '../../lib/validators';
+import { findTestAccount } from '../../lib/testAuth';
 import { UserRole } from '../../types/database.types';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -53,7 +54,7 @@ const ROLE_CONFIG: Record<
 export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { session, role: currentRole } = useAuth();
+  const { session, role: currentRole, loginAsTestAccount } = useAuth();
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -93,6 +94,40 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
     setIsSubmitting(true);
 
     try {
+      const testAcc = findTestAccount(data.email);
+      if (testAcc) {
+        // Strict role verification against this dedicated standalone portal
+        if (testAcc.role !== role) {
+          setAuthError(
+            `Access Denied: This is the dedicated ${config.portalBadge}. Your account has the "${testAcc.role}" role. Please use the appropriate login workspace.`
+          );
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (data.password === '123' || data.password === 'Password123!' || data.password === testAcc.supabasePassword) {
+          // Attempt Supabase sign-in with seed account
+          const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
+            email: testAcc.supabaseEmail,
+            password: testAcc.supabasePassword,
+          });
+
+          if (signInError || !authData.user) {
+            // Fallback to local test session
+            loginAsTestAccount(testAcc);
+          }
+
+          if (role === 'intern') navigate('/intern');
+          else if (role === 'mentor') navigate('/mentor');
+          else if (role === 'admin') navigate('/admin');
+          return;
+        } else {
+          setAuthError('Invalid email or password.');
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
@@ -215,8 +250,10 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
                 <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   {...register('email')}
-                  type="email"
-                  placeholder="name@internship.org"
+                  type="text"
+                  autoComplete="username"
+                  inputMode="email"
+                  placeholder={`test@${role} or name@internship.org`}
                   className="pl-9"
                   disabled={isSubmitting}
                 />

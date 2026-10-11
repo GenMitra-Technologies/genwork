@@ -25,9 +25,11 @@ export function NotificationsPage() {
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const setUnreadCount = useUIStore((s) => s.setUnreadCount);
 
+  const userId = user?.id || '00000000-0000-0000-0000-000000000011';
+
   const { data: notifications = [], isLoading } = useQuery({
-    queryKey: ['notifications'],
-    queryFn: () => notificationsApi.getNotifications(user?.id || '00000000-0000-0000-0000-00000011'),
+    queryKey: ['notifications', userId],
+    queryFn: () => notificationsApi.getNotifications(userId),
   });
 
   const unreadCount = useMemo(() => {

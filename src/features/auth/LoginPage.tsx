@@ -6,6 +6,7 @@ import { Lock, Mail, AlertCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { loginSchema, LoginInput } from '../../lib/validators';
+import { findTestAccount } from '../../lib/testAuth';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Logo } from '../../components/shared/Logo';
@@ -13,7 +14,7 @@ import { Logo } from '../../components/shared/Logo';
 export function LoginPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { session, role: currentRole } = useAuth();
+  const { session, role: currentRole, loginAsTestAccount } = useAuth();
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -45,6 +46,31 @@ export function LoginPage() {
     setIsSubmitting(true);
 
     try {
+      const testAcc = findTestAccount(data.email);
+      if (testAcc) {
+        if (data.password === '123' || data.password === 'Password123!' || data.password === testAcc.supabasePassword) {
+          // Attempt Supabase sign-in with seed account
+          const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
+            email: testAcc.supabaseEmail,
+            password: testAcc.supabasePassword,
+          });
+
+          if (signInError || !authData.user) {
+            // Fallback to local test session
+            loginAsTestAccount(testAcc);
+          }
+
+          if (testAcc.role === 'mentor') navigate('/mentor');
+          else if (testAcc.role === 'admin') navigate('/admin');
+          else navigate('/intern');
+          return;
+        } else {
+          setAuthError('Invalid email or password.');
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
@@ -145,8 +171,10 @@ export function LoginPage() {
                 <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   {...register('email')}
-                  type="email"
-                  placeholder="name@internship.org"
+                  type="text"
+                  autoComplete="username"
+                  inputMode="email"
+                  placeholder="test@intern or name@internship.org"
                   className="pl-9"
                   disabled={isSubmitting}
                 />

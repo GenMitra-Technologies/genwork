@@ -4,6 +4,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { UserProfile } from '../types/domain';
 import { UserRole } from '../types/database.types';
+import { TestAccount, findTestAccount } from '../lib/testAuth';
 
 interface AuthContextType {
   session: Session | null;
@@ -13,6 +14,7 @@ interface AuthContextType {
   loading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  loginAsTestAccount: (account: TestAccount) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -23,6 +25,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   signOut: async () => {},
   refreshProfile: async () => {},
+  loginAsTestAccount: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -92,18 +95,86 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+function createMockUserAndSession(account: TestAccount): { user: User; session: Session } {
+  const user = {
+    id: account.profile.id,
+    app_metadata: { provider: 'email' },
+    user_metadata: { full_name: account.profile.full_name, role: account.role },
+    aud: 'authenticated',
+    confirmation_sent_at: '',
+    recovery_sent_at: '',
+    email_change_sent_at: '',
+    new_email: '',
+    invited_at: '',
+    action_link: '',
+    email: account.profile.email,
+    phone: '',
+    created_at: new Date().toISOString(),
+    confirmed_at: new Date().toISOString(),
+    email_confirmed_at: new Date().toISOString(),
+    phone_confirmed_at: '',
+    last_sign_in_at: new Date().toISOString(),
+    role: 'authenticated',
+    updated_at: new Date().toISOString(),
+    identities: [],
+    factors: [],
+  } as unknown as User;
+
+  const session = {
+    access_token: 'genmitra-test-access-token',
+    refresh_token: 'genmitra-test-refresh-token',
+    expires_in: 86400,
+    expires_at: Math.floor(Date.now() / 1000) + 86400,
+    token_type: 'bearer',
+    user,
+  } as Session;
+
+  return { user, session };
+}
+
+  const loginAsTestAccount = (account: TestAccount) => {
+    try {
+      localStorage.setItem('genmitra_test_session', JSON.stringify(account));
+    } catch {
+      // ignore
+    }
+    const { user: mockUser, session: mockSession } = createMockUserAndSession(account);
+    setSession(mockSession);
+    setUser(mockUser);
+    setProfile(account.profile);
+    setLoading(false);
+  };
+
   useEffect(() => {
     let mounted = true;
 
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       if (!mounted) return;
-      setSession(initialSession);
-      setUser(initialSession?.user ?? null);
       if (initialSession?.user) {
+        setSession(initialSession);
+        setUser(initialSession.user);
         fetchProfile(initialSession.user).finally(() => {
           if (mounted) setLoading(false);
         });
       } else {
+        try {
+          const savedTestSession = localStorage.getItem('genmitra_test_session');
+          if (savedTestSession) {
+            const parsed = JSON.parse(savedTestSession) as TestAccount;
+            if (parsed?.profile && parsed?.role) {
+              const { user: mockUser, session: mockSession } = createMockUserAndSession(parsed);
+              setSession(mockSession);
+              setUser(mockUser);
+              setProfile(parsed.profile);
+              setLoading(false);
+              return;
+            }
+          }
+        } catch {
+          // ignore
+        }
+        setSession(null);
+        setUser(null);
         setLoading(false);
       }
     });
@@ -111,14 +182,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, newSession) => {
         if (!mounted) return;
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
         if (newSession?.user) {
+          setSession(newSession);
+          setUser(newSession.user);
           await fetchProfile(newSession.user);
+          setLoading(false);
         } else {
+          // Only clear if no test session in local storage
+          const savedTestSession = localStorage.getItem('genmitra_test_session');
+          if (savedTestSession) {
+            try {
+              const parsed = JSON.parse(savedTestSession) as TestAccount;
+              if (parsed?.profile) {
+                const { user: mockUser, session: mockSession } = createMockUserAndSession(parsed);
+                setSession(mockSession);
+                setUser(mockUser);
+                setProfile(parsed.profile);
+                setLoading(false);
+                return;
+              }
+            } catch {
+              // ignore
+            }
+          }
+          setSession(null);
+          setUser(null);
           setProfile(null);
+          setLoading(false);
         }
-        setLoading(false);
       }
     );
 
@@ -130,6 +221,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
+      localStorage.removeItem('genmitra_test_session');
       await supabase.auth.signOut();
     } finally {
       setSession(null);
@@ -154,6 +246,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         signOut,
         refreshProfile,
+        loginAsTestAccount,
       }}
     >
       {children}

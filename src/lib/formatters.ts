@@ -39,17 +39,22 @@ export function formatTimeTaken(seconds: number | null | undefined): string {
 export function formatTimeRemaining(dueDateString: string | null | undefined): {
   text: string;
   isOverdue: boolean;
+  isUrgent: boolean;
 } {
-  if (!dueDateString) return { text: 'No due date', isOverdue: false };
+  if (!dueDateString) return { text: 'No due date', isOverdue: false, isUrgent: false };
   try {
     const dueDate = new Date(dueDateString);
+    const now = new Date();
     const overdue = isPast(dueDate);
+    const diffHours = (dueDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+    const isUrgent = !overdue && diffHours <= 24;
     const distance = formatDistanceToNow(dueDate, { addSuffix: true });
     return {
       text: overdue ? `Overdue (${distance})` : `Due ${distance}`,
       isOverdue: overdue,
+      isUrgent,
     };
   } catch {
-    return { text: '—', isOverdue: false };
+    return { text: '—', isOverdue: false, isUrgent: false };
   }
 }

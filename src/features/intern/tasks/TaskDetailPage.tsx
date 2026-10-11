@@ -19,6 +19,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { internApi } from '../api';
+import { useAuth } from '../../../hooks/useAuth';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
 import { Timeline, TimelineEventItem } from '../../../components/shared/Timeline';
@@ -35,6 +36,9 @@ export function TaskDetailPage() {
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
+  const { profile } = useAuth();
+  const internId = profile?.intern_id || '20000000-0000-0000-0000-000000000001';
+
   // 1. Fetch Task
   const { data: task, isLoading: taskLoading } = useQuery({
     queryKey: ['task', code],
@@ -42,11 +46,11 @@ export function TaskDetailPage() {
     enabled: !!code,
   });
 
-  // 2. Fetch Task Assignment for David
+  // 2. Fetch Task Assignment
   const taskObj = task as any;
   const { data: assignment, isLoading: assignmentLoading } = useQuery({
-    queryKey: ['task-assignment', taskObj?.id],
-    queryFn: () => internApi.getTaskAssignment(taskObj?.id || '', '20000000-0000-0000-0000-000000000001'),
+    queryKey: ['task-assignment', taskObj?.id, internId],
+    queryFn: () => internApi.getTaskAssignment(taskObj?.id || '', internId),
     enabled: !!taskObj?.id,
   });
 

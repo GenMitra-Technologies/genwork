@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, Play, Upload, CheckCircle2, Calendar } from 'lucide-react';
 import { internApi } from '../api';
+import { useAuth } from '../../../hooks/useAuth';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../../../components/ui/dialog';
@@ -12,14 +13,17 @@ import { Input } from '../../../components/ui/input';
 import { formatDateOnly } from '../../../lib/formatters';
 
 export function AssignmentsPage() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
   const [selectedRecipient, setSelectedRecipient] = useState<any | null>(null);
   const [submissionText, setSubmissionText] = useState('');
   const [submissionUrl, setSubmissionUrl] = useState('');
 
+  const internId = profile?.intern_id || '20000000-0000-0000-0000-000000000001';
+
   const { data: assignments = [], isLoading } = useQuery({
-    queryKey: ['assignments', 'intern'],
-    queryFn: () => internApi.getMyAssignments('20000000-0000-0000-0000-000000000001'),
+    queryKey: ['assignments', 'intern', internId],
+    queryFn: () => internApi.getMyAssignments(internId),
   });
 
   const startMutation = useMutation({

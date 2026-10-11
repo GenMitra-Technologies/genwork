@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, CheckSquare, Calendar, Users, Eye } from 'lucide-react';
 import { mentorApi } from '../api';
+import { useAuth } from '../../../hooks/useAuth';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../../../components/ui/dialog';
@@ -16,19 +17,21 @@ import { createTaskSchema, CreateTaskInput } from '../../../lib/validators';
 import { formatDateOnly } from '../../../lib/formatters';
 
 export function MentorTasksPage() {
+  const { profile } = useAuth();
+  const mentorId = profile?.mentor_id || '10000000-0000-0000-0000-000000000001';
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [createDialogOpen, setCreateDialogOpen] = useState(searchParams.get('new') === 'true');
   const [formError, setFormError] = useState<string | null>(null);
 
   const { data: myInterns = [] } = useQuery({
-    queryKey: ['my-interns'],
-    queryFn: () => mentorApi.getMyInterns('10000000-0000-0000-0000-000000000001'),
+    queryKey: ['my-interns', mentorId],
+    queryFn: () => mentorApi.getMyInterns(mentorId),
   });
 
   const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ['mentor-created-tasks'],
-    queryFn: () => mentorApi.getCreatedTasks('10000000-0000-0000-0000-000000000001'),
+    queryKey: ['mentor-created-tasks', mentorId],
+    queryFn: () => mentorApi.getCreatedTasks(mentorId),
   });
 
   const {

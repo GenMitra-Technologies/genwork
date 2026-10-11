@@ -4,6 +4,11 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './styles/globals.css';
 
+// Ensure night/dark mode is completely disabled
+if (typeof document !== 'undefined') {
+  document.documentElement.classList.remove('dark');
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />

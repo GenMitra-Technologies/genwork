@@ -60,7 +60,7 @@ export function Logo({
               src="/genmitra-logo.png"
               alt="Genmitra"
               className={cn(
-                'w-auto object-contain transition-all dark:invert dark:brightness-100',
+                'w-auto object-contain transition-all',
                 sizeClasses[size],
                 imageClassName
               )}
@@ -80,7 +80,7 @@ export function Logo({
               src="/vnxv-logo.png"
               alt="VNXV"
               className={cn(
-                'w-auto object-contain transition-all dark:invert dark:brightness-100',
+                'w-auto object-contain transition-all',
                 sizeClasses[size],
                 imageClassName
               )}

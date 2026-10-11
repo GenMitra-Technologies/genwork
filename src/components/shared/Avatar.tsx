@@ -10,13 +10,14 @@ export function Avatar({
   src?: string | null;
   name: string;
   className?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }) {
   const sizeClasses = {
     sm: 'h-7 w-7 text-xs',
     md: 'h-9 w-9 text-sm',
     lg: 'h-12 w-12 text-base',
-    xl: 'h-16 w-16 text-xl',
+    xl: 'h-16 w-16 text-lg',
+    '2xl': 'h-[72px] w-[72px] text-xl',
   };
 
   const initials = name
@@ -29,7 +30,7 @@ export function Avatar({
   return (
     <div
       className={cn(
-        'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted font-medium text-muted-foreground ring-1 ring-border',
+        'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 font-semibold text-indigo-700 ring-1 ring-slate-200/80',
         sizeClasses[size],
         className
       )}

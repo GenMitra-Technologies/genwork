@@ -16,18 +16,34 @@ import { cn } from '../../../lib/utils';
 import { usePagination } from '../../../hooks/usePagination';
 
 export function TasksPage() {
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'all';
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('all');
 
+  const rawTab = searchParams.get('tab');
+  const rawFilter = searchParams.get('filter');
+
+  // Normalize aliases (?tab=started, ?tab=waiting, ?tab=changes, ?filter=overdue)
+  const activeTab = useMemo(() => {
+    if (rawFilter === 'overdue' || rawTab === 'overdue') return 'overdue';
+    if (rawTab === 'started' || rawTab === 'in_progress') return 'in_progress';
+    if (rawTab === 'waiting' || rawTab === 'waiting_for_review') return 'waiting_for_review';
+    if (rawTab === 'changes' || rawTab === 'changes_requested') return 'changes_requested';
+    if (rawTab === 'approved') return 'approved';
+    if (rawTab === 'pending') return 'pending';
+    return 'all';
+  }, [rawTab, rawFilter]);
+
+  const internId = profile?.intern_id || '20000000-0000-0000-0000-000000000001';
+
   const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ['tasks', 'intern'],
-    queryFn: () => internApi.getMyTasks('20000000-0000-0000-0000-000000000001'),
+    queryKey: ['tasks', 'intern', internId],
+    queryFn: () => internApi.getMyTasks(internId),
   });
 
   const handleTabChange = (tab: string) => {
+    searchParams.delete('filter');
     if (tab === 'all') {
       searchParams.delete('tab');
     } else {
@@ -44,7 +60,12 @@ export function TasksPage() {
       if (activeTab === 'waiting_for_review' && t.status !== 'waiting_for_review') return false;
       if (activeTab === 'approved' && t.status !== 'approved') return false;
       if (activeTab === 'changes_requested' && t.status !== 'changes_requested') return false;
-      if (activeTab === 'overdue' && !t.is_overdue) return false;
+      if (activeTab === 'overdue') {
+        const isTaskOverdue =
+          t.is_overdue ||
+          (t.status !== 'approved' && t.due_date && new Date(t.due_date) < new Date());
+        if (!isTaskOverdue) return false;
+      }
 
       // Priority filter
       if (priorityFilter !== 'all' && t.priority !== priorityFilter) return false;

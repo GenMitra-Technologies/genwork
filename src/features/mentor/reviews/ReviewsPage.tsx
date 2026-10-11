@@ -12,6 +12,7 @@ import {
   Check,
 } from 'lucide-react';
 import { mentorApi } from '../api';
+import { useAuth } from '../../../hooks/useAuth';
 import { Avatar } from '../../../components/shared/Avatar';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
@@ -23,6 +24,8 @@ import { formatDateTime, formatTimeTaken } from '../../../lib/formatters';
 import { cn } from '../../../lib/utils';
 
 export function ReviewsPage() {
+  const { profile } = useAuth();
+  const mentorId = profile?.mentor_id || '10000000-0000-0000-0000-000000000001';
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'waiting' | 'all' | 'approved' | 'changes'>('waiting');
 
@@ -34,8 +37,8 @@ export function ReviewsPage() {
   const [formError, setFormError] = useState<string | null>(null);
 
   const { data: queue = [], isLoading } = useQuery({
-    queryKey: ['review-queue'],
-    queryFn: () => mentorApi.getReviewQueue('10000000-0000-0000-0000-000000000001'),
+    queryKey: ['review-queue', mentorId],
+    queryFn: () => mentorApi.getReviewQueue(mentorId),
   });
 
   const reviewMutation = useMutation({

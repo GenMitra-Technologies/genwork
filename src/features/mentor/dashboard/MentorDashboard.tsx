@@ -24,6 +24,7 @@ import { formatTimeTaken, formatDateTime } from '../../../lib/formatters';
 
 export function MentorDashboard() {
   const { profile } = useAuth();
+  const mentorId = profile?.mentor_id || '10000000-0000-0000-0000-000000000001';
 
   const { data: stats } = useQuery({
     queryKey: ['dashboard', 'mentor'],
@@ -31,13 +32,13 @@ export function MentorDashboard() {
   });
 
   const { data: queue = [] } = useQuery({
-    queryKey: ['review-queue'],
-    queryFn: () => mentorApi.getReviewQueue('10000000-0000-0000-0000-000000000001'),
+    queryKey: ['review-queue', mentorId],
+    queryFn: () => mentorApi.getReviewQueue(mentorId),
   });
 
   const { data: myInterns = [] } = useQuery({
-    queryKey: ['my-interns'],
-    queryFn: () => mentorApi.getMyInterns('10000000-0000-0000-0000-000000000001'),
+    queryKey: ['my-interns', mentorId],
+    queryFn: () => mentorApi.getMyInterns(mentorId),
   });
 
   return (

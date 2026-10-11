@@ -1,13 +1,16 @@
-// src/features/mentor/interns/MyInternsPage.tsx
 import { useQuery } from '@tanstack/react-query';
 import { Users, Flame, CheckCircle2, Clock, Hourglass, RotateCcw } from 'lucide-react';
 import { mentorApi } from '../api';
+import { useAuth } from '../../../hooks/useAuth';
 import { Avatar } from '../../../components/shared/Avatar';
 
 export function MyInternsPage() {
+  const { profile } = useAuth();
+  const mentorId = profile?.mentor_id || '10000000-0000-0000-0000-000000000001';
+
   const { data: myInterns = [], isLoading } = useQuery({
-    queryKey: ['my-interns'],
-    queryFn: () => mentorApi.getMyInterns('10000000-0000-0000-0000-000000000001'),
+    queryKey: ['my-interns', mentorId],
+    queryFn: () => mentorApi.getMyInterns(mentorId),
   });
 
   return (
