@@ -46,14 +46,14 @@ export const STATUS_META: Record<TaskStatus | 'overdue', StatusMeta> = {
   },
   in_progress: {
     label: 'In Progress',
-    badgeClass: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800',
-    bgLight: 'bg-blue-50/50 dark:bg-blue-950/30',
+    badgeClass: 'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700',
+    bgLight: 'bg-slate-50 dark:bg-slate-900',
     icon: Play,
   },
   submitted: {
     label: 'Submitted',
-    badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800',
-    bgLight: 'bg-indigo-50/50 dark:bg-indigo-950/30',
+    badgeClass: 'bg-zinc-100 text-zinc-800 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-700',
+    bgLight: 'bg-zinc-50 dark:bg-zinc-900',
     icon: Upload,
   },
   waiting_for_review: {

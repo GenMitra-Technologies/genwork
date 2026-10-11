@@ -27,9 +27,9 @@ export function Timeline({ events }: { events: TimelineEventItem[] }) {
       case 'assigned':
         return <Clock className="h-4 w-4 text-zinc-500" />;
       case 'started':
-        return <Play className="h-4 w-4 text-blue-500" />;
+        return <Play className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />;
       case 'submitted':
-        return <Upload className="h-4 w-4 text-indigo-500" />;
+        return <Upload className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />;
       case 'waiting_for_review':
         return <Clock className="h-4 w-4 text-amber-500" />;
       case 'approved':

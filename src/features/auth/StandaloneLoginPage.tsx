@@ -40,7 +40,7 @@ const ROLE_CONFIG: Record<
     demoName: 'David Kim (Software Intern)',
     demoDescription: 'Assigned to Alex Rivera',
     portalBadge: 'Intern Portal',
-    themeGradient: 'from-blue-500/10 via-indigo-500/5 to-transparent',
+    themeGradient: 'from-slate-500/10 via-zinc-500/5 to-transparent',
   },
   mentor: {
     title: 'Mentor Workspace',

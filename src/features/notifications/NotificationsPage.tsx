@@ -63,9 +63,9 @@ export function NotificationsPage() {
         return <RotateCcw className="h-4 w-4 text-orange-500" />;
       case 'task_submitted':
       case 'task_resubmitted':
-        return <Upload className="h-4 w-4 text-indigo-500" />;
+        return <Upload className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />;
       case 'task_started':
-        return <Play className="h-4 w-4 text-blue-500" />;
+        return <Play className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />;
       case 'announcement':
         return <Megaphone className="h-4 w-4 text-purple-500" />;
       case 'deadline_approaching':

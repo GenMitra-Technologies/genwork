@@ -43,7 +43,7 @@ export function MentorDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="rounded-2xl border bg-card p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-950/40 backdrop-blur-md p-6 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Welcome back, {profile?.full_name || 'Alex Rivera'}
@@ -59,7 +59,7 @@ export function MentorDashboard() {
               <Plus className="h-3.5 w-3.5" /> Create Task
             </Link>
           </Button>
-          <Button asChild variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button asChild variant="outline" size="sm" className="gap-1.5 text-xs border-slate-200 dark:border-slate-700">
             <Link to="/mentor/reviews">
               <Eye className="h-3.5 w-3.5" /> Review Queue ({queue.length})
             </Link>
@@ -80,21 +80,18 @@ export function MentorDashboard() {
           value={stats?.waiting_review_count ?? queue.length}
           icon={Eye}
           to="/mentor/reviews?tab=waiting"
-          className="border-amber-500/30 bg-amber-500/5 font-bold"
         />
         <StatCard
           title="Approved Work"
           value={stats?.approved_count ?? 5}
           icon={CheckCircle2}
           to="/mentor/reviews?tab=approved"
-          className="border-emerald-500/30 bg-emerald-500/5"
         />
         <StatCard
           title="Changes Needed"
           value={stats?.changes_requested_count ?? 1}
           icon={RotateCcw}
           to="/mentor/reviews?tab=changes"
-          className="border-orange-500/30 bg-orange-500/5"
         />
         <StatCard
           title="Overdue Tasks"
@@ -113,14 +110,14 @@ export function MentorDashboard() {
       {/* Columns: Review Queue & My Interns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Review Queue */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b">
+        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-5 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-slate-800">
             <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
               <Eye className="h-4 w-4 text-amber-500" /> Pending Review Submissions
             </h3>
             <Link
               to="/mentor/reviews"
-              className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
+              className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 flex items-center gap-1 transition-colors"
             >
               View queue <ArrowRight className="h-3 w-3" />
             </Link>
@@ -135,7 +132,7 @@ export function MentorDashboard() {
               {queue.map((sub: any) => (
                 <div
                   key={sub.submission_id}
-                  className="rounded-lg border bg-muted/20 p-4 space-y-2 text-xs"
+                  className="rounded-lg border border-slate-200/70 dark:border-slate-800 bg-transparent p-4 space-y-2 text-xs"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -146,7 +143,7 @@ export function MentorDashboard() {
                       />
                       <span className="font-semibold text-foreground">{sub.intern_name}</span>
                     </div>
-                    <span className="font-mono text-xs font-bold text-primary">
+                    <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">
                       {sub.task_code}
                     </span>
                   </div>
@@ -162,7 +159,7 @@ export function MentorDashboard() {
                     <span>Version {sub.version}</span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-border">
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 dark:border-slate-800/60">
                     <span className="text-[10px] text-muted-foreground">
                       Submitted {formatDateTime(sub.submitted_at)}
                     </span>
@@ -177,14 +174,14 @@ export function MentorDashboard() {
         </div>
 
         {/* Assigned Interns Quick Status */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b">
+        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-5 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-slate-800">
             <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
-              <Users className="h-4 w-4 text-primary" /> My Mentees
+              <Users className="h-4 w-4 text-slate-700 dark:text-slate-300" /> My Mentees
             </h3>
             <Link
               to="/mentor/interns"
-              className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
+              className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 flex items-center gap-1 transition-colors"
             >
               Manage all <ArrowRight className="h-3 w-3" />
             </Link>

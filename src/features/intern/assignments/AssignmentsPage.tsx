@@ -99,7 +99,7 @@ export function AssignmentsPage() {
                       size="sm"
                       onClick={() => startMutation.mutate(item.id)}
                       disabled={startMutation.isPending}
-                      className="gap-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                      className="gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
                     >
                       <Play className="h-3.5 w-3.5" /> Start Assignment
                     </Button>

@@ -53,7 +53,7 @@ export function InternDashboard() {
   return (
     <div className="space-y-8">
       {/* 1. Profile Header */}
-      <div className="rounded-2xl border bg-card p-6 shadow-xs">
+      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-950/40 backdrop-blur-md p-6 shadow-2xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <Avatar
@@ -63,36 +63,36 @@ export function InternDashboard() {
             />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold tracking-tight text-foreground">
+                <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                   {profile?.full_name || 'David Kim'}
                 </h1>
-                <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                   Active Intern
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {internProfile?.role_title || 'Full Stack Intern'} •{' '}
-                <span className="text-foreground font-medium">
+                <span className="text-slate-800 dark:text-slate-200 font-medium">
                   {internProfile?.company_name || 'Tech Corp'}
                 </span>
               </p>
-              <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+              <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1">
-                  <UserCheck className="h-3.5 w-3.5 text-primary" />
+                  <UserCheck className="h-3.5 w-3.5 text-slate-700 dark:text-slate-300" />
                   Mentor:{' '}
-                  <span className="font-medium text-foreground">
+                  <span className="font-medium text-slate-900 dark:text-slate-100">
                     {internProfile?.mentor?.profile?.full_name || 'Alex Rivera'}
                   </span>
                 </span>
                 <span className="flex items-center gap-1">
-                  <Building className="h-3.5 w-3.5 text-primary" />
+                  <Building className="h-3.5 w-3.5 text-slate-700 dark:text-slate-300" />
                   Cohort:{' '}
-                  <span className="font-medium text-foreground">
+                  <span className="font-medium text-slate-900 dark:text-slate-100">
                     {internProfile?.internship?.name || 'Summer 2026 Engineering Cohort'}
                   </span>
                 </span>
                 <span className="flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5 text-primary" />
+                  <Calendar className="h-3.5 w-3.5 text-slate-700 dark:text-slate-300" />
                   {formatDateOnly(internProfile?.start_date || '2026-06-01')} –{' '}
                   {formatDateOnly(internProfile?.end_date || '2026-08-31')}
                 </span>
@@ -101,27 +101,27 @@ export function InternDashboard() {
           </div>
 
           {/* 2. Streak Card */}
-          <div className="rounded-xl border border-amber-500/20 bg-linear-to-br from-amber-500/5 via-orange-500/5 to-transparent p-4 min-w-[240px] shadow-2xs">
+          <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-4 min-w-[240px]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-1">
-                <Flame className="h-4 w-4 text-orange-500 fill-orange-500 animate-pulse" />
+              <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                <Flame className="h-4 w-4 text-amber-500 fill-amber-500" />
                 Active Work Streak
               </span>
-              <span className="text-[10px] text-muted-foreground cursor-help" title="Active day: started/submitted a task or submitted an assignment in local timezone">
+              <span className="text-[10px] text-slate-400 cursor-help" title="Active day: started/submitted a task or submitted an assignment in local timezone">
                 ⓘ info
               </span>
             </div>
 
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-black tracking-tight text-orange-600 dark:text-orange-400">
+              <span className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
                 {internProfile?.current_streak ?? 4}
               </span>
-              <span className="text-xs font-medium text-muted-foreground">days streak 🔥</span>
+              <span className="text-xs font-medium text-slate-500">days streak 🔥</span>
             </div>
 
-            <div className="mt-3 flex items-center justify-between border-t border-amber-500/10 pt-2 text-[11px] text-muted-foreground">
-              <span>Best: <strong className="text-foreground">{internProfile?.longest_streak ?? 8}d</strong></span>
-              <span>Total Active: <strong className="text-foreground">{internProfile?.total_active_days ?? 14}d</strong></span>
+            <div className="mt-3 flex items-center justify-between border-t border-slate-200/60 dark:border-slate-800 pt-2 text-[11px] text-slate-500">
+              <span>Best: <strong className="text-slate-800 dark:text-slate-200">{internProfile?.longest_streak ?? 8}d</strong></span>
+              <span>Total Active: <strong className="text-slate-800 dark:text-slate-200">{internProfile?.total_active_days ?? 14}d</strong></span>
             </div>
           </div>
         </div>
@@ -129,7 +129,7 @@ export function InternDashboard() {
 
       {/* 3. 9 Stat Cards linked to filtered views */}
       <div>
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+        <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
           Overview & Task Metrics
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
@@ -144,28 +144,24 @@ export function InternDashboard() {
             value={stats?.in_progress_tasks ?? 1}
             icon={Play}
             to="/intern/tasks?tab=in_progress"
-            className="border-blue-500/30 bg-blue-500/5"
           />
           <StatCard
             title="Waiting Review"
             value={stats?.waiting_review_tasks ?? 1}
             icon={Hourglass}
             to="/intern/tasks?tab=waiting_for_review"
-            className="border-amber-500/30 bg-amber-500/5"
           />
           <StatCard
             title="Changes Needed"
             value={stats?.changes_requested_tasks ?? 1}
             icon={RotateCcw}
             to="/intern/tasks?tab=changes_requested"
-            className="border-orange-500/30 bg-orange-500/5"
           />
           <StatCard
             title="Approved Tasks"
             value={stats?.approved_tasks ?? 2}
             icon={CheckCircle2}
             to="/intern/tasks?tab=approved"
-            className="border-emerald-500/30 bg-emerald-500/5"
           />
           <StatCard
             title="Pending Start"
@@ -178,7 +174,6 @@ export function InternDashboard() {
             value={stats?.overdue_tasks ?? 0}
             icon={AlertTriangle}
             to="/intern/tasks?tab=overdue"
-            className={(stats?.overdue_tasks ?? 0) > 0 ? 'border-rose-500/40 bg-rose-500/10' : ''}
           />
           <StatCard
             title="Coursework Asg."
@@ -198,21 +193,21 @@ export function InternDashboard() {
       {/* 4. Active Workflow Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pending Tasks */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
-          <div className="flex items-center justify-between pb-3 border-b mb-4">
-            <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
-              <Play className="h-4 w-4 text-blue-500" /> Tasks to Complete
+        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-5 shadow-2xs">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-slate-800 mb-4">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Play className="h-4 w-4 text-emerald-600 dark:text-emerald-400" /> Tasks to Complete
             </h3>
             <Link
               to="/intern/tasks"
-              className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
+              className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 flex items-center gap-1 transition-colors"
             >
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
 
           {pendingTasks.length === 0 ? (
-            <p className="text-xs text-muted-foreground py-6 text-center">
+            <p className="text-xs text-slate-500 py-6 text-center">
               No pending tasks right now. Great job!
             </p>
           ) : (
@@ -221,20 +216,20 @@ export function InternDashboard() {
                 <Link
                   key={t.task_assignment_id}
                   to={`/intern/tasks/${t.task_code}`}
-                  className="block p-3.5 rounded-lg border border-border bg-card/50 hover:bg-muted/50 hover:border-primary/40 transition-all"
+                  className="block p-3.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-transparent hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-all"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-semibold text-primary">
+                        <span className="font-mono text-xs font-semibold text-slate-800 dark:text-slate-200">
                           {t.task_code}
                         </span>
                         <PriorityBadge priority={t.priority} />
                       </div>
-                      <h4 className="text-sm font-medium text-foreground line-clamp-1">
+                      <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-1">
                         {t.task_title}
                       </h4>
-                      <p className="text-xs text-muted-foreground line-clamp-1">
+                      <p className="text-xs text-slate-500 line-clamp-1">
                         {t.task_description}
                       </p>
                     </div>
@@ -247,21 +242,21 @@ export function InternDashboard() {
         </div>
 
         {/* Pending Coursework / Assignments */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
-          <div className="flex items-center justify-between pb-3 border-b mb-4">
-            <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
-              <FileText className="h-4 w-4 text-primary" /> Active Coursework & Quizzes
+        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-5 shadow-2xs">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-slate-800 mb-4">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <FileText className="h-4 w-4 text-amber-600 dark:text-amber-400" /> Active Coursework & Quizzes
             </h3>
             <Link
               to="/intern/assignments"
-              className="text-xs font-medium text-primary hover:underline flex items-center gap-1"
+              className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 flex items-center gap-1 transition-colors"
             >
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
 
           {pendingAssignments.length === 0 ? (
-            <p className="text-xs text-muted-foreground py-6 text-center">
+            <p className="text-xs text-slate-500 py-6 text-center">
               No pending coursework assignments.
             </p>
           ) : (
@@ -270,20 +265,20 @@ export function InternDashboard() {
                 <Link
                   key={a.id}
                   to={`/intern/assignments/${a.assignment?.code}`}
-                  className="block p-3.5 rounded-lg border border-border bg-card/50 hover:bg-muted/50 hover:border-primary/40 transition-all"
+                  className="block p-3.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-transparent hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-all"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-semibold text-primary">
+                        <span className="font-mono text-xs font-semibold text-slate-800 dark:text-slate-200">
                           {a.assignment?.code}
                         </span>
                         <PriorityBadge priority={a.assignment?.priority || 'medium'} />
                       </div>
-                      <h4 className="text-sm font-medium text-foreground line-clamp-1">
+                      <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-1">
                         {a.assignment?.title}
                       </h4>
-                      <p className="text-xs text-muted-foreground line-clamp-1">
+                      <p className="text-xs text-slate-500 line-clamp-1">
                         {a.assignment?.description}
                       </p>
                     </div>

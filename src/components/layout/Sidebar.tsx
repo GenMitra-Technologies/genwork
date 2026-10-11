@@ -71,12 +71,12 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'hidden md:flex flex-col fixed top-0 bottom-0 left-0 z-30 border-r bg-card transition-all duration-300',
+        'hidden md:flex flex-col fixed top-0 bottom-0 left-0 z-30 border-r border-slate-200/80 dark:border-slate-800 bg-transparent backdrop-blur-md transition-all duration-300',
         sidebarCollapsed ? 'w-18' : 'w-64'
       )}
     >
       {/* Brand */}
-      <div className="flex h-16 items-center justify-between px-3 border-b">
+      <div className="flex h-16 items-center justify-between px-3 border-b border-slate-200/80 dark:border-slate-800">
         <div className="flex items-center gap-2 overflow-hidden">
           <img
             src="/genmitra-logo.png"
@@ -88,7 +88,7 @@ export function Sidebar() {
           />
           {!sidebarCollapsed && (
             <div className="flex flex-col ml-1">
-              <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">
                 {role} Portal
               </span>
             </div>
@@ -96,7 +96,7 @@ export function Sidebar() {
         </div>
         <button
           onClick={toggleSidebar}
-          className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground shrink-0"
+          className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100 shrink-0"
           title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -114,10 +114,10 @@ export function Sidebar() {
               end={item.to === '/intern' || item.to === '/mentor' || item.to === '/admin'}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors relative group',
+                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all relative group',
                   isActive
-                    ? 'bg-primary text-primary-foreground shadow-xs font-semibold'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    ? 'bg-slate-100/80 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 font-semibold border border-slate-200/90 dark:border-slate-700/80 shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
                 )
               }
               title={sidebarCollapsed ? item.label : undefined}

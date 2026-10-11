@@ -32,7 +32,7 @@ const COHORT_DATA = [
 const STATUS_DISTRIBUTION = [
   { name: 'Approved', value: 18, color: '#10b981' },
   { name: 'Waiting Review', value: 5, color: '#f59e0b' },
-  { name: 'In Progress', value: 8, color: '#3b82f6' },
+  { name: 'In Progress', value: 8, color: '#64748b' },
   { name: 'Changes Requested', value: 3, color: '#f97316' },
   { name: 'Pending', value: 6, color: '#71717a' },
 ];
@@ -99,10 +99,10 @@ export function AdminDashboard() {
       {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Cohort Task Completion Velocity */}
-        <div className="rounded-xl border bg-card p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b">
+        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-6 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-800">
             <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-primary" /> Cohort Completion Velocity
+              <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" /> Cohort Completion Velocity
             </h3>
             <span className="text-xs text-muted-foreground">Current Active Quarters</span>
           </div>
@@ -115,17 +115,17 @@ export function AdminDashboard() {
                 <YAxis tick={{ fontSize: 11 }} />
                 <Tooltip />
                 <Bar dataKey="totalTasks" name="Assigned Tasks" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="completed" name="Approved Tasks" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="completed" name="Approved Tasks" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Task Status Distribution */}
-        <div className="rounded-xl border bg-card p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b">
+        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-6 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-800">
             <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
-              <CheckSquare className="h-4 w-4 text-primary" /> Task Workflow Breakdown
+              <CheckSquare className="h-4 w-4 text-slate-700 dark:text-slate-300" /> Task Workflow Breakdown
             </h3>
             <span className="text-xs text-muted-foreground">Across All Cohorts</span>
           </div>
