@@ -5,7 +5,6 @@ import { mentorApi } from '../api';
 import { useAuth } from '../../../hooks/useAuth';
 import { Avatar } from '../../../components/shared/Avatar';
 import { Link, useParams } from 'react-router-dom';
-import { CandidateOperationalProfileCard } from '../../intern/profile/CandidateOperationalProfileCard';
 
 export function MyInternsPage() {
   const { profile } = useAuth();
@@ -31,9 +30,41 @@ export function MyInternsPage() {
           >
             <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to assigned interns
           </Link>
-          <span className="text-xs text-slate-400">Mentee Profile View</span>
+          <span className="text-xs text-slate-400">Mentee Overview</span>
         </div>
-        <CandidateOperationalProfileCard intern={selectedIntern} />
+
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs space-y-5">
+          <div className="flex items-center gap-4 pb-4 border-b">
+            <Avatar src={selectedIntern.profile?.avatar_url} name={selectedIntern.profile?.full_name || 'Intern'} size="lg" />
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">{selectedIntern.profile?.full_name}</h2>
+              <p className="text-xs text-slate-500">{selectedIntern.profile?.email}</p>
+              <div className="flex items-center gap-2 pt-1.5">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">
+                  {selectedIntern.role_title || 'Intern'}
+                </span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">
+                  Active
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="p-3 rounded-lg bg-slate-50 border">
+              <span className="text-slate-500 font-medium">Company & Track</span>
+              <p className="font-semibold text-slate-900 mt-0.5">{selectedIntern.company_name || 'GenMitra Technologies'}</p>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border">
+              <span className="text-slate-500 font-medium">Cohort Batch</span>
+              <p className="font-semibold text-slate-900 mt-0.5">{selectedIntern.internship?.name || 'Cohort 2026'}</p>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border">
+              <span className="text-slate-500 font-medium">Current Streak</span>
+              <p className="font-semibold text-orange-600 mt-0.5">🔥 {selectedIntern.current_streak || 0} days</p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

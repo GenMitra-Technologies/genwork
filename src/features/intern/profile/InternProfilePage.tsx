@@ -5,7 +5,6 @@ import { useAuth } from '../../../hooks/useAuth';
 import { internApi } from '../api';
 import { Avatar } from '../../../components/shared/Avatar';
 import { formatDateOnly } from '../../../lib/formatters';
-import { CandidateOperationalProfileCard } from './CandidateOperationalProfileCard';
 
 export function InternProfilePage() {
   const { profile, user } = useAuth();
@@ -18,29 +17,11 @@ export function InternProfilePage() {
   return (
     <div className="space-y-5 sm:space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Candidate Profile & Operational Terms</h1>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">My Profile</h1>
         <p className="text-xs text-muted-foreground mt-1">
-          Official offer terms, candidate operational credentials, cohort placement, and supervision details.
+          Your personal intern credentials, enrolled cohort, and supervisor details.
         </p>
       </div>
-
-      {/* Sealed Authoritative Offer Terms & Candidate Profile */}
-      <CandidateOperationalProfileCard
-        internName={profile?.full_name || 'SINDHU GANGISETTY'}
-        candidateEmail={profile?.email || 'sindhugangisetty910@gmail.com'}
-        rollId="24ht1a4346"
-        position={internProfile?.role_title || 'FRONTEND DEVELOPER'}
-        department="Engineering"
-        reportingManager="CTO"
-        startDate="2026-10-01"
-        endDate="N/A"
-        workMode="Remote"
-        compensation="Unpaid"
-        profileCategory="Student"
-        recruitmentClassification="Student"
-        emergencyContact="Gangisetty Srilatha (Elder sister)"
-        assignedMentorName={internProfile?.mentor?.profile?.full_name || 'Kapu Mani Shankar Reddy'}
-      />
 
       <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 pb-6 border-b">

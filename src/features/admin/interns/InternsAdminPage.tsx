@@ -1,15 +1,17 @@
 // src/features/admin/interns/InternsAdminPage.tsx
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Users, UserCheck, ArrowRightLeft, Building, Download } from 'lucide-react';
+import { Users, UserCheck, ArrowRightLeft, Building, Download, ShieldCheck } from 'lucide-react';
 import { adminApi } from '../api';
 import { Avatar } from '../../../components/shared/Avatar';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../../../components/ui/dialog';
 import { Button } from '../../../components/ui/button';
+import { CandidateOperationalProfileCard } from '../../intern/profile/CandidateOperationalProfileCard';
 
 export function InternsAdminPage() {
   const queryClient = useQueryClient();
   const [reassignIntern, setReassignIntern] = useState<any | null>(null);
+  const [viewingProfileIntern, setViewingProfileIntern] = useState<any | null>(null);
   const [newMentorId, setNewMentorId] = useState<string>('10000000-0000-0000-0000-000000000002');
 
   const { data: interns = [], isLoading } = useQuery({
@@ -120,14 +122,25 @@ export function InternsAdminPage() {
                     🔥 {intern.current_streak}d
                   </td>
                   <td className="p-4 text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setReassignIntern(intern)}
-                      className="h-8 text-[11px] gap-1"
-                    >
-                      <ArrowRightLeft className="h-3 w-3" /> Reassign Mentor
-                    </Button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setViewingProfileIntern(intern)}
+                        className="h-8 text-[11px] gap-1 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                        title="View Authoritative Offer Terms & Operational Profile"
+                      >
+                        <ShieldCheck className="h-3.5 w-3.5 text-indigo-600" /> Terms & Profile
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setReassignIntern(intern)}
+                        className="h-8 text-[11px] gap-1"
+                      >
+                        <ArrowRightLeft className="h-3 w-3" /> Reassign
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -135,6 +148,36 @@ export function InternsAdminPage() {
           </table>
         </div>
       </div>
+
+      {/* Admin-Only Operational Profile & Sealed Offer Terms Dialog */}
+      <Dialog open={!!viewingProfileIntern} onOpenChange={() => setViewingProfileIntern(null)}>
+        <DialogHeader>
+          <DialogTitle>Authoritative Offer Terms & Candidate Profile</DialogTitle>
+          <DialogDescription>
+            Confidential administration review for {viewingProfileIntern?.profile?.full_name}. Only administrators can view this evaluation.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="max-h-[70vh] overflow-y-auto pr-1">
+          {viewingProfileIntern && (
+            <CandidateOperationalProfileCard
+              intern={viewingProfileIntern}
+              internName={viewingProfileIntern.profile?.full_name}
+              candidateEmail={viewingProfileIntern.profile?.email}
+              position={viewingProfileIntern.role_title}
+              department="Engineering"
+              reportingManager="CTO"
+              assignedMentorName={viewingProfileIntern.mentor?.profile?.full_name}
+            />
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setViewingProfileIntern(null)} className="w-full sm:w-auto min-h-[36px]">
+            Close
+          </Button>
+        </DialogFooter>
+      </Dialog>
 
       {/* Move Mentor Dialog */}
       <Dialog open={!!reassignIntern} onOpenChange={() => setReassignIntern(null)}>
