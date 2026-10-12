@@ -174,7 +174,7 @@ export function AssignmentsPage() {
           return (
             <div
               key={item.id}
-              className="rounded-xl border bg-card p-6 shadow-xs space-y-4 transition-all hover:border-primary/40"
+              className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-4 transition-all hover:border-primary/40"
             >
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div className="space-y-1">

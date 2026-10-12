@@ -214,7 +214,7 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
         )}
 
         {/* Main Card */}
-        <div className="rounded-2xl border bg-card p-8 shadow-xl">
+        <div className="rounded-2xl border bg-card p-5 sm:p-8 shadow-xl">
           {/* Logo & Header */}
           <div className="text-center space-y-3 mb-6">
             <div className="flex justify-center pb-2">

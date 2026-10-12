@@ -42,7 +42,7 @@ export function InternProfilePage() {
         assignedMentorName={internProfile?.mentor?.profile?.full_name || 'Kapu Mani Shankar Reddy'}
       />
 
-      <div className="rounded-xl border bg-card p-6 shadow-xs space-y-6">
+      <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 pb-6 border-b">
           <Avatar
             src={profile?.avatar_url}

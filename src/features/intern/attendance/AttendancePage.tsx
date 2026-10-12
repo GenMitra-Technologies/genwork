@@ -376,7 +376,7 @@ export function AttendancePage() {
 
         {/* Timesheet Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[640px]">
             <thead>
               <tr className="border-b border-slate-200/80 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                 <th className="pb-3 pr-4">Date</th>
@@ -472,8 +472,8 @@ export function AttendancePage() {
 
       {/* Check Out & Standup Modal */}
       {showCheckOutModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-slate-200 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-5 sm:p-6 shadow-xl border border-slate-200 space-y-4">
             <div className="flex items-start justify-between pb-2 border-b border-slate-100">
               <div className="space-y-0.5">
                 <h3 className="text-base font-semibold text-slate-900">Check-Out & Daily Standup</h3>

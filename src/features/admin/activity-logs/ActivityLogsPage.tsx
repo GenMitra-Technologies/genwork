@@ -49,7 +49,7 @@ export function ActivityLogsPage() {
 
       <div className="rounded-xl border bg-card shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[640px]">
             <thead className="bg-muted/50 border-b text-muted-foreground uppercase tracking-wider text-[11px]">
               <tr>
                 <th className="p-4">Timestamp</th>

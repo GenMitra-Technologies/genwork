@@ -34,7 +34,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={() => onOpenChange(false)}
       />
-      <div className="relative z-50 w-full max-w-lg rounded-xl border bg-background p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="relative z-50 w-full max-w-lg rounded-xl border bg-background p-4 sm:p-6 shadow-xl max-h-[90vh] overflow-y-auto">
         <button
           onClick={() => onOpenChange(false)}
           className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
@@ -63,7 +63,7 @@ export function DialogDescription({ className, ...props }: React.HTMLAttributes<
 export function DialogFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-6', className)}
+      className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0 mt-6', className)}
       {...props}
     />
   );

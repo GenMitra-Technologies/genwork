@@ -216,14 +216,14 @@ export function ReviewsPage() {
 
               {/* Card Footer with actions */}
               <div className="flex flex-wrap items-center justify-between pt-1 text-xs gap-2">
-                <div className="flex items-center gap-3 text-slate-400 text-[10px]">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-slate-400 text-[10px]">
                   <span>Submitted {formatDateTime(sub.submitted_at)}</span>
                   {sub.time_taken_seconds && (
                     <span>Time spent: {formatTimeTaken(sub.time_taken_seconds)}</span>
                   )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Button
                     size="sm"
                     variant="outline"

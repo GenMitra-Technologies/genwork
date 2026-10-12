@@ -121,7 +121,7 @@ export function AdminAuthSecurityPage() {
       )}
 
       {/* 1. Account Credentials Card */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-5">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-5">
         <div className="border-b border-slate-100 pb-3">
           <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
             <KeyRound className="h-4 w-4 text-indigo-600" /> Account Sign-In & Security
@@ -185,7 +185,7 @@ export function AdminAuthSecurityPage() {
       </div>
 
       {/* 2. Active Sessions Card */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-5">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-5">
         <div className="border-b border-slate-100 pb-3">
           <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
             <Laptop className="h-4 w-4 text-indigo-600" /> Active Sessions
@@ -244,7 +244,7 @@ export function AdminAuthSecurityPage() {
       </div>
 
       {/* 3. Step-Up Sensitive Action Verification Card */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-5">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-5">
         <div className="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <div className="flex items-center gap-2">

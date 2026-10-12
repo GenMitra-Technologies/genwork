@@ -188,7 +188,7 @@ export function MentorTasksPage() {
             {errors.description && <p className="text-[10px] text-red-500">{errors.description.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-700">Priority</label>
               <select

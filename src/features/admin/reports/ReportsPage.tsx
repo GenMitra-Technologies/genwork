@@ -51,7 +51,7 @@ export function ReportsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="rounded-xl border bg-card p-6 shadow-xs space-y-2">
+        <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-2">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
             Average Completion Rate
           </span>
@@ -59,7 +59,7 @@ export function ReportsPage() {
           <p className="text-xs text-emerald-600 font-medium">↑ +12.3% compared to previous quarter</p>
         </div>
 
-        <div className="rounded-xl border bg-card p-6 shadow-xs space-y-2">
+        <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-2">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
             Avg. Review Turnaround
           </span>
@@ -67,7 +67,7 @@ export function ReportsPage() {
           <p className="text-xs text-emerald-600 font-medium">Within target 24h SLA</p>
         </div>
 
-        <div className="rounded-xl border bg-card p-6 shadow-xs space-y-2">
+        <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-2">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
             Active Intern Engagement
           </span>

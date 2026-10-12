@@ -283,7 +283,7 @@ export function TasksPage() {
               <Link
                 key={task.task_assignment_id}
                 to={`/intern/tasks/${task.task_code}`}
-                className="group flex flex-col justify-between rounded-xl border bg-card p-5 shadow-xs hover:border-primary/50 hover:shadow-md transition-all"
+                className="group flex flex-col justify-between rounded-xl border bg-card p-4 sm:p-5 shadow-xs hover:border-primary/50 hover:shadow-md transition-all"
               >
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
@@ -306,7 +306,7 @@ export function TasksPage() {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-border/60 flex flex-wrap items-center justify-between text-xs gap-2">
-                  <div className="flex items-center gap-3 text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <User className="h-3 w-3 text-primary" />
                       {task.mentor_name || 'Assigned Mentor'}

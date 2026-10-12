@@ -235,7 +235,7 @@ export function MentorAttendancePage() {
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[700px]">
             <thead>
               <tr className="border-b border-slate-100 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                 <th className="pb-2 pr-3">Intern</th>
@@ -388,8 +388,8 @@ export function MentorAttendancePage() {
 
       {/* Standup Detail Modal */}
       {selectedStandup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="relative w-full max-w-sm rounded-xl bg-white p-4 shadow-xl border border-slate-200 space-y-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="relative w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-xl bg-white p-4 shadow-xl border border-slate-200 space-y-3">
             <div className="flex items-start justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <Avatar name={selectedStandup.name} size="sm" />

@@ -161,9 +161,9 @@ export function NotificationsPage() {
               </div>
 
               <div className="flex-1 space-y-1">
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
                   <h4 className="text-sm font-semibold text-foreground">{n.title}</h4>
-                  <time className="text-[11px] text-muted-foreground whitespace-nowrap">
+                  <time className="text-[11px] text-muted-foreground shrink-0">
                     {formatDateTime(n.created_at)}
                   </time>
                 </div>

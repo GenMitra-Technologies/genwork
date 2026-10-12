@@ -270,16 +270,16 @@ export function MobileDrawer() {
         <div className="p-3 border-t border-slate-100 bg-slate-50/40 space-y-2">
           <div className="rounded-xl border border-slate-200/80 bg-white p-2.5 shadow-2xs space-y-0.5">
             <p className="text-xs font-semibold text-slate-900 truncate">
-              {profile?.full_name || 'manohar'}
+              {profile?.full_name || (role === 'mentor' ? 'Mentor' : role === 'admin' ? 'Admin' : 'Intern')}
             </p>
             <span className="inline-block px-1.5 py-0.2 rounded bg-slate-100 text-[10px] font-mono text-slate-600 uppercase">
-              {role || 'admin'}
+              {role || 'intern'}
             </span>
           </div>
 
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-600 w-full p-2 transition-colors"
+            className="flex items-center gap-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-600 w-full p-2.5 transition-colors min-h-[44px]"
           >
             <LogOut className="h-3.5 w-3.5" />
             <span>Sign out</span>

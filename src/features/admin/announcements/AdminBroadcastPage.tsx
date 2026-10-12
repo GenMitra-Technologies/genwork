@@ -84,7 +84,7 @@ export function AdminBroadcastPage() {
       )}
 
       {/* Broadcast Composer */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-5">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-5">
         <div className="border-b border-slate-100 pb-3">
           <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-indigo-600" /> New Broadcast Dispatcher
@@ -152,7 +152,7 @@ export function AdminBroadcastPage() {
       </div>
 
       {/* Broadcast History */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-4">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-slate-500" />
@@ -176,7 +176,7 @@ export function AdminBroadcastPage() {
                     <Megaphone className="h-3.5 w-3.5 text-indigo-600 shrink-0" />
                     <span>{a.title}</span>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">
                       {a.target_role === 'all' ? 'All Roles' : a.target_role}
                     </span>

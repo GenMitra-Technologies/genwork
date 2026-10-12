@@ -132,18 +132,18 @@ export function CandidateOperationalProfileCard({
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-slate-500">Candidate Email:</span>
-              <span className="font-mono text-slate-900 font-medium">{candidateEmail}</span>
+              <span className="text-slate-500 shrink-0">Candidate Email:</span>
+              <span className="font-mono text-slate-900 font-medium truncate max-w-[180px] sm:max-w-none">{candidateEmail}</span>
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-slate-500">Student / Roll ID:</span>
+              <span className="text-slate-500 shrink-0">Student / Roll ID:</span>
               <span className="font-mono font-semibold text-slate-900">{rollId}</span>
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-slate-500">Emergency Contact:</span>
-              <span className="font-medium text-slate-800">{emergencyContact}</span>
+              <span className="text-slate-500 shrink-0">Emergency Contact:</span>
+              <span className="font-medium text-slate-800 truncate max-w-[180px] sm:max-w-none">{emergencyContact}</span>
             </div>
 
             <div className="flex items-center justify-between pt-2">

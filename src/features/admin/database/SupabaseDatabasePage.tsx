@@ -208,7 +208,7 @@ export function SupabaseDatabasePage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[500px]">
               <thead className="bg-slate-50 border-b text-slate-500 uppercase text-[10px]">
                 <tr>
                   <th className="py-2 px-3">Table Name</th>

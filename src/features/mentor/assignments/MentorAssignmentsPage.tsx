@@ -532,7 +532,7 @@ export function MentorAssignmentsPage() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-medium text-slate-700">Priority Level</label>
               <select
@@ -674,7 +674,7 @@ export function MentorAssignmentsPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700">Priority Level</label>
                 <select

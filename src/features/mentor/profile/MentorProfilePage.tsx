@@ -81,10 +81,10 @@ export function MentorProfilePage() {
               <CheckCircle2 className="h-3 w-3 text-indigo-600" /> Grading Performance
             </span>
             <p className="font-semibold text-xs text-slate-900">
-              {stats?.approved_count ?? 5} Approved Submissions
+              {stats?.approved_count ?? 0} Approved Submissions
             </p>
             <p className="text-[11px] text-slate-500">
-              {stats?.waiting_review_count ?? 2} pending in review queue
+              {stats?.waiting_review_count ?? 0} pending in review queue
             </p>
           </div>
 

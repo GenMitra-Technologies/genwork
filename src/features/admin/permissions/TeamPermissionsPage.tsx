@@ -515,7 +515,7 @@ export function TeamPermissionsPage() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+              <table className="w-full text-left text-xs min-w-[650px]">
                 <thead className="bg-slate-50/80 border-b border-slate-200/60 text-slate-500 uppercase tracking-wider text-[10px] font-semibold">
                   <tr>
                     <th className="py-3 px-4">USER</th>

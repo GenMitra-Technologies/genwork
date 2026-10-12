@@ -96,7 +96,7 @@ export function MaintenanceModePage() {
       {/* Live Status Toggle Card */}
       <div
         className={cn(
-          'rounded-2xl border p-6 shadow-xs transition-colors',
+          'rounded-2xl border p-4 sm:p-6 shadow-xs transition-colors',
           enabled
             ? 'border-amber-300 bg-amber-50/60 dark:bg-amber-950/20'
             : 'border-slate-200/80 bg-white'
@@ -147,7 +147,7 @@ export function MaintenanceModePage() {
       </div>
 
       {/* Maintenance Notice Configuration Form */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-5">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-5">
         <div className="border-b border-slate-100 pb-3">
           <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
             <Wrench className="h-4 w-4 text-slate-600" /> Maintenance Notice Details
@@ -216,7 +216,7 @@ export function MaintenanceModePage() {
       </div>
 
       {/* Live Preview of Banner */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-3">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-xs space-y-3">
         <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
           <Info className="h-3.5 w-3.5" /> Banner Appearance Preview
         </h3>

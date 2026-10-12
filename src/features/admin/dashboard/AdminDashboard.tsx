@@ -107,7 +107,7 @@ export function AdminDashboard() {
       {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Cohort Task Completion Velocity */}
-        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-6 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-4 sm:p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-800">
             <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" /> Cohort Completion Velocity
@@ -137,7 +137,7 @@ export function AdminDashboard() {
         </div>
 
         {/* Task Status Distribution */}
-        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-6 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-transparent p-4 sm:p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-800">
             <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
               <CheckSquare className="h-4 w-4 text-slate-700 dark:text-slate-300" /> Task Workflow Breakdown

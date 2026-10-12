@@ -60,7 +60,7 @@ export function MentorDashboard() {
     },
     {
       title: 'Approved',
-      value: stats?.approved_count ?? 5,
+      value: stats?.approved_count ?? 0,
       icon: CheckCircle2,
       to: '/mentor/reviews?tab=approved',
       color: 'text-emerald-600',
@@ -68,7 +68,7 @@ export function MentorDashboard() {
     },
     {
       title: 'Changes Req.',
-      value: stats?.changes_requested_count ?? 1,
+      value: stats?.changes_requested_count ?? 0,
       icon: RotateCcw,
       to: '/mentor/reviews?tab=changes',
       color: 'text-orange-600',
@@ -84,7 +84,7 @@ export function MentorDashboard() {
     },
     {
       title: 'Total Tasks',
-      value: stats?.total_tasks_created ?? 7,
+      value: stats?.total_tasks_created ?? 0,
       icon: CheckSquare,
       to: '/mentor/tasks',
       color: 'text-blue-600',

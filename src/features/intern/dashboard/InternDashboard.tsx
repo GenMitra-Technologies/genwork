@@ -117,7 +117,7 @@ export function InternDashboard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 size="sm"
                 variant="outline"
@@ -230,7 +230,7 @@ export function InternDashboard() {
 
                     {/* Metadata & Actions row */}
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
-                      <div className="flex items-center gap-3 text-slate-500">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-slate-500">
                         <span className="flex items-center gap-1">
                           <UserCheck className="h-3 w-3 text-slate-400" />
                           {t.mentor_name || internProfile?.mentor?.profile?.full_name || 'Assigned Mentor'}
@@ -241,7 +241,7 @@ export function InternDashboard() {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex flex-wrap items-center gap-1.5">
                         {/* Extension Button */}
                         <Button
                           variant="ghost"
