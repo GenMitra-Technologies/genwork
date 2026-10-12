@@ -272,8 +272,8 @@ export function TasksPage() {
         </div>
       ) : paginatedItems.length === 0 ? (
         <EmptyState
-          title="No tasks match the filter"
-          description="Try selecting a different status tab or adjusting your search keywords."
+          title={totalTasks === 0 ? "No tasks assigned yet" : "No tasks match the filter"}
+          description={totalTasks === 0 ? "You do not have any active task assignments. Your mentor will assign tasks as curriculum milestones begin." : "Try selecting a different status tab or adjusting your search keywords."}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

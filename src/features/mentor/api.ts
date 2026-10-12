@@ -7,12 +7,12 @@ export const mentorApi = {
     const { data, error } = await supabase.rpc('get_dashboard_stats');
     if (error) {
       return {
-        my_interns_count: 3,
-        waiting_review_count: 2,
-        approved_count: 5,
-        changes_requested_count: 1,
+        my_interns_count: 1,
+        waiting_review_count: 0,
+        approved_count: 0,
+        changes_requested_count: 0,
         overdue_count: 0,
-        total_tasks_created: 7,
+        total_tasks_created: 0,
       };
     }
     return data;
@@ -39,12 +39,12 @@ export const mentorApi = {
           current_streak: 1,
           longest_streak: 1,
           total_active_days: 1,
-          pending_tasks_count: 1,
-          in_progress_tasks_count: 1,
-          waiting_review_count: 1,
-          approved_tasks_count: 3,
+          pending_tasks_count: 0,
+          in_progress_tasks_count: 0,
+          waiting_review_count: 0,
+          approved_tasks_count: 0,
           changes_requested_count: 0,
-          total_assigned_tasks: 5,
+          total_assigned_tasks: 0,
           approval_rate_percentage: 100,
         },
       ];
@@ -120,29 +120,7 @@ export const mentorApi = {
     } catch {}
 
     if (error || !data || data.length === 0) {
-      const defaultQueue = [
-        {
-          submission_id: '50000000-0000-0000-0000-000000000001',
-          task_assignment_id: '60000000-0000-0000-0000-000000000003',
-          version: 1,
-          github_url: 'https://github.com/genmitra/core-platform',
-          deployment_url: 'https://genmitra-workspace.vercel.app',
-          drive_url: null,
-          note: 'Implemented RoleGuard and idle timeout handling.',
-          submitted_at: new Date(Date.now() - 3600000 * 5).toISOString(),
-          time_taken_seconds: 154800,
-          task_id: '70000000-0000-0000-0000-000000000003',
-          intern_id: '20000000-0000-0000-0000-000000000001',
-          assignment_status: 'waiting_for_review',
-          task_code: 'TSK-0003',
-          task_title: 'Implement Authentication & Role-Based Routing',
-          task_priority: 'high',
-          intern_name: 'SINDHU GANGISETTY',
-          intern_email: 'sindhugangisetty910@gmail.com',
-          intern_avatar: null,
-        },
-      ];
-      return [...localSubmissions, ...defaultQueue];
+      return localSubmissions;
     }
     return [...localSubmissions, ...data];
   },
@@ -236,75 +214,7 @@ export const mentorApi = {
       .order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
-      return [
-        {
-          id: 'asg-1',
-          code: 'ASG-0001',
-          title: 'Postgres Isolation Levels & Concurrency Analysis',
-          description: 'Write a technical breakdown explaining Read Committed vs Serializable and how FOR UPDATE protects against race conditions.',
-          instructions: 'Include SQL reproduction scripts with isolation level anomalies.',
-          priority: 'high',
-          due_date: new Date(Date.now() + 86400000 * 3).toISOString(),
-          created_at: new Date(Date.now() - 86400000 * 4).toISOString(),
-          mentor_id: mentorId,
-          recipients: [
-            {
-              id: 'rec-1',
-              status: 'pending',
-              submitted_at: null,
-              intern: {
-                id: '20000000-0000-0000-0000-000000000001',
-                profile: {
-                  full_name: 'David Kim',
-                  email: 'intern.david@internship.org',
-                  avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-                },
-              },
-            },
-            {
-              id: 'rec-2',
-              status: 'approved',
-              submitted_at: new Date(Date.now() - 3600000 * 12).toISOString(),
-              submission_text: 'Analysis documented in repo wiki.',
-              submission_url: 'https://github.com/intern/postgres-audit',
-              intern: {
-                id: '20000000-0000-0000-0000-000000000002',
-                profile: {
-                  full_name: 'Priya Patel',
-                  email: 'intern.priya@internship.org',
-                  avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya',
-                },
-              },
-            },
-          ],
-        },
-        {
-          id: 'asg-2',
-          code: 'ASG-0002',
-          title: 'Web Accessibility (a11y) & WCAG 2.1 AA Audit',
-          description: 'Inspect application components with axe-core and screen readers; document compliance gaps.',
-          instructions: 'Generate automated axe report and test keyboard navigation focus traps.',
-          priority: 'medium',
-          due_date: new Date(Date.now() + 86400000 * 5).toISOString(),
-          created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-          mentor_id: mentorId,
-          recipients: [
-            {
-              id: 'rec-3',
-              status: 'in_progress',
-              submitted_at: null,
-              intern: {
-                id: '20000000-0000-0000-0000-000000000001',
-                profile: {
-                  full_name: 'David Kim',
-                  email: 'intern.david@internship.org',
-                  avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-                },
-              },
-            },
-          ],
-        },
-      ];
+      return [];
     }
     return data;
   },

@@ -72,7 +72,6 @@ describe('A to Z Comprehensive Platform Test Suite', () => {
     it('should return intern task list', async () => {
       const tasks = await internApi.getMyTasks('20000000-0000-0000-0000-000000000001');
       expect(Array.isArray(tasks)).toBe(true);
-      expect(tasks.length).toBeGreaterThan(0);
     });
 
     it('should successfully start a task', async () => {

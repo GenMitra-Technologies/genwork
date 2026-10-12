@@ -152,8 +152,16 @@ export function AssignmentsPage() {
       )}
 
       {filteredAssignments.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-10 text-center text-xs text-muted-foreground">
-          No assignments found matching this status filter.
+        <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-12 text-center text-xs text-muted-foreground bg-card space-y-1">
+          <FileText className="h-8 w-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+          <p className="font-semibold text-slate-800 dark:text-slate-200 text-sm">
+            {totalAssignments === 0 ? 'No coursework assigned yet' : 'No assignments found'}
+          </p>
+          <p className="text-slate-500 max-w-sm mx-auto">
+            {totalAssignments === 0
+              ? 'Your mentor has not assigned any coursework or reading modules yet.'
+              : 'Try clearing your active status filter to view all assignments.'}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">

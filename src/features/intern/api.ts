@@ -2,148 +2,17 @@
 import { supabase } from '../../lib/supabase';
 import { SubmitTaskInput } from '../../lib/validators';
 
-const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {
-  'TSK-0006': {
-    task_assignment_id: '60000000-0000-0000-0000-000000000005',
-    task_id: '70000000-0000-0000-0000-000000000005',
-    task_code: 'TSK-0006',
-    task_title: 'Realtime WebSockets Notification Bell',
-    task_description: 'Subscribe to postgres_changes channel for recipient notifications.',
-    instructions: 'Set up Supabase realtime channel on notifications table with audible sound and toast trigger.',
-    requirements: 'Supabase realtime client connected, status badge listener, toast notification trigger.',
-    expected_output: 'Live toast notification firing whenever an announcement or task review is received.',
-    priority: 'low',
-    status: 'pending',
-    assigned_at: new Date(Date.now() - 86400000).toISOString(),
-    started_at: null,
-    current_version: 0,
-    due_date: new Date(Date.now() + 86400000 * 10).toISOString(),
-    require_github: true,
-    require_deployment: false,
-    require_drive: false,
-    mentor_name: 'Kapu Mani Shankar Reddy',
-    is_overdue: false,
-  },
-  'TSK-0005': {
-    task_assignment_id: '60000000-0000-0000-0000-000000000001',
-    task_id: '70000000-0000-0000-0000-000000000001',
-    task_code: 'TSK-0005',
-    task_title: 'Interactive Analytics & Recharts Widgets',
-    task_description: 'Build stat cards, streak flame trackers, and velocity charts.',
-    instructions: 'Implement compact rectangular stat cards and velocity line charts with Recharts.',
-    requirements: 'Responsive layout, zero console warnings, dark mode support.',
-    expected_output: 'Interactive charts rendering intern weekly activity.',
-    priority: 'medium',
-    status: 'in_progress',
-    assigned_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-    started_at: new Date(Date.now() - 3600000 * 4).toISOString(),
-    current_version: 0,
-    due_date: new Date(Date.now() + 86400000 * 5).toISOString(),
-    require_github: true,
-    require_deployment: true,
-    require_drive: false,
-    mentor_name: 'Kapu Mani Shankar Reddy',
-    is_overdue: false,
-  },
-  'TSK-0004': {
-    task_assignment_id: '60000000-0000-0000-0000-000000000002',
-    task_id: '70000000-0000-0000-0000-000000000002',
-    task_code: 'TSK-0004',
-    task_title: 'Build Task Submission & Versioning Module',
-    task_description: 'Create submission modal with URL validation and immutable history.',
-    instructions: 'Include validation for GitHub URL, deployment preview, and revision notes.',
-    requirements: 'zod schema validation, version counter incrementing.',
-    expected_output: 'Submission dialog with complete versioning logs.',
-    priority: 'medium',
-    status: 'changes_requested',
-    assigned_at: new Date(Date.now() - 86400000 * 3).toISOString(),
-    started_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-    current_version: 1,
-    due_date: new Date(Date.now() + 86400000 * 2).toISOString(),
-    require_github: true,
-    require_deployment: false,
-    require_drive: true,
-    mentor_name: 'Kapu Mani Shankar Reddy',
-    is_overdue: false,
-  },
-  'TSK-0003': {
-    task_assignment_id: '60000000-0000-0000-0000-000000000003',
-    task_id: '70000000-0000-0000-0000-000000000003',
-    task_code: 'TSK-0003',
-    task_title: 'Implement Authentication & Role-Based Routing',
-    task_description: 'Setup Supabase Auth with custom role JWT claims and RoleGuard.',
-    instructions: 'Protect routes with RoleGuard and persist session state in zustand store.',
-    requirements: 'Clean redirect on unauthorized, idle timeout modal.',
-    expected_output: 'Secure login flow with intern, mentor, and admin workspaces.',
-    priority: 'high',
-    status: 'waiting_for_review',
-    assigned_at: new Date(Date.now() - 86400000 * 4).toISOString(),
-    started_at: new Date(Date.now() - 86400000 * 3).toISOString(),
-    current_version: 1,
-    due_date: new Date(Date.now() + 86400000 * 6).toISOString(),
-    require_github: true,
-    require_deployment: true,
-    require_drive: false,
-    mentor_name: 'Kapu Mani Shankar Reddy',
-    is_overdue: false,
-  },
-  'TSK-0002': {
-    task_assignment_id: '60000000-0000-0000-0000-000000000004',
-    task_id: '70000000-0000-0000-0000-000000000004',
-    task_code: 'TSK-0002',
-    task_title: 'Design PostgreSQL Schema & Migration Files',
-    task_description: 'Draft database schema for relational entity workflow.',
-    instructions: 'Write SQL migrations with RLS policies and foreign key constraints.',
-    requirements: '100% test coverage on RPC functions.',
-    expected_output: 'Migration files executing without errors.',
-    priority: 'urgent',
-    status: 'approved',
-    assigned_at: new Date(Date.now() - 86400000 * 6).toISOString(),
-    started_at: new Date(Date.now() - 86400000 * 5).toISOString(),
-    current_version: 2,
-    due_date: new Date(Date.now() - 86400000).toISOString(),
-    require_github: true,
-    require_deployment: true,
-    require_drive: false,
-    mentor_name: 'Kapu Mani Shankar Reddy',
-    is_overdue: false,
-  },
-  'TSK-0001': {
-    task_assignment_id: '60000000-0000-0000-0000-000000000006',
-    task_id: '70000000-0000-0000-0000-000000000006',
-    task_code: 'TSK-0001',
-    task_title: 'Implement Core Internship Workflow Dashboard',
-    task_description: 'Build initial dashboard layout with stat metrics and profile header.',
-    instructions: 'Build responsive desktop and mobile drawer views.',
-    requirements: 'Accessible sidebar navigation, role switcher.',
-    expected_output: 'Functional internship portal dashboard.',
-    priority: 'high',
-    status: 'approved',
-    assigned_at: new Date(Date.now() - 86400000 * 7).toISOString(),
-    started_at: new Date(Date.now() - 86400000 * 6).toISOString(),
-    current_version: 1,
-    due_date: new Date(Date.now() - 86400000 * 2).toISOString(),
-    require_github: true,
-    require_deployment: true,
-    require_drive: false,
-    mentor_name: 'Kapu Mani Shankar Reddy',
-    is_overdue: false,
-  },
-};
+const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {};
 
 function getStoredTasks(): any[] {
   try {
     const raw = localStorage.getItem('genmitra_intern_tasks_state');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed;
     }
   } catch {}
-  const defaults = Object.values(DEFAULT_TASK_DEFINITIONS);
-  try {
-    localStorage.setItem('genmitra_intern_tasks_state', JSON.stringify(defaults));
-  } catch {}
-  return defaults;
+  return [];
 }
 
 function saveStoredTasks(tasks: any[]) {
@@ -156,17 +25,17 @@ export const internApi = {
   async getDashboardStats() {
     const { data, error } = await supabase.rpc('get_dashboard_stats');
     if (error) {
-      // Fallback calculation if RPC fails or table empty
+      // Clean production fallback: 0 tasks and 0 assignments until mentor creates them
       return {
-        total_tasks: 6,
-        pending_tasks: 1,
-        in_progress_tasks: 1,
-        waiting_review_tasks: 1,
-        approved_tasks: 2,
-        changes_requested_tasks: 1,
+        total_tasks: 0,
+        pending_tasks: 0,
+        in_progress_tasks: 0,
+        waiting_review_tasks: 0,
+        approved_tasks: 0,
+        changes_requested_tasks: 0,
         overdue_tasks: 0,
-        total_assignments: 2,
-        pending_assignments: 1,
+        total_assignments: 0,
+        pending_assignments: 0,
       };
     }
     return data;
@@ -528,34 +397,7 @@ export const internApi = {
       .order('assigned_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
-      return [
-        {
-          id: 'rec-1',
-          assignment_id: 'asg-1',
-          status: 'pending',
-          assigned_at: new Date(Date.now() - 86400000).toISOString(),
-          assignment: {
-            code: 'ASG-0001',
-            title: 'Postgres Isolation Levels & Concurrency Analysis',
-            description: 'Write a technical breakdown explaining Read Committed vs Serializable and how FOR UPDATE protects against race conditions.',
-            priority: 'high',
-            due_date: new Date(Date.now() + 86400000 * 3).toISOString(),
-          },
-        },
-        {
-          id: 'rec-2',
-          assignment_id: 'asg-2',
-          status: 'in_progress',
-          assigned_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-          assignment: {
-            code: 'ASG-0002',
-            title: 'Web Accessibility (a11y) & WCAG 2.1 AA Audit',
-            description: 'Inspect application components with axe-core and screen readers; document compliance gaps.',
-            priority: 'medium',
-            due_date: new Date(Date.now() + 86400000 * 5).toISOString(),
-          },
-        },
-      ];
+      return [];
     }
     return data;
   },
