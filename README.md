@@ -24,17 +24,17 @@ A production-grade, enterprise-scale Internship and Mentorship Workspace enginee
 
 ---
 
-## 2. Official Production Credentials
+## 2. Production Role Architecture & Authorized Directory
 
-All dummy, sample, and demo accounts have been permanently purged from both the Supabase database and local application fallbacks. The workspace is pre-configured with the following authoritative production profiles:
+All dummy, sample, and demo accounts have been permanently purged from both the Supabase database and local application state. Access is strictly partitioned across authenticated accounts:
 
-| Role | Name | Identifier / Roll ID | Email | Password | Responsibilities & Access |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Intern** | Sindhu Gangisetty | `24ht1a4346` | `sindhugangisetty910@gmail.com` | `GENMITRA@INTERN` | Frontend Developer, Engineering cohort tasks, deliverable submissions, daily attendance punch, operational profile card |
-| **Mentor** | Kapu Mani Shankar Reddy | CTO & Engineering Lead | `manireddy@genmitra.com` | `GENMITRA@MENTOR` | CTO & Cohort Mentor, curriculum authoring, review queue evaluation, mentee progress monitoring |
-| **Admin** | GenMitra Operations | Superadmin | `ops@genmitra.com` | `GENMITRA@ADMIN2026` | System administrator, workforce directory, credential management, broadcast announcements, backup & Supabase health |
+| Role | Name | Identifier / Roll ID | Email / Username | Responsibilities & Access |
+| :--- | :--- | :--- | :--- | :--- |
+| **Intern** | Sindhu Gangisetty | `24ht1a4346` | `sindhugangisetty910@gmail.com` *(or `sindhu`)* | Frontend Developer, Engineering cohort tasks, deliverable submissions, daily attendance punch, operational profile card |
+| **Mentor** | Kapu Mani Shankar Reddy | CTO & Engineering Lead | `manireddy@genmitra.com` *(or `manireddy`)* | CTO & Cohort Mentor, curriculum authoring, review queue evaluation, mentee progress monitoring |
+| **Admin** | GenMitra Operations | Superadmin | `ops@genmitra.com` *(or `admin`)* | System administrator, workforce directory, credential management, broadcast announcements, backup & Supabase health |
 
----
+> 🔒 **Security Notice:** Production credentials are authenticated securely via Supabase Auth and private administrative dispatch. Plaintext passwords are strictly never published to public repositories.
 
 ## 3. Production Security Checklist Compliance
 
