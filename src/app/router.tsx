@@ -19,6 +19,7 @@ import { AttendancePage } from '../features/intern/attendance/AttendancePage';
 import { MentorDashboard } from '../features/mentor/dashboard/MentorDashboard';
 import { MyInternsPage } from '../features/mentor/interns/MyInternsPage';
 import { MentorTasksPage } from '../features/mentor/tasks/MentorTasksPage';
+import { MentorAssignmentsPage } from '../features/mentor/assignments/MentorAssignmentsPage';
 import { ReviewsPage } from '../features/mentor/reviews/ReviewsPage';
 import { MentorAttendancePage } from '../features/mentor/attendance/MentorAttendancePage';
 import { MentorProfilePage } from '../features/mentor/profile/MentorProfilePage';
@@ -30,10 +31,17 @@ import { InternsAdminPage } from '../features/admin/interns/InternsAdminPage';
 import { MentorsAdminPage } from '../features/admin/mentors/MentorsAdminPage';
 import { CredentialsPage } from '../features/admin/credentials/CredentialsPage';
 import { AdminTasksPage } from '../features/admin/tasks/AdminTasksPage';
+import { AdminAssignmentsPage } from '../features/admin/assignments/AdminAssignmentsPage';
 import { ActivityLogsPage } from '../features/admin/activity-logs/ActivityLogsPage';
 import { ReportsPage } from '../features/admin/reports/ReportsPage';
 import { SettingsPage } from '../features/admin/settings/SettingsPage';
 import { AdminAttendancePage } from '../features/admin/attendance/AdminAttendancePage';
+import { AdminBroadcastPage } from '../features/admin/announcements/AdminBroadcastPage';
+import { MaintenanceModePage } from '../features/admin/maintenance/MaintenanceModePage';
+import { AdminAuthSecurityPage } from '../features/admin/auth-security/AdminAuthSecurityPage';
+import { TeamPermissionsPage } from '../features/admin/permissions/TeamPermissionsPage';
+import { AdminBackupPage } from '../features/admin/backup/AdminBackupPage';
+import { SupabaseDatabasePage } from '../features/admin/database/SupabaseDatabasePage';
 
 // Shared
 import { NotificationsPage } from '../features/notifications/NotificationsPage';
@@ -142,8 +150,8 @@ export const router = createBrowserRouter([
               { path: '/mentor/tasks', element: <MentorTasksPage /> },
               { path: '/mentor/tasks/new', element: <MentorTasksPage /> },
               { path: '/mentor/tasks/:code', element: <TaskDetailPage /> },
-              { path: '/mentor/assignments', element: <AssignmentsPage /> },
-              { path: '/mentor/assignments/new', element: <AssignmentsPage /> },
+              { path: '/mentor/assignments', element: <MentorAssignmentsPage /> },
+              { path: '/mentor/assignments/new', element: <MentorAssignmentsPage /> },
               { path: '/mentor/reviews', element: <ReviewsPage /> },
               { path: '/mentor/attendance', element: <MentorAttendancePage /> },
               { path: '/mentor/notifications', element: <NotificationsPage /> },
@@ -168,11 +176,17 @@ export const router = createBrowserRouter([
               { path: '/admin/attendance', element: <AdminAttendancePage /> },
               { path: '/admin/credentials', element: <CredentialsPage /> },
               { path: '/admin/tasks', element: <AdminTasksPage /> },
-              { path: '/admin/assignments', element: <AssignmentsPage /> },
+              { path: '/admin/assignments', element: <AdminAssignmentsPage /> },
               { path: '/admin/reviews', element: <ReviewsPage /> },
               { path: '/admin/notifications', element: <NotificationsPage /> },
               { path: '/admin/activity-logs', element: <ActivityLogsPage /> },
               { path: '/admin/reports', element: <ReportsPage /> },
+              { path: '/admin/broadcast', element: <AdminBroadcastPage /> },
+              { path: '/admin/maintenance', element: <MaintenanceModePage /> },
+              { path: '/admin/auth-security', element: <AdminAuthSecurityPage /> },
+              { path: '/admin/permissions', element: <TeamPermissionsPage /> },
+              { path: '/admin/database', element: <SupabaseDatabasePage /> },
+              { path: '/admin/backup', element: <AdminBackupPage /> },
               { path: '/admin/settings', element: <SettingsPage /> },
             ],
           },

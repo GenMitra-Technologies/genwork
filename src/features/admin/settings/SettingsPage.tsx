@@ -1,10 +1,8 @@
 // src/features/admin/settings/SettingsPage.tsx
 import React, { useState } from 'react';
-import { Settings, Save, Megaphone, CheckCircle2 } from 'lucide-react';
-import { adminApi } from '../api';
+import { Settings, Save, Megaphone, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
-import { Textarea } from '../../../components/ui/textarea';
 
 export function SettingsPage() {
   const [sessionTimeout, setSessionTimeout] = useState('30');
@@ -12,30 +10,10 @@ export function SettingsPage() {
   const [reminderWindow, setReminderWindow] = useState('24');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  // Announcement broadcast
-  const [announcementTitle, setAnnouncementTitle] = useState('');
-  const [announcementBody, setAnnouncementBody] = useState('');
-  const [targetRole, setTargetRole] = useState<'all' | 'mentor' | 'intern'>('all');
-  const [broadcastDone, setBroadcastDone] = useState(false);
-
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);
-  };
-
-  const handleBroadcast = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!announcementTitle.trim() || !announcementBody.trim()) return;
-    try {
-      await adminApi.broadcastAnnouncement(announcementTitle, announcementBody, targetRole);
-      setBroadcastDone(true);
-      setAnnouncementTitle('');
-      setAnnouncementBody('');
-      setTimeout(() => setBroadcastDone(false), 4000);
-    } catch {
-      // ignore
-    }
   };
 
   return (
@@ -98,65 +76,47 @@ export function SettingsPage() {
         </form>
       </div>
 
-      {/* Announcement Composer */}
-      <div className="rounded-xl border bg-card p-6 shadow-xs space-y-4">
-        <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-          <Megaphone className="h-4 w-4 text-primary" /> Broadcast Platform Announcement
-        </h3>
-        <p className="text-xs text-muted-foreground">
-          Fans out realtime notifications to all users or filtered by role.
-        </p>
-
-        {broadcastDone && (
-          <div className="rounded border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4" /> Announcement published and dispatched to recipient notification feeds!
-          </div>
-        )}
-
-        <form onSubmit={handleBroadcast} className="space-y-4 text-xs">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="font-semibold text-foreground">Title *</label>
-              <Input
-                value={announcementTitle}
-                onChange={(e) => setAnnouncementTitle(e.target.value)}
-                placeholder="e.g. Mid-term Assessment Schedule"
-              />
+      {/* Quick Navigation to Dedicated Tools */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a
+          href="/admin/broadcast"
+          className="rounded-xl border border-slate-200/80 bg-card p-5 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all group block"
+        >
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+              <Megaphone className="h-5 w-5" />
             </div>
-
-            <div className="space-y-1">
-              <label className="font-semibold text-foreground">Target Role Audience</label>
-              <select
-                value={targetRole}
-                onChange={(e) => setTargetRole(e.target.value as any)}
-                className="w-full h-9 rounded-lg border border-input bg-background px-3 text-xs"
-              >
-                <option value="all">All Users (Interns + Mentors)</option>
-                <option value="intern">Interns Only</option>
-                <option value="mentor">Mentors Only</option>
-              </select>
+            <div>
+              <h4 className="font-semibold text-sm text-foreground group-hover:text-indigo-600 transition-colors">
+                Broadcast Platform Announcement
+              </h4>
+              <span className="text-[11px] text-muted-foreground">Dedicated Dispatcher Page →</span>
             </div>
           </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Dispatch urgent updates, standup links, or cohort announcements to all or filtered roles.
+          </p>
+        </a>
 
-          <div className="space-y-1">
-            <label className="font-semibold text-foreground">Announcement Body *</label>
-            <Textarea
-              value={announcementBody}
-              onChange={(e) => setAnnouncementBody(e.target.value)}
-              placeholder="Full announcement message..."
-              rows={3}
-            />
+        <a
+          href="/admin/maintenance"
+          className="rounded-xl border border-slate-200/80 bg-card p-5 shadow-xs hover:border-amber-400 hover:shadow-md transition-all group block"
+        >
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="p-2 rounded-lg bg-amber-50 text-amber-600">
+              <ShieldAlert className="h-5 w-5" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-sm text-foreground group-hover:text-amber-600 transition-colors">
+                Maintenance Mode & System Lock
+              </h4>
+              <span className="text-[11px] text-muted-foreground">Dedicated Maintenance Page →</span>
+            </div>
           </div>
-
-          <Button
-            type="submit"
-            size="sm"
-            disabled={!announcementTitle.trim() || !announcementBody.trim()}
-            className="gap-1.5 text-xs"
-          >
-            <Megaphone className="h-3.5 w-3.5" /> Publish Announcement
-          </Button>
-        </form>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Activate emergency maintenance notices, set downtime duration, and safeguard active shifts.
+          </p>
+        </a>
       </div>
     </div>
   );

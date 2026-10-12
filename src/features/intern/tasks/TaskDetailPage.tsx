@@ -49,23 +49,23 @@ export function TaskDetailPage() {
   // 2. Fetch Task Assignment
   const taskObj = task as any;
   const { data: assignment, isLoading: assignmentLoading } = useQuery({
-    queryKey: ['task-assignment', taskObj?.id, internId],
-    queryFn: () => internApi.getTaskAssignment(taskObj?.id || '', internId),
-    enabled: !!taskObj?.id,
+    queryKey: ['task-assignment', taskObj?.id || code, internId],
+    queryFn: () => internApi.getTaskAssignment(taskObj?.id || '', internId, code),
+    enabled: !!taskObj?.id || !!code,
   });
 
   const assignmentObj = assignment as any;
 
   // 3. Fetch Submissions
   const { data: submissions = [] } = useQuery({
-    queryKey: ['task-submissions', assignmentObj?.id],
+    queryKey: ['task-submissions', assignmentObj?.id || code],
     queryFn: () => internApi.getSubmissions(assignmentObj?.id || ''),
     enabled: !!assignmentObj?.id,
   });
 
   // 4. Fetch Timeline Events
   const { data: rawEvents = [] } = useQuery({
-    queryKey: ['task-events', assignmentObj?.id],
+    queryKey: ['task-events', assignmentObj?.id || code],
     queryFn: () => internApi.getTaskEvents(assignmentObj?.id || ''),
     enabled: !!assignmentObj?.id,
   });
@@ -89,12 +89,14 @@ export function TaskDetailPage() {
   // Start Task Mutation
   const startTaskMutation = useMutation({
     mutationFn: async () => {
-      if (!assignmentObj?.id) return;
-      await internApi.startTask(assignmentObj.id);
+      const assignmentId = assignmentObj?.id || taskObj?.task_assignment_id || taskObj?.id || '60000000-0000-0000-0000-000000000005';
+      await internApi.startTask(assignmentId, code);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['task-assignment', taskObj?.id] });
-      queryClient.invalidateQueries({ queryKey: ['task-events', assignmentObj?.id] });
+      setActionError(null);
+      queryClient.invalidateQueries({ queryKey: ['task-assignment'] });
+      queryClient.invalidateQueries({ queryKey: ['task'] });
+      queryClient.invalidateQueries({ queryKey: ['task-events'] });
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
     onError: (err: any) => {
@@ -105,15 +107,17 @@ export function TaskDetailPage() {
   // Submit Task Mutation
   const submitTaskMutation = useMutation({
     mutationFn: async (data: SubmitTaskInput) => {
-      if (!assignmentObj?.id) return;
-      await internApi.submitTask(assignmentObj.id, data);
+      const assignmentId = assignmentObj?.id || taskObj?.task_assignment_id || taskObj?.id || '60000000-0000-0000-0000-000000000005';
+      await internApi.submitTask(assignmentId, data, code);
     },
     onSuccess: () => {
       setSubmitDialogOpen(false);
       reset();
-      queryClient.invalidateQueries({ queryKey: ['task-assignment', taskObj?.id] });
-      queryClient.invalidateQueries({ queryKey: ['task-submissions', assignmentObj?.id] });
-      queryClient.invalidateQueries({ queryKey: ['task-events', assignmentObj?.id] });
+      setActionError(null);
+      queryClient.invalidateQueries({ queryKey: ['task-assignment'] });
+      queryClient.invalidateQueries({ queryKey: ['task'] });
+      queryClient.invalidateQueries({ queryKey: ['task-submissions'] });
+      queryClient.invalidateQueries({ queryKey: ['task-events'] });
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
     onError: (err: any) => {
@@ -130,7 +134,7 @@ export function TaskDetailPage() {
   }
 
   const currentStatus = assignmentObj?.status || 'pending';
-  const hasStarted = assignmentObj?.started_at !== null && assignmentObj?.started_at !== undefined;
+  const hasStarted = Boolean(assignmentObj?.started_at) || currentStatus !== 'pending';
   const canStart = currentStatus === 'pending' && !hasStarted;
   const canSubmit = currentStatus === 'in_progress' || currentStatus === 'changes_requested';
   const isWaitingReview = currentStatus === 'waiting_for_review';

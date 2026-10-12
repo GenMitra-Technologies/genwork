@@ -26,7 +26,11 @@ export const useUIStore = create<UIState>((set) => {
     unreadCount: 0,
     toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
     setMobileDrawerOpen: (open) => set({ mobileDrawerOpen: open }),
-    setUnreadCount: (count) => set({ unreadCount: Math.max(0, count) }),
+    setUnreadCount: (count) =>
+      set((state) => {
+        const next = Math.max(0, count);
+        return state.unreadCount === next ? state : { unreadCount: next };
+      }),
     incrementUnreadCount: () => set((state) => ({ unreadCount: state.unreadCount + 1 })),
     decrementUnreadCount: () => set((state) => ({ unreadCount: Math.max(0, state.unreadCount - 1) })),
   };

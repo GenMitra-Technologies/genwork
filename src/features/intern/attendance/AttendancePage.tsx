@@ -29,7 +29,7 @@ interface AttendanceRecord {
   checkIn: string;
   checkOut: string;
   duration: string;
-  mode: 'remote' | 'office';
+  mode: 'remote';
   status: 'present' | 'half_day' | 'in_progress';
   summary: string;
   blockers?: string;
@@ -55,7 +55,7 @@ const HISTORICAL_RECORDS: AttendanceRecord[] = [
     checkIn: '10:00 AM',
     checkOut: '02:15 PM',
     duration: '4h 15m',
-    mode: 'office',
+    mode: 'remote',
     status: 'present',
     summary: 'Configured Supabase test credentials (test@intern / 123) and session fallback logic.',
     blockers: 'None',
@@ -79,7 +79,7 @@ const HISTORICAL_RECORDS: AttendanceRecord[] = [
     checkIn: '10:15 AM',
     checkOut: '02:30 PM',
     duration: '4h 15m',
-    mode: 'office',
+    mode: 'remote',
     status: 'present',
     summary: 'Designed deliverable inspection side-sheet modal with commit summary and preview iframe.',
     blockers: 'None',
@@ -230,7 +230,7 @@ export function AttendancePage() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  Shift Active ({workMode === 'office' ? 'Office' : 'Remote'})
+                  Shift Active (Online Remote)
                 </span>
               )
             ) : (
@@ -277,23 +277,13 @@ export function AttendancePage() {
           {/* Action Buttons */}
           <div className="flex items-center justify-start lg:justify-end gap-2.5">
             {!isCheckedIn && !isCompletedToday && (
-              <div className="flex items-center gap-2 w-full lg:w-auto">
-                <Button
-                  onClick={() => checkIn('remote')}
-                  size="default"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-sm font-semibold text-xs"
-                >
-                  <Laptop className="h-4 w-4" /> Check In (Remote)
-                </Button>
-                <Button
-                  onClick={() => checkIn('office')}
-                  variant="outline"
-                  size="default"
-                  className="gap-2 text-slate-700 border-slate-200 text-xs font-semibold"
-                >
-                  <Building2 className="h-4 w-4" /> Office
-                </Button>
-              </div>
+              <Button
+                onClick={() => checkIn()}
+                size="default"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-sm font-semibold text-xs w-full lg:w-auto"
+              >
+                <Laptop className="h-4 w-4" /> Check In (Online Remote)
+              </Button>
             )}
 
             {isCheckedIn && (
@@ -399,32 +389,9 @@ export function AttendancePage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex rounded-lg bg-slate-100 p-0.5 text-xs">
-              <button
-                onClick={() => setFilterMode('all')}
-                className={`rounded-md px-3 py-1 font-medium transition-all ${
-                  filterMode === 'all' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                All Modes
-              </button>
-              <button
-                onClick={() => setFilterMode('remote')}
-                className={`rounded-md px-3 py-1 font-medium transition-all ${
-                  filterMode === 'remote' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Remote
-              </button>
-              <button
-                onClick={() => setFilterMode('office')}
-                className={`rounded-md px-3 py-1 font-medium transition-all ${
-                  filterMode === 'office' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                In-Office
-              </button>
-            </div>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              <Laptop className="h-3.5 w-3.5" /> 100% Online Remote Shifts
+            </span>
           </div>
         </div>
 
@@ -479,15 +446,8 @@ export function AttendancePage() {
                     <p className="text-[11px] text-slate-400">{r.dayName}</p>
                   </td>
                   <td className="py-3.5 px-3">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold capitalize ${
-                        r.mode === 'office'
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                          : 'bg-slate-100 text-slate-700 border border-slate-200'
-                      }`}
-                    >
-                      {r.mode === 'office' ? <Building2 className="h-3 w-3" /> : <Laptop className="h-3 w-3" />}
-                      {r.mode}
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                      <Laptop className="h-3 w-3" /> Online Remote
                     </span>
                   </td>
                   <td className="py-3.5 px-3 text-slate-700 font-mono">{r.checkIn}</td>

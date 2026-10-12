@@ -19,13 +19,33 @@ import { useAttendanceStore } from '../../stores/attendance.store';
 import { Avatar } from '../shared/Avatar';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { notificationsApi } from '../../features/notifications/api';
 
 export function Topbar() {
-  const { profile, role, signOut } = useAuth();
-  const { setMobileDrawerOpen, unreadCount } = useUIStore();
+  const { profile, role, signOut, user } = useAuth();
+  const unreadCount = useUIStore((s) => s.unreadCount);
+  const setUnreadCount = useUIStore((s) => s.setUnreadCount);
+  const setMobileDrawerOpen = useUIStore((s) => s.setMobileDrawerOpen);
   const { isCheckedIn, isOnBreak, elapsedSeconds, targetHours, isCompletedToday } = useAttendanceStore();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const userId = user?.id || profile?.id || '00000000-0000-0000-0000-000000000011';
+
+  // Live notifications query
+  const { data: notifications = [] } = useQuery({
+    queryKey: ['notifications', userId],
+    queryFn: () => notificationsApi.getNotifications(userId),
+    refetchInterval: 30000,
+  });
+
+  useEffect(() => {
+    const unread = notifications.filter((n: any) => !n.is_read).length;
+    if (useUIStore.getState().unreadCount !== unread) {
+      setUnreadCount(unread);
+    }
+  }, [notifications, setUnreadCount]);
 
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -81,6 +101,11 @@ export function Topbar() {
     if (path.includes('/profile')) return { breadcrumb: 'Account', title: 'Intern Profile' };
     if (path.includes('/interns')) return { breadcrumb: 'Management', title: 'Intern Roster' };
     if (path.includes('/reviews')) return { breadcrumb: 'Submissions', title: 'Deliverable Reviews' };
+    if (path.includes('/broadcast')) return { breadcrumb: 'System', title: 'Platform Broadcasts' };
+    if (path.includes('/maintenance')) return { breadcrumb: 'System', title: 'Maintenance Mode' };
+    if (path.includes('/auth-security')) return { breadcrumb: 'Security', title: 'Authentication & Credentials' };
+    if (path.includes('/permissions')) return { breadcrumb: 'Governance', title: 'Team Access & Permissions Management' };
+    if (path.includes('/settings')) return { breadcrumb: 'System', title: 'Platform Settings' };
     return { breadcrumb: 'Workspace', title: 'Dashboard' };
   };
 
@@ -179,41 +204,45 @@ export function Topbar() {
               </div>
 
               <div className="py-2 divide-y divide-slate-100 max-h-72 overflow-y-auto">
-                <div className="py-2.5 space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-900 flex items-center gap-1">
-                      <Sparkles className="h-3 w-3 text-emerald-500" /> Milestone Approved
-                    </span>
-                    <span className="text-[10px] text-slate-400">10m ago</span>
+                {notifications.length === 0 ? (
+                  <div className="py-6 text-center text-xs text-slate-400">
+                    No new notifications
                   </div>
-                  <p className="text-xs text-slate-500">
-                    Your deliverable for TSK-0042 has been verified and approved by Mentor Alex Rivera.
-                  </p>
-                </div>
-
-                <div className="py-2.5 space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-900 flex items-center gap-1">
-                      <Clock className="h-3 w-3 text-amber-500" /> Daily Standup Reminder
-                    </span>
-                    <span className="text-[10px] text-slate-400">2h ago</span>
-                  </div>
-                  <p className="text-xs text-slate-500">
-                    Remember to complete your 4-hour attendance shift and check-out before 6:00 PM.
-                  </p>
-                </div>
-
-                <div className="py-2.5 space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-900 flex items-center gap-1">
-                      <CheckCircle2 className="h-3 w-3 text-indigo-500" /> Streak Protected
-                    </span>
-                    <span className="text-[10px] text-slate-400">Yesterday</span>
-                  </div>
-                  <p className="text-xs text-slate-500">
-                    You have extended your active work streak to 4 days! Keep the momentum going.
-                  </p>
-                </div>
+                ) : (
+                  notifications.slice(0, 6).map((n: any) => (
+                    <div
+                      key={n.id}
+                      onClick={async () => {
+                        if (!n.is_read) {
+                          await notificationsApi.markAsRead(n.id);
+                        }
+                        setNotificationsOpen(false);
+                        navigate(getNotificationsPath());
+                      }}
+                      className={cn(
+                        "py-2.5 space-y-1 transition-colors cursor-pointer hover:bg-slate-50 -mx-2 px-2 rounded-lg",
+                        !n.is_read && "bg-slate-50/80 font-medium"
+                      )}
+                    >
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-semibold text-slate-900 flex items-center gap-1.5 truncate">
+                          {n.type === 'announcement' ? (
+                            <Sparkles className="h-3 w-3 text-purple-600 shrink-0" />
+                          ) : (
+                            <CheckCircle2 className="h-3 w-3 text-indigo-500 shrink-0" />
+                          )}
+                          <span className="truncate">{n.title}</span>
+                        </span>
+                        {!n.is_read && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 shrink-0 ml-1"></span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        {n.message}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
 
               <div className="pt-2 border-t border-slate-100 text-center">
@@ -239,12 +268,12 @@ export function Topbar() {
           >
             <Avatar
               src={profile?.avatar_url}
-              name={profile?.full_name || 'User'}
+              name={role === 'admin' ? 'Admin' : (profile?.full_name || 'User')}
               size="sm"
             />
             <div className="hidden sm:flex flex-col">
               <span className="text-xs font-semibold leading-tight text-slate-900 truncate max-w-[120px]">
-                {profile?.full_name || 'David Kim'}
+                {role === 'admin' ? 'Admin' : (profile?.full_name || 'David Kim')}
               </span>
               <span className="text-[10px] capitalize text-slate-500 leading-tight">
                 {role || 'Intern'}
@@ -258,7 +287,7 @@ export function Topbar() {
               {/* User Meta Header */}
               <div className="px-3 py-2 border-b border-slate-100 space-y-0.5">
                 <p className="text-xs font-semibold text-slate-900 truncate">
-                  {profile?.full_name || 'David Kim'}
+                  {role === 'admin' ? 'Admin' : (profile?.full_name || 'David Kim')}
                 </p>
                 <p className="text-[11px] text-slate-500 truncate">
                   {profile?.email || 'intern.david@internship.org'}

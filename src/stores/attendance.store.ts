@@ -8,13 +8,13 @@ export interface AttendanceState {
   checkOutTime: string | null;
   elapsedSeconds: number;
   targetHours: number; // default 4 hours
-  workMode: 'remote' | 'office';
+  workMode: 'remote';
   dailySummary: string;
   blockers: string;
   isCompletedToday: boolean;
   
   // Actions
-  checkIn: (mode?: 'remote' | 'office') => void;
+  checkIn: () => void;
   checkOut: (summary: string, blockers?: string) => void;
   toggleBreak: () => void;
   tick: () => void;
@@ -83,19 +83,19 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
   checkOutTime: initial.checkOutTime ?? null,
   elapsedSeconds: initial.elapsedSeconds ?? 0,
   targetHours: 4, // Strict Default: 4 hours working day
-  workMode: initial.workMode ?? 'remote',
+  workMode: 'remote',
   dailySummary: initial.dailySummary ?? '',
   blockers: initial.blockers ?? '',
   isCompletedToday: initial.isCompletedToday ?? false,
 
-  checkIn: (mode = 'remote') => {
+  checkIn: () => {
     const nowIso = new Date().toISOString();
     const updated = {
       isCheckedIn: true,
       isOnBreak: false,
       checkInTime: nowIso,
       checkOutTime: null,
-      workMode: mode,
+      workMode: 'remote' as const,
       isCompletedToday: false,
     };
     set(updated);

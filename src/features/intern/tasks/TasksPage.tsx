@@ -1,10 +1,22 @@
-// src/features/intern/tasks/TasksPage.tsx
 import { useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { CheckSquare, Clock, AlertTriangle, Calendar, User, ArrowRight } from 'lucide-react';
+import {
+  FileText,
+  Clock,
+  Play,
+  Upload,
+  Hourglass,
+  CheckCircle2,
+  RotateCcw,
+  AlertTriangle,
+  Calendar,
+  User,
+  ArrowRight,
+} from 'lucide-react';
 import { internApi } from '../api';
 import { useAuth } from '../../../hooks/useAuth';
+import { StatCard, StatCardSkeleton } from '../../../components/shared/StatCard';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
 import { SearchInput } from '../../../components/shared/SearchInput';
@@ -14,6 +26,7 @@ import { SkeletonCard } from '../../../components/shared/SkeletonCard';
 import { formatTimeRemaining, formatDateOnly } from '../../../lib/formatters';
 import { cn } from '../../../lib/utils';
 import { usePagination } from '../../../hooks/usePagination';
+import { STATUS_META } from '../../../types/domain';
 
 export function TasksPage() {
   const { profile } = useAuth();
@@ -28,6 +41,7 @@ export function TasksPage() {
   const activeTab = useMemo(() => {
     if (rawFilter === 'overdue' || rawTab === 'overdue') return 'overdue';
     if (rawTab === 'started' || rawTab === 'in_progress') return 'in_progress';
+    if (rawTab === 'submitted') return 'submitted';
     if (rawTab === 'waiting' || rawTab === 'waiting_for_review') return 'waiting_for_review';
     if (rawTab === 'changes' || rawTab === 'changes_requested') return 'changes_requested';
     if (rawTab === 'approved') return 'approved';
@@ -57,6 +71,7 @@ export function TasksPage() {
       // Tab filter
       if (activeTab === 'pending' && t.status !== 'pending') return false;
       if (activeTab === 'in_progress' && t.status !== 'in_progress') return false;
+      if (activeTab === 'submitted' && t.status !== 'submitted' && t.status !== 'resubmitted') return false;
       if (activeTab === 'waiting_for_review' && t.status !== 'waiting_for_review') return false;
       if (activeTab === 'approved' && t.status !== 'approved') return false;
       if (activeTab === 'changes_requested' && t.status !== 'changes_requested') return false;
@@ -101,6 +116,18 @@ export function TasksPage() {
     { id: 'overdue', label: 'Overdue' },
   ];
 
+  const totalTasks = tasks.length;
+  const pendingTasksCount = useMemo(() => tasks.filter((t: any) => t.status === 'pending').length, [tasks]);
+  const inProgressCount = useMemo(() => tasks.filter((t: any) => t.status === 'in_progress').length, [tasks]);
+  const submittedCount = useMemo(() => tasks.filter((t: any) => t.status === 'submitted' || t.status === 'resubmitted').length, [tasks]);
+  const waitingCount = useMemo(() => tasks.filter((t: any) => t.status === 'waiting_for_review').length, [tasks]);
+  const approvedCount = useMemo(() => tasks.filter((t: any) => t.status === 'approved').length, [tasks]);
+  const changesCount = useMemo(() => tasks.filter((t: any) => t.status === 'changes_requested').length, [tasks]);
+  const overdueCount = useMemo(() => tasks.filter((t: any) => {
+    if (t.status === 'approved') return false;
+    return t.is_overdue || (t.due_date && new Date(t.due_date) < new Date());
+  }).length, [tasks]);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -112,22 +139,102 @@ export function TasksPage() {
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-1 overflow-x-auto pb-2 border-b">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => handleTabChange(tab.id)}
-            className={cn(
-              'px-3.5 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition-colors',
-              activeTab === tab.id
-                ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-            )}
-          >
-            {tab.label}
-          </button>
-        ))}
+      {/* Unified Single Text-Only Interactive Filters & Metrics */}
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 py-2 px-1 text-xs border-b border-border/60">
+        <button
+          onClick={() => handleTabChange('all')}
+          className={cn(
+            'inline-flex items-center gap-1.5 transition-colors',
+            activeTab === 'all' ? 'font-bold text-foreground border-b-2 border-primary pb-0.5' : 'text-muted-foreground hover:text-foreground'
+          )}
+        >
+          <span>All Tasks</span>
+          <span className="font-semibold text-foreground">({totalTasks})</span>
+        </button>
+        <span className="text-border">·</span>
+
+        <button
+          onClick={() => handleTabChange('pending')}
+          className={cn(
+            'inline-flex items-center gap-1.5 transition-colors',
+            activeTab === 'pending' ? 'font-bold text-slate-900 dark:text-white border-b-2 border-slate-900 pb-0.5' : 'text-muted-foreground hover:text-foreground'
+          )}
+        >
+          <span>Pending</span>
+          <span className="font-semibold text-slate-800 dark:text-slate-200">({pendingTasksCount})</span>
+        </button>
+        <span className="text-border">·</span>
+
+        <button
+          onClick={() => handleTabChange('in_progress')}
+          className={cn(
+            'inline-flex items-center gap-1.5 transition-colors',
+            activeTab === 'in_progress' ? 'font-bold text-blue-600 border-b-2 border-blue-600 pb-0.5' : 'text-muted-foreground hover:text-blue-600'
+          )}
+        >
+          <span>In Progress</span>
+          <span className="font-semibold text-blue-600">({inProgressCount})</span>
+        </button>
+        <span className="text-border">·</span>
+
+        <button
+          onClick={() => handleTabChange('submitted')}
+          className={cn(
+            'inline-flex items-center gap-1.5 transition-colors',
+            activeTab === 'submitted' ? 'font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'text-muted-foreground hover:text-indigo-600'
+          )}
+        >
+          <span>Submitted</span>
+          <span className="font-semibold text-indigo-600">({submittedCount})</span>
+        </button>
+        <span className="text-border">·</span>
+
+        <button
+          onClick={() => handleTabChange('waiting_for_review')}
+          className={cn(
+            'inline-flex items-center gap-1.5 transition-colors',
+            activeTab === 'waiting_for_review' ? 'font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5' : 'text-muted-foreground hover:text-amber-600'
+          )}
+        >
+          <span>Under Review</span>
+          <span className="font-semibold text-amber-600">({waitingCount})</span>
+        </button>
+        <span className="text-border">·</span>
+
+        <button
+          onClick={() => handleTabChange('approved')}
+          className={cn(
+            'inline-flex items-center gap-1.5 transition-colors',
+            activeTab === 'approved' ? 'font-bold text-emerald-600 border-b-2 border-emerald-600 pb-0.5' : 'text-muted-foreground hover:text-emerald-600'
+          )}
+        >
+          <span>Approved</span>
+          <span className="font-semibold text-emerald-600">({approvedCount})</span>
+        </button>
+        <span className="text-border">·</span>
+
+        <button
+          onClick={() => handleTabChange('changes_requested')}
+          className={cn(
+            'inline-flex items-center gap-1.5 transition-colors',
+            activeTab === 'changes_requested' ? 'font-bold text-orange-600 border-b-2 border-orange-600 pb-0.5' : 'text-muted-foreground hover:text-orange-600'
+          )}
+        >
+          <span>Changes Needed</span>
+          <span className="font-semibold text-orange-600">({changesCount})</span>
+        </button>
+        <span className="text-border">·</span>
+
+        <button
+          onClick={() => handleTabChange('overdue')}
+          className={cn(
+            'inline-flex items-center gap-1.5 transition-colors',
+            activeTab === 'overdue' ? 'font-bold text-rose-600 border-b-2 border-rose-600 pb-0.5' : 'text-muted-foreground hover:text-rose-600'
+          )}
+        >
+          <span>Overdue</span>
+          <span className="font-semibold text-rose-600">({overdueCount})</span>
+        </button>
       </div>
 
       {/* Search and Priority Filter Bar */}

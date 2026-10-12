@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, CheckSquare, Calendar, Users, Eye } from 'lucide-react';
+import { Plus, CheckSquare, Calendar, Users, Eye, Sparkles } from 'lucide-react';
 import { mentorApi } from '../api';
 import { useAuth } from '../../../hooks/useAuth';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
@@ -79,60 +79,71 @@ export function MentorTasksPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-4 max-w-[1140px] mx-auto">
+      {/* Glossy Header Bar */}
+      <div className="rounded-xl border border-slate-200/80 bg-white/80 backdrop-blur-md p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Task Assignments & Curriculum</h1>
-          <p className="text-xs text-muted-foreground mt-1">
-            Author tasks, define requirements, and assign them to your cohort mentees.
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-semibold tracking-tight text-slate-900">Task Assignments & Curriculum</h1>
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200/60 text-indigo-700">
+              {tasks.length} Created Tasks
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Author technical assignments, specify deliverable requirements, and manage cohort deadlines.
           </p>
         </div>
 
-        <Button onClick={() => setCreateDialogOpen(true)} className="gap-1.5 text-xs">
-          <Plus className="h-4 w-4" /> Create New Task
+        <Button
+          onClick={() => setCreateDialogOpen(true)}
+          className="h-7 px-3 text-xs rounded-lg font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs gap-1.5 self-start sm:self-auto"
+        >
+          <Plus className="h-3 w-3" /> Create New Task
         </Button>
       </div>
 
       {/* Task List */}
-      <div className="space-y-4">
+      <div className="space-y-2.5">
         {tasks.map((task: any) => (
           <div
             key={task.id}
-            className="rounded-xl border bg-card p-6 shadow-xs space-y-4 transition-all hover:border-primary/40"
+            className="rounded-xl border border-slate-200/80 bg-white/80 backdrop-blur-md p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-2.5 hover:border-slate-300 transition-all duration-200"
           >
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-              <div className="space-y-1">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5">
+              <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-primary">{task.code}</span>
+                  <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-indigo-700">
+                    {task.code}
+                  </span>
                   <PriorityBadge priority={task.priority} />
                 </div>
-                <h3 className="text-base font-semibold text-foreground">{task.title}</h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">{task.description}</p>
+                <h3 className="text-xs font-semibold text-slate-900">{task.title}</h3>
+                <p className="text-[11px] text-slate-500 line-clamp-2">{task.description}</p>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0 text-xs text-muted-foreground">
-                <Calendar className="h-3.5 w-3.5 text-primary" />
+              <div className="flex items-center gap-1.5 shrink-0 text-[11px] text-slate-400">
+                <Calendar className="h-3 w-3 text-slate-400" />
                 <span>Due: {formatDateOnly(task.due_date)}</span>
               </div>
             </div>
 
             {/* Assigned Mentees status chips */}
-            <div className="pt-3 border-t flex flex-wrap items-center gap-2 text-xs">
-              <span className="text-muted-foreground font-medium flex items-center gap-1">
-                <Users className="h-3 w-3" /> Assignees ({task.assignments?.length || 0}):
+            <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-1.5 text-[11px]">
+              <span className="text-slate-400 font-medium flex items-center gap-1 text-[10px]">
+                <Users className="h-2.5 w-2.5" /> Assignees ({task.assignments?.length || 0}):
               </span>
               {task.assignments && task.assignments.length > 0 ? (
                 task.assignments.map((a: any) => (
                   <span
                     key={a.id}
-                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border bg-muted/40 text-[11px]"
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200/60 bg-slate-50/70 text-[10px]"
                   >
-                    <span>{a.intern?.profile?.full_name || 'Intern'}</span>
-                    <StatusBadge status={a.status} className="px-1.5 py-0 text-[10px]" />
+                    <span className="text-slate-700">{a.intern?.profile?.full_name || 'Intern'}</span>
+                    <StatusBadge status={a.status} className="px-1 py-0 text-[9px]" />
                   </span>
                 ))
               ) : (
-                <span className="text-muted-foreground italic">None assigned</span>
+                <span className="text-slate-400 italic text-[10px]">None assigned</span>
               )}
             </div>
           </div>
@@ -142,37 +153,37 @@ export function MentorTasksPage() {
       {/* Create Task Dialog */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
         <DialogHeader>
-          <DialogTitle>Create Internship Task</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-base font-semibold text-slate-900">Create Internship Task</DialogTitle>
+          <DialogDescription className="text-xs text-slate-500">
             Specify requirements, deliverable constraints, and select assignee interns.
           </DialogDescription>
         </DialogHeader>
 
         {formError && (
-          <div className="rounded border border-destructive/20 bg-destructive/10 p-2.5 text-xs text-destructive mb-3">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-2.5 text-xs text-red-600 mb-2">
             {formError}
           </div>
         )}
 
-        <form onSubmit={handleSubmit((d) => createTaskMutation.mutate(d))} className="space-y-4">
+        <form onSubmit={handleSubmit((d) => createTaskMutation.mutate(d))} className="space-y-3 py-1">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground">Task Title *</label>
-            <Input {...register('title')} placeholder="e.g. Implement WebSocket Realtime Updates" />
-            {errors.title && <p className="text-[11px] text-destructive">{errors.title.message}</p>}
+            <label className="text-xs font-semibold text-slate-700">Task Title *</label>
+            <Input {...register('title')} placeholder="e.g. Implement WebSocket Realtime Updates" className="h-8 text-xs rounded-lg" />
+            {errors.title && <p className="text-[10px] text-red-500">{errors.title.message}</p>}
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground">Description *</label>
-            <Textarea {...register('description')} placeholder="Detailed context and purpose of the task..." rows={3} />
-            {errors.description && <p className="text-[11px] text-destructive">{errors.description.message}</p>}
+            <label className="text-xs font-semibold text-slate-700">Description *</label>
+            <Textarea {...register('description')} placeholder="Detailed context and purpose of the task..." rows={2} className="text-xs rounded-lg" />
+            {errors.description && <p className="text-[10px] text-red-500">{errors.description.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-foreground">Priority</label>
+              <label className="text-xs font-semibold text-slate-700">Priority</label>
               <select
                 {...register('priority')}
-                className="w-full h-9 rounded-lg border border-input bg-background px-3 text-xs"
+                className="w-full h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs text-slate-800"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -182,58 +193,58 @@ export function MentorTasksPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-foreground">Due Date & Time *</label>
-              <Input type="datetime-local" {...register('due_date')} />
+              <label className="text-xs font-semibold text-slate-700">Due Date & Time *</label>
+              <Input type="datetime-local" {...register('due_date')} className="h-8 text-xs rounded-lg" />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground">Step-by-step Instructions</label>
-            <Textarea {...register('instructions')} placeholder="1. Checkout branch... 2. Run migrations..." rows={2} />
+            <label className="text-xs font-semibold text-slate-700">Instructions</label>
+            <Textarea {...register('instructions')} placeholder="1. Checkout branch... 2. Run migrations..." rows={2} className="text-xs rounded-lg" />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground">Acceptance Requirements</label>
-            <Textarea {...register('requirements')} placeholder="All unit tests green, zero lint errors..." rows={2} />
+            <label className="text-xs font-semibold text-slate-700">Acceptance Requirements</label>
+            <Textarea {...register('requirements')} placeholder="All unit tests green, zero lint errors..." rows={2} className="text-xs rounded-lg" />
           </div>
 
           {/* Deliverables Checklist */}
-          <div className="space-y-2 pt-2 border-t">
-            <span className="text-xs font-semibold text-foreground block">Required Deliverables on Submission:</span>
-            <div className="flex flex-wrap gap-4 text-xs">
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="checkbox" {...register('require_github')} className="rounded" />
-                <span>GitHub Repository</span>
+          <div className="space-y-1.5 pt-2 border-t border-slate-100">
+            <span className="text-[11px] font-semibold text-slate-700 block">Required Deliverables on Submission:</span>
+            <div className="flex flex-wrap gap-3 text-xs">
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-600">
+                <input type="checkbox" {...register('require_github')} className="rounded text-indigo-600" />
+                <span className="text-[11px]">GitHub Repository</span>
               </label>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="checkbox" {...register('require_deployment')} className="rounded" />
-                <span>Live Deployment Preview</span>
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-600">
+                <input type="checkbox" {...register('require_deployment')} className="rounded text-indigo-600" />
+                <span className="text-[11px]">Live Preview</span>
               </label>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="checkbox" {...register('require_drive')} className="rounded" />
-                <span>Google Drive Asset</span>
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-600">
+                <input type="checkbox" {...register('require_drive')} className="rounded text-indigo-600" />
+                <span className="text-[11px]">Drive Assets</span>
               </label>
             </div>
           </div>
 
           {/* Assign To Interns */}
-          <div className="space-y-2 pt-2 border-t">
-            <span className="text-xs font-semibold text-foreground block">Assign To Mentees:</span>
-            <label className="flex items-center gap-2 text-xs cursor-pointer font-medium">
+          <div className="space-y-1.5 pt-2 border-t border-slate-100">
+            <span className="text-[11px] font-semibold text-slate-700 block">Assign To Mentees:</span>
+            <label className="flex items-center gap-2 text-xs cursor-pointer font-medium text-slate-700">
               <input
                 type="checkbox"
                 {...register('assign_all')}
-                className="rounded"
+                className="rounded text-indigo-600"
               />
-              <span>Assign to all of my interns</span>
+              <span className="text-[11px]">Assign to all of my interns</span>
             </label>
 
             {!assignAll && (
-              <div className="pt-2 pl-4 space-y-1 text-xs">
+              <div className="pt-1 pl-4 space-y-1 text-xs">
                 {myInterns.map((intern: any) => {
                   const isChecked = selectedInternIds.includes(intern.intern_id);
                   return (
-                    <label key={intern.intern_id} className="flex items-center gap-2 cursor-pointer">
+                    <label key={intern.intern_id} className="flex items-center gap-2 cursor-pointer text-slate-600">
                       <input
                         type="checkbox"
                         checked={isChecked}
@@ -244,9 +255,9 @@ export function MentorTasksPage() {
                             setValue('intern_ids', selectedInternIds.filter((id) => id !== intern.intern_id));
                           }
                         }}
-                        className="rounded"
+                        className="rounded text-indigo-600"
                       />
-                      <span>{intern.full_name} ({intern.role_title})</span>
+                      <span className="text-[11px]">{intern.full_name} ({intern.role_title})</span>
                     </label>
                   );
                 })}
@@ -254,12 +265,12 @@ export function MentorTasksPage() {
             )}
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setCreateDialogOpen(false)}>
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button type="button" variant="outline" size="sm" onClick={() => setCreateDialogOpen(false)} className="h-8 text-xs rounded-lg">
               Cancel
             </Button>
-            <Button type="submit" disabled={createTaskMutation.isPending}>
-              {createTaskMutation.isPending ? 'Publishing Task...' : 'Publish & Assign Task'}
+            <Button type="submit" size="sm" disabled={createTaskMutation.isPending} className="h-8 text-xs rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium">
+              {createTaskMutation.isPending ? 'Publishing...' : 'Publish & Assign'}
             </Button>
           </DialogFooter>
         </form>

@@ -1,9 +1,11 @@
 // src/features/intern/assignments/AssignmentsPage.tsx
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { FileText, Play, Upload, CheckCircle2, Calendar } from 'lucide-react';
+import { FileText, Play, Upload, CheckCircle2, Calendar, Clock, X } from 'lucide-react';
 import { internApi } from '../api';
 import { useAuth } from '../../../hooks/useAuth';
+import { StatCard, StatCardSkeleton } from '../../../components/shared/StatCard';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../../../components/ui/dialog';
@@ -14,17 +16,39 @@ import { formatDateOnly } from '../../../lib/formatters';
 
 export function AssignmentsPage() {
   const { profile } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [selectedRecipient, setSelectedRecipient] = useState<any | null>(null);
   const [submissionText, setSubmissionText] = useState('');
   const [submissionUrl, setSubmissionUrl] = useState('');
 
+  const statusParam = searchParams.get('status');
   const internId = profile?.intern_id || '20000000-0000-0000-0000-000000000001';
 
   const { data: assignments = [], isLoading } = useQuery({
     queryKey: ['assignments', 'intern', internId],
     queryFn: () => internApi.getMyAssignments(internId),
   });
+
+  const totalAssignments = assignments.length;
+  const pendingAssignmentsCount = useMemo(
+    () => assignments.filter((a: any) => a.status === 'pending' || a.status === 'in_progress').length,
+    [assignments]
+  );
+  const completedAssignmentsCount = useMemo(
+    () => assignments.filter((a: any) => a.status === 'completed' || a.status === 'approved' || a.status === 'submitted').length,
+    [assignments]
+  );
+
+  const filteredAssignments = useMemo(() => {
+    if (statusParam === 'pending') {
+      return assignments.filter((a: any) => a.status === 'pending' || a.status === 'in_progress');
+    }
+    if (statusParam === 'completed') {
+      return assignments.filter((a: any) => a.status === 'completed' || a.status === 'approved' || a.status === 'submitted');
+    }
+    return assignments;
+  }, [assignments, statusParam]);
 
   const startMutation = useMutation({
     mutationFn: (id: string) => internApi.startAssignment(id),
@@ -54,8 +78,69 @@ export function AssignmentsPage() {
         </p>
       </div>
 
-      <div className="space-y-4">
-        {assignments.map((item: any) => {
+      {/* 3 Assignments & Coursework Metrics Cards (3-column grid) */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+          Assignments & Coursework Metrics (3)
+        </h2>
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <StatCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+            <StatCard
+              title="Total assignments"
+              value={totalAssignments}
+              icon={FileText}
+              to="/intern/assignments"
+              iconBg="bg-slate-100"
+              iconColor="text-slate-600"
+            />
+            <StatCard
+              title="Pending assignments"
+              value={pendingAssignmentsCount}
+              icon={Clock}
+              to="/intern/assignments?status=pending"
+              iconBg="bg-amber-100"
+              iconColor="text-amber-700"
+            />
+            <StatCard
+              title="Completed assignments"
+              value={completedAssignmentsCount}
+              icon={CheckCircle2}
+              to="/intern/assignments?status=completed"
+              iconBg="bg-emerald-100"
+              iconColor="text-emerald-700"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Active Filter Indicator */}
+      {statusParam && (
+        <div className="flex items-center gap-2 text-xs">
+          <span className="text-muted-foreground">
+            Filtered by: <strong className="text-foreground capitalize">{statusParam}</strong> ({filteredAssignments.length})
+          </span>
+          <Link
+            to="/intern/assignments"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] transition-colors"
+          >
+            <X className="w-3 h-3" /> Clear filter
+          </Link>
+        </div>
+      )}
+
+      {filteredAssignments.length === 0 ? (
+        <div className="rounded-xl border border-dashed p-10 text-center text-xs text-muted-foreground">
+          No assignments found matching this status filter.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredAssignments.map((item: any) => {
           const asg = item.assignment || {};
           const isPending = item.status === 'pending';
           const isInProgress = item.status === 'in_progress';
@@ -130,6 +215,7 @@ export function AssignmentsPage() {
           );
         })}
       </div>
+    )}
 
       {/* Submit Assignment Dialog */}
       <Dialog open={!!selectedRecipient} onOpenChange={() => setSelectedRecipient(null)}>

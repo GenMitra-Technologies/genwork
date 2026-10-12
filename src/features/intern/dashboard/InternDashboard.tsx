@@ -20,7 +20,6 @@ import {
 } from 'lucide-react';
 import { internApi } from '../api';
 import { useAuth } from '../../../hooks/useAuth';
-import { StatCard, StatCardSkeleton } from '../../../components/shared/StatCard';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
 import { Button } from '../../../components/ui/button';
@@ -29,7 +28,6 @@ import { AttendanceWidget } from './AttendanceWidget';
 import { DeadlineExtensionModal } from './DeadlineExtensionModal';
 import { DeliverablePreviewModal } from './DeliverablePreviewModal';
 import { formatDateOnly, formatTimeRemaining } from '../../../lib/formatters';
-import { STATUS_META } from '../../../types/domain';
 
 export function InternDashboard() {
   const { user, profile } = useAuth();
@@ -64,11 +62,6 @@ export function InternDashboard() {
     enabled: !!user?.id,
   });
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: ['dashboard', 'intern'],
-    queryFn: internApi.getDashboardStats,
-  });
-
   const { data: tasks = [], isLoading: tasksLoading } = useQuery({
     queryKey: ['tasks', 'intern'],
     queryFn: () => internApi.getMyTasks(internProfile?.id || '20000000-0000-0000-0000-000000000001'),
@@ -78,23 +71,6 @@ export function InternDashboard() {
     queryKey: ['assignments', 'intern'],
     queryFn: () => internApi.getMyAssignments(internProfile?.id || '20000000-0000-0000-0000-000000000001'),
   });
-
-  // Compute metrics with reliable fallbacks
-  const totalTasks = stats?.total_tasks ?? tasks.length;
-  const pendingTasksCount = stats?.pending_tasks ?? tasks.filter((t: any) => t.status === 'pending').length;
-  const inProgressCount = stats?.in_progress_tasks ?? tasks.filter((t: any) => t.status === 'in_progress').length;
-  const submittedCount = stats?.submitted_tasks ?? tasks.filter((t: any) => t.status === 'submitted' || t.status === 'resubmitted').length;
-  const waitingCount = stats?.waiting_review_tasks ?? tasks.filter((t: any) => t.status === 'waiting_for_review').length;
-  const approvedCount = stats?.approved_tasks ?? tasks.filter((t: any) => t.status === 'approved').length;
-  const changesCount = stats?.changes_requested_tasks ?? tasks.filter((t: any) => t.status === 'changes_requested').length;
-  const overdueCount = stats?.overdue_tasks ?? tasks.filter((t: any) => {
-    if (t.status === 'approved') return false;
-    return t.is_overdue || (t.due_date && new Date(t.due_date) < new Date());
-  }).length;
-
-  const totalAssignments = stats?.total_assignments ?? assignments.length;
-  const pendingAssignmentsCount = stats?.pending_assignments ?? assignments.filter((a: any) => a.status === 'pending' || a.status === 'in_progress').length;
-  const completedAssignmentsCount = stats?.completed_assignments ?? assignments.filter((a: any) => a.status === 'completed' || a.status === 'approved').length;
 
   // "Needs your attention" items (Changes requested + Overdue)
   const attentionItems = tasks.filter((t: any) => {
@@ -114,17 +90,17 @@ export function InternDashboard() {
     .slice(0, 4);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 max-w-7xl mx-auto">
       {/* 1. Profile Header & Streak Card */}
       <ProfileHeaderCard profile={profile} internProfile={internProfile} />
 
       {/* 2. "Needs your attention" Alert Row (Only shown if any changes requested or overdue items exist) */}
       {attentionItems.length > 0 && (
-        <div className="rounded-2xl border border-amber-200/90 bg-amber-50/70 p-4 shadow-sm animate-in fade-in duration-200">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-start gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
-                <AlertTriangle className="h-4 w-4" />
+        <div className="rounded-xl border border-amber-200/90 bg-amber-50/70 p-3 sm:p-3.5 shadow-2xs animate-in fade-in duration-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                <AlertTriangle className="h-3.5 w-3.5" />
               </div>
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
@@ -153,12 +129,12 @@ export function InternDashboard() {
                     currentDueDate: formatDateOnly(attentionItems[0]?.due_date),
                   })
                 }
-                className="text-xs bg-white text-slate-700 border-amber-300 hover:bg-amber-100/60"
+                className="text-xs h-8 px-2.5 bg-white text-slate-700 border-amber-300 hover:bg-amber-100/60"
               >
                 Request Extension (+48h)
               </Button>
               <Link to="/intern/tasks?tab=changes_requested">
-                <Button size="sm" className="text-xs bg-amber-600 hover:bg-amber-700 text-white gap-1 shadow-xs">
+                <Button size="sm" className="text-xs h-8 px-3 bg-amber-600 hover:bg-amber-700 text-white gap-1 shadow-2xs">
                   Resubmit Now <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </Link>
@@ -167,140 +143,13 @@ export function InternDashboard() {
         </div>
       )}
 
-      {/* 3. Stat Cards Section (All 11 Metrics) */}
-      <div className="space-y-5">
-        {/* Sub-heading 1: TASKS (8 Cards, 4-column grid: 2 rows of 4) */}
-        <div className="space-y-3">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            Tasks Metrics (8)
-          </h2>
-          {statsLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <StatCardSkeleton key={i} />
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatCard
-                title="Total tasks"
-                value={totalTasks}
-                icon={FileText}
-                to="/intern/tasks"
-                iconBg="bg-slate-100"
-                iconColor="text-slate-600"
-              />
-              <StatCard
-                title="Pending"
-                value={pendingTasksCount}
-                icon={Clock}
-                to="/intern/tasks?tab=pending"
-                iconBg={STATUS_META.pending.iconBg}
-                iconColor={STATUS_META.pending.iconColor}
-              />
-              <StatCard
-                title="In progress"
-                value={inProgressCount}
-                icon={Play}
-                to="/intern/tasks?tab=started"
-                iconBg={STATUS_META.in_progress.iconBg}
-                iconColor={STATUS_META.in_progress.iconColor}
-              />
-              <StatCard
-                title="Submitted"
-                value={submittedCount}
-                icon={Upload}
-                to="/intern/tasks?tab=submitted"
-                iconBg={STATUS_META.submitted.iconBg}
-                iconColor={STATUS_META.submitted.iconColor}
-              />
-              <StatCard
-                title="Waiting for review"
-                value={waitingCount}
-                icon={Hourglass}
-                to="/intern/tasks?tab=waiting"
-                iconBg={STATUS_META.waiting_for_review.iconBg}
-                iconColor={STATUS_META.waiting_for_review.iconColor}
-              />
-              <StatCard
-                title="Approved"
-                value={approvedCount}
-                icon={CheckCircle2}
-                to="/intern/tasks?tab=approved"
-                iconBg={STATUS_META.approved.iconBg}
-                iconColor={STATUS_META.approved.iconColor}
-              />
-              <StatCard
-                title="Changes requested"
-                value={changesCount}
-                icon={RotateCcw}
-                to="/intern/tasks?tab=changes"
-                variant="changes"
-                iconBg={STATUS_META.changes_requested.iconBg}
-                iconColor={STATUS_META.changes_requested.iconColor}
-              />
-              <StatCard
-                title="Overdue"
-                value={overdueCount}
-                icon={AlertTriangle}
-                to="/intern/tasks?filter=overdue"
-                variant="overdue"
-                iconBg={STATUS_META.overdue.iconBg}
-                iconColor={STATUS_META.overdue.iconColor}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Sub-heading 2: ASSIGNMENTS (3 Cards, 3-column grid) */}
-        <div className="space-y-3">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            Assignments & Coursework Metrics (3)
-          </h2>
-          {statsLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <StatCardSkeleton key={i} />
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <StatCard
-                title="Total assignments"
-                value={totalAssignments}
-                icon={FileText}
-                to="/intern/assignments"
-                iconBg="bg-slate-100"
-                iconColor="text-slate-600"
-              />
-              <StatCard
-                title="Pending assignments"
-                value={pendingAssignmentsCount}
-                icon={Clock}
-                to="/intern/assignments?status=pending"
-                iconBg="bg-amber-100"
-                iconColor="text-amber-700"
-              />
-              <StatCard
-                title="Completed assignments"
-                value={completedAssignmentsCount}
-                icon={CheckCircle2}
-                to="/intern/assignments?status=completed"
-                iconBg="bg-emerald-100"
-                iconColor="text-emerald-700"
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 4. Daily Attendance & Working Hours Tracker (Default 4 Hours) */}
+      {/* 3. Daily Attendance & Working Hours Tracker (Default 4 Hours) */}
       <AttendanceWidget />
 
       {/* 5. Two-Column Layout (60% Pending Tasks / 40% Pending Coursework) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
         {/* Left Column (60%): Pending Tasks */}
-        <div className="lg:col-span-7 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-4">
+        <div className="lg:col-span-7 rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs space-y-3">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
@@ -443,7 +292,7 @@ export function InternDashboard() {
         </div>
 
         {/* Right Column (40%): Pending Coursework / Assignments */}
-        <div className="lg:col-span-5 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-4">
+        <div className="lg:col-span-5 rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs space-y-3">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600">

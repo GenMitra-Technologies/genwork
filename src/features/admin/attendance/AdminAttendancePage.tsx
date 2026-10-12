@@ -163,7 +163,7 @@ export function AdminAttendancePage() {
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">Cohort Attendance & Timesheet Administration</h1>
             <span className="rounded-full bg-indigo-50 px-3 py-0.5 text-xs font-semibold text-indigo-700 border border-indigo-200">
-              Company-wide Compliance
+              Online Remote Shifts • 4h Standard
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">

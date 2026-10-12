@@ -66,28 +66,28 @@ export function AttendanceWidget() {
 
   return (
     <>
-      <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-4">
+      <div className="rounded-xl border border-slate-200/90 bg-white p-3.5 sm:p-4 shadow-2xs space-y-3">
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200">
               <Clock className="h-4 w-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-semibold text-slate-900">Daily Attendance & Work Log</h3>
-                <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 border border-indigo-200">
+                <span className="rounded-full bg-indigo-50 px-2 py-0.2 text-[10.5px] font-semibold text-indigo-700 border border-indigo-200">
                   Target: {targetHours}h Shift
                 </span>
               </div>
-              <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+              <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
                 <Calendar className="h-3 w-3" /> {todayStr}
               </p>
             </div>
           </div>
 
           {/* Status Badge & Link to Dedicated Page */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <Link
               to="/intern/attendance"
               className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-700"
@@ -96,16 +96,16 @@ export function AttendanceWidget() {
             </Link>
 
             {isCompletedToday ? (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <CheckCircle2 className="h-3.5 w-3.5" /> Shift Completed Today
               </span>
             ) : isCheckedIn ? (
               isOnBreak ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                  <Pause className="h-3.5 w-3.5" /> On Break (Timer Paused)
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                  <Pause className="h-3.5 w-3.5" /> On Break (Paused)
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -114,7 +114,7 @@ export function AttendanceWidget() {
                 </span>
               )
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
                 ⚪ Not Checked In
               </span>
             )}
@@ -122,15 +122,15 @@ export function AttendanceWidget() {
         </div>
 
         {/* Counter & Action Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 items-center">
           {/* Working Timer Display */}
-          <div className="space-y-1.5">
-            <span className="text-xs text-slate-500 font-medium">Logged Time Today</span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-mono tracking-tight text-slate-900 tabular-nums">
+          <div className="space-y-1">
+            <span className="text-[11px] text-slate-500 font-medium">Logged Time Today</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-xl font-bold font-mono tracking-tight text-slate-900 tabular-nums">
                 {formattedTime}
               </span>
-              <span className="text-xs text-slate-400">/ {targetHours}h 00m</span>
+              <span className="text-[11px] text-slate-400">/ {targetHours}h 00m</span>
             </div>
           </div>
 
@@ -158,23 +158,13 @@ export function AttendanceWidget() {
           {/* Action Buttons */}
           <div className="flex items-center justify-start md:justify-end gap-2">
             {!isCheckedIn && !isCompletedToday && (
-              <div className="flex items-center gap-2 w-full md:w-auto">
-                <Button
-                  onClick={() => checkIn('remote')}
-                  size="sm"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 shadow-sm"
-                >
-                  <Laptop className="h-3.5 w-3.5" /> Check In (Remote)
-                </Button>
-                <Button
-                  onClick={() => checkIn('office')}
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5 text-slate-700 border-slate-200"
-                >
-                  <Building2 className="h-3.5 w-3.5" /> Office
-                </Button>
-              </div>
+              <Button
+                onClick={() => checkIn()}
+                size="sm"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 shadow-sm w-full md:w-auto"
+              >
+                <Laptop className="h-3.5 w-3.5" /> Check In (Online Remote)
+              </Button>
             )}
 
             {isCheckedIn && (

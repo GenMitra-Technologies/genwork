@@ -37,17 +37,26 @@ export function NotificationsPage() {
   }, [notifications]);
 
   React.useEffect(() => {
-    setUnreadCount(unreadCount);
+    if (useUIStore.getState().unreadCount !== unreadCount) {
+      setUnreadCount(unreadCount);
+    }
   }, [unreadCount, setUnreadCount]);
 
   const markReadMutation = useMutation({
     mutationFn: (id: string) => notificationsApi.markAsRead(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
   });
 
   const markAllMutation = useMutation({
-    mutationFn: () => notificationsApi.markAllAsRead(),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+    mutationFn: () => {
+      const allIds = notifications.map((n: any) => n.id);
+      return notificationsApi.markAllAsRead(allIds);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
   });
 
   const filteredNotifications = useMemo(() => {

@@ -76,26 +76,26 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
   const activeDays = [true, true, true, true, false, false, false];
 
   return (
-    <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+    <div className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
         {/* Left Column: Avatar + Profile Details + 2x2 Meta Grid (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col sm:flex-row items-start gap-5">
-          {/* 72px Avatar */}
+        <div className="lg:col-span-7 flex flex-col sm:flex-row items-start gap-4">
+          {/* Avatar */}
           <Avatar
             src={profile?.avatar_url}
             name={profile?.full_name || 'David Kim'}
-            size="2xl"
-            className="shrink-0 shadow-xs"
+            size="lg"
+            className="shrink-0 shadow-2xs text-sm"
           />
 
-          <div className="space-y-3 flex-1 min-w-0">
+          <div className="space-y-2 flex-1 min-w-0">
             {/* Name + Active Status Badge */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 truncate">
+                <h1 className="text-xl font-semibold tracking-tight text-slate-900 truncate">
                   {profile?.full_name || 'David Kim'}
                 </h1>
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.2 text-[11px] font-semibold text-emerald-700 border border-emerald-200">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                   Active Intern
                 </span>
@@ -109,7 +109,7 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
             </div>
 
             {/* Responsive 2x2 Grid of Meta Items */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {/* Mentor with clickable popover */}
               <div className="relative" ref={mentorRef}>
                 <div className="flex items-center gap-1.5 text-slate-500">
@@ -201,7 +201,7 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
         </div>
 
         {/* Right Column: Streak Card (5 cols) */}
-        <div className="lg:col-span-5 rounded-2xl border border-slate-200/90 bg-slate-50/60 p-5 space-y-3.5 relative">
+        <div className="lg:col-span-5 rounded-xl border border-slate-200/90 bg-slate-50/60 p-3.5 space-y-2.5 relative">
           {/* Header */}
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-orange-700 flex items-center gap-1.5">
@@ -233,10 +233,10 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
           {/* Big Number */}
           {currentStreak > 0 ? (
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold tracking-tight text-slate-900 tabular-nums">
+              <span className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
                 {currentStreak}
               </span>
-              <span className="text-sm font-medium text-slate-500">day streak 🔥</span>
+              <span className="text-xs font-medium text-slate-500">day streak 🔥</span>
             </div>
           ) : (
             <p className="text-xs text-slate-500 py-1">
@@ -255,7 +255,7 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
                   <div key={idx} className="flex flex-col items-center gap-1">
                     <span className="text-[10px] font-medium text-slate-400">{d}</span>
                     <div
-                      className={`h-4 w-4 rounded-full transition-all flex items-center justify-center ${
+                      className={`h-3.5 w-3.5 rounded-full transition-all flex items-center justify-center ${
                         isActive
                           ? 'bg-orange-500 text-white'
                           : 'bg-white border border-slate-300'
@@ -270,7 +270,7 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
           </div>
 
           {/* Footer Row: Longest streak | Total active days | Last active */}
-          <div className="pt-2.5 border-t border-slate-200/80 grid grid-cols-3 gap-2 text-[11px] text-slate-500">
+          <div className="pt-2 border-t border-slate-200/80 grid grid-cols-3 gap-2 text-[10.5px] text-slate-500">
             <div>
               <span>Longest</span>
               <p className="font-semibold text-slate-800">{longestStreak} days</p>
