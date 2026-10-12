@@ -4,22 +4,18 @@ import { SubmitTaskInput } from '../../lib/validators';
 
 const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {};
 
-function getStoredTasks(): any[] {
+if (typeof window !== 'undefined' && window.localStorage) {
   try {
-    const raw = localStorage.getItem('genmitra_intern_tasks_state');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
-    }
+    localStorage.removeItem('genmitra_intern_tasks_state');
+    localStorage.removeItem('genmitra_assignments_state');
   } catch {}
+}
+
+function getStoredTasks(): any[] {
   return [];
 }
 
-function saveStoredTasks(tasks: any[]) {
-  try {
-    localStorage.setItem('genmitra_intern_tasks_state', JSON.stringify(tasks));
-  } catch {}
-}
+function saveStoredTasks(_tasks: any[]) {}
 
 export const internApi = {
   async getDashboardStats() {
@@ -127,8 +123,8 @@ export const internApi = {
         }));
       }
 
-      // Default demo tasks
-      return getStoredTasks();
+      // Empty by default for clean production workspace until newly created by mentor
+      return [];
     }
 
     return data;

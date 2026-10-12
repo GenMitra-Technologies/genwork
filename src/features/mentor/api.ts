@@ -81,48 +81,10 @@ export const mentorApi = {
       .eq('mentor_id', mentorId)
       .order('submitted_at', { ascending: false });
 
-    // Collect any newly submitted deliverables stored locally
-    let localSubmissions: any[] = [];
-    try {
-      const storedTasksRaw = localStorage.getItem('genmitra_intern_tasks_state');
-      if (storedTasksRaw) {
-        const storedTasks = JSON.parse(storedTasksRaw);
-        storedTasks.forEach((t: any) => {
-          const subsRaw = localStorage.getItem(`genmitra_task_submissions_${t.task_assignment_id}`);
-          if (subsRaw) {
-            const subs = JSON.parse(subsRaw);
-            subs.forEach((s: any) => {
-              localSubmissions.push({
-                submission_id: s.id,
-                task_assignment_id: s.task_assignment_id,
-                version: s.version,
-                github_url: s.github_url,
-                deployment_url: s.deployment_url,
-                drive_url: s.drive_url,
-                note: s.note,
-                submitted_at: s.submitted_at || new Date().toISOString(),
-                time_taken_seconds: 7200,
-                task_id: t.task_id,
-                intern_id: t.intern_id || '20000000-0000-0000-0000-000000000001',
-                assignment_status: t.status,
-                task_code: t.task_code,
-                task_title: t.task_title,
-                task_priority: t.priority || 'medium',
-                task_due_date: t.due_date,
-                intern_name: s.intern_name || 'Intern',
-                intern_email: s.intern_email || '',
-                intern_avatar: null,
-              });
-            });
-          }
-        });
-      }
-    } catch {}
-
     if (error || !data || data.length === 0) {
-      return localSubmissions;
+      return [];
     }
-    return [...localSubmissions, ...data];
+    return data;
   },
 
   async getCreatedTasks(mentorId: string) {
