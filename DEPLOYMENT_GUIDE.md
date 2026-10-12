@@ -78,10 +78,16 @@ The platform includes two dedicated administrative management interfaces:
 ## 5. Deployment Verification (v1.0.1)
 
 - **Status:** Verified & Live
+- **Cloudflare Pages Production:** [https://genworkspace.pages.dev](https://genworkspace.pages.dev)
 - **Render Production:** [https://genwork.onrender.com](https://genwork.onrender.com)
-- **Portals:**
-  - Intern: `/` (or `/login/intern`)
-  - Mentor: `/mentor` (or `/login/mentor`)
-  - Admin: `/admin` (or `/login/admin`)
-- **Features Tested:** 100% mobile responsiveness (320px–480px), zero horizontal scroll, live Supabase database sync, 30/30 vitest pass.
+- **Portals & Direct Routes:**
+  - Intern Root: `/` (or `/login/intern`)
+  - Intern Dashboard: `/intern`
+  - Intern Tasks: `/intern/tasks`
+  - Intern Coursework: `/intern/assignments`
+  - Intern Typing Speed Test: `/intern/typing-test`
+  - Intern Attendance & Shifts: `/intern/attendance`
+  - Mentor Portal: `/mentor` (or `/login/mentor`)
+  - Admin Portal: `/admin` (or `/login/admin`)
+- **Features Tested:** 100% mobile responsiveness (320px–480px), zero horizontal scroll, live Supabase database sync, 38/38 vitest pass, Cloudflare Pages edge SPA rewrite & headers.
 
