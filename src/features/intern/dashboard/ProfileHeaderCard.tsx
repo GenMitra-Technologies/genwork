@@ -56,24 +56,24 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
   const daysRemaining = Math.max(0, totalDays - elapsedDays);
   const progressPercent = Math.min(100, Math.max(0, Math.round((elapsedDays / totalDays) * 100)));
 
-  // Display values (matching required spec: Day 42 of 91 · 46%)
-  const displayElapsed = elapsedDays > 1 ? elapsedDays : 42;
-  const displayTotal = totalDays > 1 ? totalDays : 91;
-  const displayPercent = Math.round((displayElapsed / displayTotal) * 100);
-  const displayRemaining = displayTotal - displayElapsed;
+  // Display values starting dynamically from Day 1 of cohort
+  const displayElapsed = Math.max(1, elapsedDays);
+  const displayTotal = totalDays > 1 ? totalDays : 90;
+  const displayPercent = Math.min(100, Math.round((displayElapsed / displayTotal) * 100));
+  const displayRemaining = Math.max(0, displayTotal - displayElapsed);
 
-  // Streak details
-  const currentStreak = internProfile?.current_streak ?? 4;
-  const longestStreak = internProfile?.longest_streak ?? 8;
-  const totalActiveDays = internProfile?.total_active_days ?? 14;
+  // Streak details starting clean
+  const currentStreak = internProfile?.current_streak ?? 1;
+  const longestStreak = internProfile?.longest_streak ?? 1;
+  const totalActiveDays = internProfile?.total_active_days ?? 1;
   const lastActiveDate = formatDateOnly(new Date().toISOString());
 
   // 7-dot weekly strip (Mon-Sun)
   // Day indices: 0 = Mon, 1 = Tue, 2 = Wed, 3 = Thu, 4 = Fri, 5 = Sat, 6 = Sun
   const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const todayDayOfWeek = (new Date().getDay() + 6) % 7; // 0 for Mon, 6 for Sun
-  // Simulated active history: Mon, Tue, Wed, Thu active (true)
-  const activeDays = [true, true, true, true, false, false, false];
+  // Dynamic active days: active for today only
+  const activeDays = weekDays.map((_, idx) => idx === todayDayOfWeek);
 
   return (
     <div className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs">

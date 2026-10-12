@@ -35,80 +35,19 @@ interface AttendanceRecord {
   blockers?: string;
 }
 
-const HISTORICAL_RECORDS: AttendanceRecord[] = [
-  {
-    id: 'att-1',
-    date: '10 Oct 2026',
-    dayName: 'Friday',
-    checkIn: '09:30 AM',
-    checkOut: '02:00 PM',
-    duration: '4h 30m',
-    mode: 'remote',
-    status: 'present',
-    summary: 'Refactored internship dashboard components to match new tokens and fixed horizontal overflow.',
-    blockers: 'None',
-  },
-  {
-    id: 'att-2',
-    date: '09 Oct 2026',
-    dayName: 'Thursday',
-    checkIn: '10:00 AM',
-    checkOut: '02:15 PM',
-    duration: '4h 15m',
-    mode: 'remote',
-    status: 'present',
-    summary: 'Configured Supabase test credentials (test@intern / 123) and session fallback logic.',
-    blockers: 'None',
-  },
-  {
-    id: 'att-3',
-    date: '08 Oct 2026',
-    dayName: 'Wednesday',
-    checkIn: '09:45 AM',
-    checkOut: '01:50 PM',
-    duration: '4h 05m',
-    mode: 'remote',
-    status: 'present',
-    summary: 'Created unit test suite with 15 test cases for deliverable validators and deadline extensions.',
-    blockers: 'None',
-  },
-  {
-    id: 'att-4',
-    date: '07 Oct 2026',
-    dayName: 'Tuesday',
-    checkIn: '10:15 AM',
-    checkOut: '02:30 PM',
-    duration: '4h 15m',
-    mode: 'remote',
-    status: 'present',
-    summary: 'Designed deliverable inspection side-sheet modal with commit summary and preview iframe.',
-    blockers: 'None',
-  },
-  {
-    id: 'att-5',
-    date: '06 Oct 2026',
-    dayName: 'Monday',
-    checkIn: '09:30 AM',
-    checkOut: '02:00 PM',
-    duration: '4h 30m',
-    mode: 'remote',
-    status: 'present',
-    summary: 'Weekly sprint planning and milestone review with Mentor Alex Rivera.',
-    blockers: 'None',
-  },
-  {
-    id: 'att-6',
-    date: '03 Oct 2026',
-    dayName: 'Friday',
-    checkIn: '11:00 AM',
-    checkOut: '02:30 PM',
-    duration: '3h 30m',
-    mode: 'remote',
-    status: 'half_day',
-    summary: 'Worked on database migration schema scripts.',
-    blockers: 'Internet disruption in morning',
-  },
-];
+const STORAGE_RECORDS_KEY = 'genmitra_intern_attendance_records';
+
+function getStoredAttendanceRecords(): AttendanceRecord[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_RECORDS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch {}
+  return [];
+}
 
 export function AttendancePage() {
   const {
@@ -126,6 +65,7 @@ export function AttendancePage() {
     resetDay,
   } = useAttendanceStore();
 
+  const [records, setRecords] = useState<AttendanceRecord[]>(() => getStoredAttendanceRecords());
   const [showCheckOutModal, setShowCheckOutModal] = useState(false);
   const [summaryInput, setSummaryInput] = useState('');
   const [blockersInput, setBlockersInput] = useState('');
@@ -145,12 +85,35 @@ export function AttendancePage() {
     e.preventDefault();
     if (!summaryInput.trim()) return;
     checkOut(summaryInput, blockersInput);
+
+    const now = new Date();
+    const durationHours = Math.floor(elapsedSeconds / 3600);
+    const durationMinutes = Math.floor((elapsedSeconds % 3600) / 60);
+    const newRecord: AttendanceRecord = {
+      id: `att-${Date.now()}`,
+      date: now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      dayName: now.toLocaleDateString('en-US', { weekday: 'long' }),
+      checkIn: checkInTime ? new Date(checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '09:00 AM',
+      checkOut: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      duration: `${durationHours}h ${String(durationMinutes).padStart(2, '0')}m`,
+      mode: 'remote',
+      status: elapsedSeconds >= targetSeconds ? 'present' : 'half_day',
+      summary: summaryInput,
+      blockers: blockersInput || 'None',
+    };
+
+    const updated = [newRecord, ...records];
+    setRecords(updated);
+    try {
+      localStorage.setItem(STORAGE_RECORDS_KEY, JSON.stringify(updated));
+    } catch {}
+
     setShowCheckOutModal(false);
   };
 
   const handleExportCSV = () => {
     const headers = ['Date,Day,Work Mode,Check-In,Check-Out,Duration,Status,Summary,Blockers\n'];
-    const rows = HISTORICAL_RECORDS.map(
+    const rows = records.map(
       (r) =>
         `"${r.date}","${r.dayName}","${r.mode}","${r.checkIn}","${r.checkOut}","${r.duration}","${r.status}","${r.summary.replace(/"/g, '""')}","${(r.blockers || '').replace(/"/g, '""')}"\n`
     );
@@ -163,7 +126,7 @@ export function AttendancePage() {
     URL.revokeObjectURL(url);
   };
 
-  const filteredRecords = HISTORICAL_RECORDS.filter((r) => {
+  const filteredRecords = records.filter((r) => {
     if (filterMode === 'all') return true;
     return r.mode === filterMode;
   });
@@ -334,51 +297,67 @@ export function AttendancePage() {
       </div>
 
       {/* 3. Monthly Metrics Overview (4 Cards) */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] font-medium text-slate-500">Total hours this month</span>
-            <div className="h-9 w-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <Clock className="h-4 w-4" />
-            </div>
-          </div>
-          <p className="text-[28px] font-semibold text-slate-900 tabular-nums">84.5h</p>
-          <p className="text-[11px] text-slate-400">Target: 80h mandatory / month</p>
-        </div>
+      {/* 3. Monthly Metrics Overview (Calculated from Records Starting Today) */}
+      {(() => {
+        const totalDurationHours = records.reduce((acc, r) => {
+          const match = r.duration.match(/(\d+)h/);
+          return acc + (match ? parseInt(match[1], 10) : 0);
+        }, Math.floor(elapsedSeconds / 3600));
 
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] font-medium text-slate-500">Attendance rate</span>
-            <div className="h-9 w-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <TrendingUp className="h-4 w-4" />
-            </div>
-          </div>
-          <p className="text-[28px] font-semibold text-emerald-700 tabular-nums">96.2%</p>
-          <p className="text-[11px] text-slate-400">21 full days of 22 working days</p>
-        </div>
+        const presentDaysCount = records.filter((r) => r.status === 'present').length + (isCompletedToday && isTargetAchieved ? 1 : 0);
+        const totalLoggedDays = records.length + (isCompletedToday || isCheckedIn ? 1 : 0);
+        const rate = totalLoggedDays > 0 ? Math.round((presentDaysCount / totalLoggedDays) * 100) : 100;
+        const avgShift = totalLoggedDays > 0 ? (totalDurationHours / totalLoggedDays).toFixed(1) : (elapsedSeconds > 0 ? (elapsedSeconds / 3600).toFixed(1) : '0.0');
+        const activeStreakDays = (isCheckedIn || isCompletedToday) ? (records.length + 1) : records.length;
 
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] font-medium text-slate-500">Average daily shift</span>
-            <div className="h-9 w-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-              <CalendarCheck className="h-4 w-4" />
+        return (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-medium text-slate-500">Total hours this month</span>
+                <div className="h-9 w-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <Clock className="h-4 w-4" />
+                </div>
+              </div>
+              <p className="text-[28px] font-semibold text-slate-900 tabular-nums">{totalDurationHours}h</p>
+              <p className="text-[11px] text-slate-400">Target: {targetHours * 20}h mandatory / month</p>
             </div>
-          </div>
-          <p className="text-[28px] font-semibold text-slate-900 tabular-nums">4.2h</p>
-          <p className="text-[11px] text-slate-400">Above 4h required minimum</p>
-        </div>
 
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] font-medium text-slate-500">Active work streak</span>
-            <div className="h-9 w-9 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
-              <CheckCircle2 className="h-4 w-4" />
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-medium text-slate-500">Attendance rate</span>
+                <div className="h-9 w-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                  <TrendingUp className="h-4 w-4" />
+                </div>
+              </div>
+              <p className="text-[28px] font-semibold text-emerald-700 tabular-nums">{rate}%</p>
+              <p className="text-[11px] text-slate-400">{presentDaysCount} compliant of {totalLoggedDays || 1} day(s)</p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-medium text-slate-500">Average daily shift</span>
+                <div className="h-9 w-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                  <CalendarCheck className="h-4 w-4" />
+                </div>
+              </div>
+              <p className="text-[28px] font-semibold text-slate-900 tabular-nums">{avgShift}h</p>
+              <p className="text-[11px] text-slate-400">{targetHours}h required daily shift</p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-medium text-slate-500">Active work streak</span>
+                <div className="h-9 w-9 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                  <CheckCircle2 className="h-4 w-4" />
+                </div>
+              </div>
+              <p className="text-[28px] font-semibold text-orange-600 tabular-nums">{activeStreakDays} day{activeStreakDays === 1 ? '' : 's'}</p>
+              <p className="text-[11px] text-slate-400">Current active cohort streak</p>
             </div>
           </div>
-          <p className="text-[28px] font-semibold text-orange-600 tabular-nums">4 days</p>
-          <p className="text-[11px] text-slate-400">Consecutive verified days</p>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* 4. Historical Attendance Timesheet Log */}
       <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm space-y-4">
@@ -476,6 +455,16 @@ export function AttendancePage() {
                   </td>
                 </tr>
               ))}
+
+              {filteredRecords.length === 0 && !isCheckedIn && (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-slate-400">
+                    <CalendarCheck className="h-8 w-8 mx-auto mb-2 text-slate-300 opacity-80" />
+                    <p className="font-medium text-slate-600">No past attendance records yet</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Punch in with the Shift Clock above to start tracking your working hours from today.</p>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
