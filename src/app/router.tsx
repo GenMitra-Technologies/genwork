@@ -14,6 +14,7 @@ import { TaskDetailPage } from '../features/intern/tasks/TaskDetailPage';
 import { AssignmentsPage } from '../features/intern/assignments/AssignmentsPage';
 import { InternProfilePage } from '../features/intern/profile/InternProfilePage';
 import { AttendancePage } from '../features/intern/attendance/AttendancePage';
+import { TypingTestPage } from '../features/intern/typing-test/TypingTestPage';
 
 // Mentor features
 import { MentorDashboard } from '../features/mentor/dashboard/MentorDashboard';
@@ -205,6 +206,7 @@ export const router = createBrowserRouter([
               { path: '/intern/assignments', element: <AssignmentsPage /> },
               { path: '/intern/assignments/:code', element: <AssignmentsPage /> },
               { path: '/intern/attendance', element: <AttendancePage /> },
+              { path: '/intern/typing-test', element: <TypingTestPage /> },
               { path: '/intern/notifications', element: <NotificationsPage /> },
               { path: '/intern/profile', element: <InternProfilePage /> },
             ],

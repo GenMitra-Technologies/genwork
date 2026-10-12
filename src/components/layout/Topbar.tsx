@@ -97,6 +97,7 @@ export function Topbar() {
       if (role === 'admin') return { breadcrumb: 'Administration', title: 'Cohort Timesheets & Attendance' };
       return { breadcrumb: 'Workspace', title: 'Daily Attendance & Shifts' };
     }
+    if (path.includes('/typing-test')) return { breadcrumb: 'Skill Assessment', title: 'Typing Test' };
     if (path.includes('/notifications')) return { breadcrumb: 'Activity', title: 'Notifications' };
     if (path.includes('/profile')) return { breadcrumb: 'Account', title: 'Intern Profile' };
     if (path.includes('/interns')) return { breadcrumb: 'Management', title: 'Intern Roster' };

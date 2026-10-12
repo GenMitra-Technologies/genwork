@@ -17,6 +17,7 @@ import {
   Calendar,
   UserCheck,
   Check,
+  Keyboard,
 } from 'lucide-react';
 import { internApi } from '../api';
 import { useAuth } from '../../../hooks/useAuth';
@@ -145,6 +146,31 @@ export function InternDashboard() {
 
       {/* 3. Daily Attendance & Working Hours Tracker (Default 4 Hours) */}
       <AttendanceWidget />
+
+      {/* 4. Skill Assessment Quick Card */}
+      <div className="rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50/70 via-white to-indigo-50/40 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-xs">
+            <Keyboard className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-slate-900">Typing Speed Assessment</h3>
+              <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700">
+                Interactive
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">
+              Practice alphabet speed runs, measure real-time accuracy, and beat your personal best.
+            </p>
+          </div>
+        </div>
+        <Link to="/intern/typing-test" className="shrink-0 w-full sm:w-auto">
+          <Button size="sm" className="w-full sm:w-auto text-xs h-9 px-4 bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 shadow-2xs justify-center">
+            Start Typing Test <ArrowRight className="h-3.5 w-3.5" />
+          </Button>
+        </Link>
+      </div>
 
       {/* 5. Two-Column Layout (60% Pending Tasks / 40% Pending Coursework) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">

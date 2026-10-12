@@ -24,6 +24,7 @@ import {
   Wrench,
   Database,
   HardDrive,
+  Keyboard,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useUIStore } from '../../stores/ui.store';
@@ -84,6 +85,7 @@ export function MobileDrawer() {
           items: [
             { label: 'Tasks', to: '/intern/tasks', icon: CheckSquare },
             { label: 'Assignments', to: '/intern/assignments', icon: FileText },
+            { label: 'Typing Test', to: '/intern/typing-test', icon: Keyboard },
           ],
         },
         {
