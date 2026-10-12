@@ -64,15 +64,107 @@ export function SupabaseDatabasePage() {
 
       {/* Row 1: Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        {/* Storage Card */}
+        {/* Card 1: File Storage Buckets (1 GB Limit) */}
         <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
               <Cloud className="h-4 w-4 text-indigo-500" />
-              Supabase Storage Consumption
+              File Storage (Buckets)
+            </span>
+            <span className="text-[11px] font-mono font-medium text-indigo-700 bg-indigo-50 border border-indigo-200 px-1.5 py-0.2 rounded">
+              1 GB Quota
+            </span>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-baseline justify-between">
+              <span className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
+                {storage ? formatBytes(storage.estimatedStorageSizeBytes) : '0 Bytes'}
+              </span>
+              <span className="text-xs text-slate-500">
+                of 1.00 GB (1,024 MB)
+              </span>
+            </div>
+
+            <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-indigo-600 transition-all duration-300"
+                style={{ width: `${Math.max(1, storage?.storageUsagePercentage || 0.1)}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[11px] text-slate-500 pt-0.5">
+              <span>{storage?.storageUsagePercentage?.toFixed(2) || '0.01'}% Used</span>
+              <span>{(100 - (storage?.storageUsagePercentage || 0)).toFixed(2)}% Available</span>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px]">
+            <div>
+              <span className="text-slate-400">Media Objects</span>
+              <p className="font-semibold text-slate-800">{storage?.storageObjectCount || 0} files</p>
+            </div>
+            <div>
+              <span className="text-slate-400">Buckets</span>
+              <p className="font-semibold text-slate-800">3 Configured</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: PostgreSQL Database Tables (500 MB Limit) */}
+        <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+              <Database className="h-4 w-4 text-blue-500" />
+              PostgreSQL Database
+            </span>
+            <span className="text-[11px] font-mono font-medium text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+              500 MB Quota
+            </span>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-baseline justify-between">
+              <span className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
+                {db ? formatBytes(db.estimatedDbSizeBytes) : 'Calculating...'}
+              </span>
+              <span className="text-xs text-slate-500">
+                of 500 MB
+              </span>
+            </div>
+
+            <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-blue-600 transition-all duration-300"
+                style={{ width: `${Math.max(1, db?.dbUsagePercentage || 0.1)}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[11px] text-slate-500 pt-0.5">
+              <span>{db?.dbUsagePercentage?.toFixed(2) || '0.02'}% Used</span>
+              <span>{db?.totalRows || 0} indexed rows</span>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px]">
+            <div>
+              <span className="text-slate-400">Active Tables</span>
+              <p className="font-semibold text-slate-800">14 Schemas</p>
+            </div>
+            <div>
+              <span className="text-slate-400">Engine</span>
+              <p className="font-semibold text-slate-800">PostgreSQL 15</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Combined Free Allocation (1.5 GB Total) */}
+        <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+              <Server className="h-4 w-4 text-emerald-600" />
+              Combined Free Tier
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Connected
+              1.5 GB Total
             </span>
           </div>
 
@@ -82,101 +174,22 @@ export function SupabaseDatabasePage() {
                 {storage ? formatBytes(storage.totalUsedBytes) : 'Calculating...'}
               </span>
               <span className="text-xs text-slate-500">
-                of {storage ? formatBytes(storage.tierLimitBytes) : '500 MB'}
+                of 1,536 MB (1.5 GB)
               </span>
-            </div>
-
-            <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-indigo-600 transition-all duration-300"
-                style={{ width: `${Math.max(2, storage?.usagePercentage || 1)}%` }}
-              />
-            </div>
-            <div className="flex justify-between text-[11px] text-slate-500 pt-0.5">
-              <span>{storage?.usagePercentage?.toFixed(2) || '0.1'}% Used</span>
-              <span>{(100 - (storage?.usagePercentage || 0)).toFixed(2)}% Free Space</span>
-            </div>
-          </div>
-
-          <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px]">
-            <div>
-              <span className="text-slate-400">Database Size</span>
-              <p className="font-semibold text-slate-800">{formatBytes(db?.estimatedDbSizeBytes || 0)}</p>
-            </div>
-            <div>
-              <span className="text-slate-400">File Storage Objects</span>
-              <p className="font-semibold text-slate-800">{storage?.storageObjectCount || 0} files</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Database Rows Card */}
-        <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-              <Layers className="h-4 w-4 text-blue-500" />
-              Indexed Relational Records
-            </span>
-            <span className="text-[11px] font-mono font-medium text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
-              PostgreSQL 15
-            </span>
-          </div>
-
-          <div className="space-y-1">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
-                {db?.totalRows || 0}
-              </span>
-              <span className="text-xs text-slate-500">total indexed rows</span>
             </div>
             <p className="text-[11px] text-slate-500">
-              Actively synchronized across 14 tables and security roles.
+              500 MB (PostgreSQL relational data) + 1 GB (S3 object storage).
             </p>
           </div>
 
           <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px]">
             <div>
-              <span className="text-slate-400">Active Tables</span>
-              <p className="font-semibold text-slate-800">14 Schemas</p>
-            </div>
-            <div>
-              <span className="text-slate-400">Row Level Security</span>
-              <p className="font-semibold text-emerald-700">Enforced (RLS)</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Cluster Info Card */}
-        <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-              <Server className="h-4 w-4 text-emerald-600" />
-              Cloud Infrastructure
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200">
-              Healthy
-            </span>
-          </div>
-
-          <div className="space-y-1">
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg font-bold tracking-tight text-slate-900">
-                Supabase Managed
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500">
-              Host: <span className="font-mono text-slate-700">jgjiakofetyiimtobhey</span>
-            </p>
-          </div>
-
-          <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px]">
-            <div>
-              <span className="text-slate-400">Region</span>
+              <span className="text-slate-400">Cloud Region</span>
               <p className="font-semibold text-slate-800">ap-south-1 (Mumbai)</p>
             </div>
             <div>
               <span className="text-slate-400">Connection Mode</span>
-              <p className="font-semibold text-slate-800">Direct / PgBouncer</p>
+              <p className="font-semibold text-emerald-700">Transaction Pooler</p>
             </div>
           </div>
         </div>

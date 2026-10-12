@@ -1241,11 +1241,17 @@ export const adminApi = {
       }
     } catch {}
 
-    // Calculate approximate database size (average ~1.2 KB per relational row + metadata index factor)
+    // PostgreSQL database: 500 MB limit on Supabase Free Tier
     const estimatedDbSizeBytes = Math.max(1024 * 64, totalRows * 1250);
+    const dbLimitBytes = 500 * 1024 * 1024; // 500 MB for PostgreSQL tables & rows
+
+    // Supabase File Storage (Buckets/Media/Files): 1 GB limit on Supabase Free Tier
     const estimatedStorageSizeBytes = storageObjectCount * 1024 * 250; // avg 250 KB per file
+    const storageLimitBytes = 1024 * 1024 * 1024; // 1 GB (1,024 MB) for file storage buckets
+
+    // Combined total allocation: 1.5 GB
     const totalUsedBytes = estimatedDbSizeBytes + estimatedStorageSizeBytes;
-    const tierLimitBytes = 500 * 1024 * 1024; // 500 MB Supabase Free Tier DB allocation
+    const combinedQuotaBytes = dbLimitBytes + storageLimitBytes;
 
     // Get Auto-backup configuration
     let autoBackupConfig = {
@@ -1302,6 +1308,8 @@ export const adminApi = {
       database: {
         totalRows,
         estimatedDbSizeBytes,
+        dbLimitBytes,
+        dbUsagePercentage: (estimatedDbSizeBytes / dbLimitBytes) * 100,
         tableCounts,
         connectionStatus: 'connected',
         postgresVersion: 'PostgreSQL 15.6 (Supabase Cloud)',
@@ -1313,9 +1321,12 @@ export const adminApi = {
         buckets,
         storageObjectCount,
         estimatedStorageSizeBytes,
+        storageLimitBytes,
+        storageUsagePercentage: (estimatedStorageSizeBytes / storageLimitBytes) * 100,
         totalUsedBytes,
-        tierLimitBytes,
-        usagePercentage: Math.min(100, (totalUsedBytes / tierLimitBytes) * 100),
+        combinedQuotaBytes,
+        tierLimitBytes: storageLimitBytes, // 1 GB for file storage buckets
+        usagePercentage: Math.min(100, (estimatedStorageSizeBytes / storageLimitBytes) * 100),
       },
       autoBackupConfig,
       backupSnapshots,
