@@ -1,6 +1,6 @@
 // src/features/intern/assignments/AssignmentsPage.tsx
-import React, { useState, useMemo } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams, useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, Play, Upload, CheckCircle2, Calendar, Clock, X } from 'lucide-react';
 import { internApi } from '../api';
@@ -16,6 +16,7 @@ import { formatDateOnly } from '../../../lib/formatters';
 
 export function AssignmentsPage() {
   const { profile } = useAuth();
+  const { code } = useParams<{ code?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [selectedRecipient, setSelectedRecipient] = useState<any | null>(null);
@@ -41,14 +42,23 @@ export function AssignmentsPage() {
   );
 
   const filteredAssignments = useMemo(() => {
+    let result = assignments;
+    if (code) {
+      result = result.filter(
+        (a: any) =>
+          a.code?.toLowerCase() === code.toLowerCase() ||
+          a.assignment?.code?.toLowerCase() === code.toLowerCase() ||
+          a.id === code
+      );
+    }
     if (statusParam === 'pending') {
-      return assignments.filter((a: any) => a.status === 'pending' || a.status === 'in_progress');
+      return result.filter((a: any) => a.status === 'pending' || a.status === 'in_progress');
     }
     if (statusParam === 'completed') {
-      return assignments.filter((a: any) => a.status === 'completed' || a.status === 'approved' || a.status === 'submitted');
+      return result.filter((a: any) => a.status === 'completed' || a.status === 'approved' || a.status === 'submitted');
     }
-    return assignments;
-  }, [assignments, statusParam]);
+    return result;
+  }, [assignments, statusParam, code]);
 
   const startMutation = useMutation({
     mutationFn: (id: string) => internApi.startAssignment(id),
@@ -77,6 +87,13 @@ export function AssignmentsPage() {
           Structured coursework, technical reading, and architectural quizzes assigned by your mentors.
         </p>
       </div>
+
+      {code && (
+        <div className="flex items-center justify-between rounded-lg bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 p-3 text-xs text-indigo-700 dark:text-indigo-300">
+          <span>Filtering by assignment code: <strong className="font-mono">{code}</strong></span>
+          <Link to="/intern/assignments" className="font-medium underline hover:text-indigo-900">Show all assignments</Link>
+        </div>
+      )}
 
       {/* 3 Assignments & Coursework Metrics Cards (3-column grid) */}
       <div className="space-y-3">

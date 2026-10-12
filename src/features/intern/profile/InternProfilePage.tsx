@@ -5,6 +5,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import { internApi } from '../api';
 import { Avatar } from '../../../components/shared/Avatar';
 import { formatDateOnly } from '../../../lib/formatters';
+import { CandidateOperationalProfileCard } from './CandidateOperationalProfileCard';
 
 export function InternProfilePage() {
   const { profile, user } = useAuth();
@@ -17,23 +18,41 @@ export function InternProfilePage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">My Profile</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Candidate Profile & Operational Terms</h1>
         <p className="text-xs text-muted-foreground mt-1">
-          Personal credentials, cohort assignment, and internship operating metrics.
+          Official offer terms, candidate operational credentials, cohort placement, and supervision details.
         </p>
       </div>
+
+      {/* Sealed Authoritative Offer Terms & Candidate Profile */}
+      <CandidateOperationalProfileCard
+        internName={profile?.full_name || 'SINDHU GANGISETTY'}
+        candidateEmail={profile?.email || 'sindhugangisetty910@gmail.com'}
+        rollId="24ht1a4346"
+        position={internProfile?.role_title || 'FRONTEND DEVELOPER'}
+        department="Engineering"
+        reportingManager="CTO"
+        startDate="2026-10-01"
+        endDate="N/A"
+        workMode="Remote"
+        compensation="Unpaid"
+        profileCategory="Student"
+        recruitmentClassification="Student"
+        emergencyContact="Gangisetty Srilatha (Elder sister)"
+        assignedMentorName={internProfile?.mentor?.profile?.full_name || 'Kapu Mani Shankar Reddy'}
+      />
 
       <div className="rounded-xl border bg-card p-6 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 pb-6 border-b">
           <Avatar
             src={profile?.avatar_url}
-            name={profile?.full_name || 'David Kim'}
+            name={profile?.full_name || 'SINDHU GANGISETTY'}
             size="xl"
           />
           <div className="text-center sm:text-left space-y-1">
-            <h2 className="text-xl font-bold text-foreground">{profile?.full_name}</h2>
+            <h2 className="text-xl font-bold text-foreground">{profile?.full_name || 'SINDHU GANGISETTY'}</h2>
             <p className="text-xs text-muted-foreground flex items-center justify-center sm:justify-start gap-1.5">
-              <Mail className="h-3.5 w-3.5" /> {profile?.email}
+              <Mail className="h-3.5 w-3.5" /> {profile?.email || 'sindhugangisetty910@gmail.com'}
             </p>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-2">
               <span className="rounded-md bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
@@ -53,9 +72,9 @@ export function InternProfilePage() {
               <Building className="h-3.5 w-3.5 text-primary" /> Role Title & Company
             </span>
             <p className="font-semibold text-sm text-foreground">
-              {internProfile?.role_title || 'Full Stack Intern'}
+              {internProfile?.role_title || 'FRONTEND DEVELOPER'}
             </p>
-            <p className="text-muted-foreground">{internProfile?.company_name || 'NovaTech Systems'}</p>
+            <p className="text-muted-foreground">{internProfile?.company_name || 'GenMitra Technologies'}</p>
           </div>
 
           <div className="rounded-lg border bg-muted/20 p-4 space-y-1">
@@ -63,10 +82,10 @@ export function InternProfilePage() {
               <Award className="h-3.5 w-3.5 text-primary" /> Assigned Mentor
             </span>
             <p className="font-semibold text-sm text-foreground">
-              {internProfile?.mentor?.profile?.full_name || 'Alex Rivera'}
+              {internProfile?.mentor?.profile?.full_name || 'Kapu Mani Shankar Reddy'}
             </p>
             <p className="text-muted-foreground">
-              Department: {internProfile?.mentor?.department || 'Software Engineering'}
+              Department: {internProfile?.mentor?.department || 'Engineering (CTO)'}
             </p>
           </div>
 
@@ -75,11 +94,11 @@ export function InternProfilePage() {
               <Calendar className="h-3.5 w-3.5 text-primary" /> Internship Cohort
             </span>
             <p className="font-semibold text-sm text-foreground">
-              {internProfile?.internship?.name || 'Summer 2026 Engineering Cohort'}
+              {internProfile?.internship?.name || 'Engineering Internship Cohort 2026'}
             </p>
             <p className="text-muted-foreground">
-              Dates: {formatDateOnly(internProfile?.start_date || '2026-06-01')} to{' '}
-              {formatDateOnly(internProfile?.end_date || '2026-08-31')}
+              Dates: {formatDateOnly(internProfile?.start_date || '2026-10-01')} to{' '}
+              {formatDateOnly(internProfile?.end_date || '2027-03-31')}
             </p>
           </div>
 
@@ -88,10 +107,10 @@ export function InternProfilePage() {
               <Flame className="h-3.5 w-3.5 text-orange-500" /> Work Streak Performance
             </span>
             <p className="font-semibold text-sm text-foreground">
-              Current: {internProfile?.current_streak ?? 4} days 🔥
+              Current: {internProfile?.current_streak ?? 5} days 🔥
             </p>
             <p className="text-muted-foreground">
-              Longest Streak: {internProfile?.longest_streak ?? 8} days • Total Active Days: {internProfile?.total_active_days ?? 14}
+              Longest Streak: {internProfile?.longest_streak ?? 5} days • Total Active Days: {internProfile?.total_active_days ?? 12}
             </p>
           </div>
         </div>

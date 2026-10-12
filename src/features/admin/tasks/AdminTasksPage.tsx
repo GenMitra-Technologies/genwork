@@ -68,45 +68,76 @@ export function AdminTasksPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {tasks.map((task: any) => {
-                const assignments = task.assignments || [];
-                return assignments.map((asg: any) => (
-                  <tr key={asg.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-4 font-mono font-bold text-primary">{task.code}</td>
-                    <td className="p-4 font-medium text-foreground">{task.title}</td>
-                    <td className="p-4">
-                      <PriorityBadge priority={task.priority} />
-                    </td>
-                    <td className="p-4 font-medium text-foreground">
-                      {asg.intern?.profile?.full_name || 'Intern'}
-                    </td>
-                    <td className="p-4">
-                      <StatusBadge status={asg.status} />
-                    </td>
-                    <td className="p-4 text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setOverrideTarget({
-                            assignment_id: asg.id,
-                            task_code: task.code,
-                            task_title: task.title,
-                            intern_name: asg.intern?.profile?.full_name,
-                            current_status: asg.status,
-                          });
-                          setTargetStatus(asg.status === 'approved' ? 'in_progress' : 'approved');
-                          setOverrideReason('');
-                          setOverrideError(null);
-                        }}
-                        className="h-8 text-xs gap-1 text-rose-600 border-rose-200 hover:bg-rose-50"
-                      >
-                        <ShieldAlert className="h-3.5 w-3.5" /> Admin Override
-                      </Button>
-                    </td>
-                  </tr>
-                ));
-              })}
+              {tasks.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-xs text-muted-foreground">
+                    No curriculum tasks found.
+                  </td>
+                </tr>
+              ) : (
+                tasks.map((task: any) => {
+                  const assignments = task.assignments || [];
+                  if (assignments.length === 0) {
+                    return (
+                      <tr key={task.id} className="hover:bg-muted/30 transition-colors">
+                        <td className="p-4 font-mono font-bold text-primary">{task.code}</td>
+                        <td className="p-4 font-medium text-foreground">{task.title}</td>
+                        <td className="p-4">
+                          <PriorityBadge priority={task.priority} />
+                        </td>
+                        <td className="p-4 text-xs text-muted-foreground italic">
+                          Unassigned
+                        </td>
+                        <td className="p-4">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                            Draft / Unassigned
+                          </span>
+                        </td>
+                        <td className="p-4 text-right text-xs text-muted-foreground">
+                          —
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return assignments.map((asg: any) => (
+                    <tr key={asg.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-4 font-mono font-bold text-primary">{task.code}</td>
+                      <td className="p-4 font-medium text-foreground">{task.title}</td>
+                      <td className="p-4">
+                        <PriorityBadge priority={task.priority} />
+                      </td>
+                      <td className="p-4 font-medium text-foreground">
+                        {asg.intern?.profile?.full_name || 'Intern'}
+                      </td>
+                      <td className="p-4">
+                        <StatusBadge status={asg.status} />
+                      </td>
+                      <td className="p-4 text-right">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setOverrideTarget({
+                              assignment_id: asg.id,
+                              task_code: task.code,
+                              task_title: task.title,
+                              intern_name: asg.intern?.profile?.full_name,
+                              current_status: asg.status,
+                            });
+                            setTargetStatus(asg.status === 'approved' ? 'in_progress' : 'approved');
+                            setOverrideReason('');
+                            setOverrideError(null);
+                          }}
+                          className="h-8 text-xs gap-1 text-rose-600 border-rose-200 hover:bg-rose-50"
+                        >
+                          <ShieldAlert className="h-3.5 w-3.5" /> Admin Override
+                        </Button>
+                      </td>
+                    </tr>
+                  ));
+                })
+              )}
             </tbody>
           </table>
         </div>

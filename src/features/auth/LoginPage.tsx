@@ -48,15 +48,15 @@ export function LoginPage() {
     try {
       const testAcc = findTestAccount(data.email);
       if (testAcc) {
-        if (data.password === '123' || data.password === 'Password123!' || data.password === testAcc.supabasePassword) {
-          // Attempt Supabase sign-in with seed account
+        if (data.password === testAcc.supabasePassword) {
+          // Attempt Supabase sign-in with account
           const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
             email: testAcc.supabaseEmail,
             password: testAcc.supabasePassword,
           });
 
           if (signInError || !authData.user) {
-            // Fallback to local test session
+            // Fallback to local session
             loginAsTestAccount(testAcc);
           }
 
@@ -174,7 +174,7 @@ export function LoginPage() {
                   type="text"
                   autoComplete="username"
                   inputMode="email"
-                  placeholder="test@intern or name@internship.org"
+                  placeholder="sindhugangisetty910@gmail.com, manireddy, or admin"
                   className="pl-9"
                   disabled={isSubmitting}
                 />

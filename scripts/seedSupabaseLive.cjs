@@ -1,8 +1,15 @@
 // scripts/seedSupabaseLive.cjs
 const https = require('https');
+const { getEnv } = require('./getEnv.cjs');
 
-const SUPABASE_URL = 'jgjiakofetyiimtobhey.supabase.co';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impnamlha29mZXR5aWltdG9iaGV5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTY4NDkzNCwiZXhwIjoyMTA3MjYwOTM0fQ.Z7ZSSoJT7t6kxtGpwXEl8ZF8ZZkMHPSa5ez-5jPyFZ8';
+const env = getEnv();
+const SUPABASE_URL = (env.VITE_SUPABASE_URL || 'https://jgjiakofetyiimtobhey.supabase.co').replace(/^https?:\/\//, '');
+const SERVICE_ROLE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!SERVICE_ROLE_KEY) {
+  console.error('Error: SUPABASE_SERVICE_ROLE_KEY is required in environment variables or .env file.');
+  process.exit(1);
+}
 
 function request(path, method = 'GET', body = null) {
   return new Promise((resolve, reject) => {

@@ -21,7 +21,7 @@ const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {
     require_github: true,
     require_deployment: false,
     require_drive: false,
-    mentor_name: 'Alex Rivera',
+    mentor_name: 'Kapu Mani Shankar Reddy',
     is_overdue: false,
   },
   'TSK-0005': {
@@ -42,7 +42,7 @@ const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {
     require_github: true,
     require_deployment: true,
     require_drive: false,
-    mentor_name: 'Alex Rivera',
+    mentor_name: 'Kapu Mani Shankar Reddy',
     is_overdue: false,
   },
   'TSK-0004': {
@@ -63,7 +63,7 @@ const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {
     require_github: true,
     require_deployment: false,
     require_drive: true,
-    mentor_name: 'Alex Rivera',
+    mentor_name: 'Kapu Mani Shankar Reddy',
     is_overdue: false,
   },
   'TSK-0003': {
@@ -84,7 +84,7 @@ const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {
     require_github: true,
     require_deployment: true,
     require_drive: false,
-    mentor_name: 'Alex Rivera',
+    mentor_name: 'Kapu Mani Shankar Reddy',
     is_overdue: false,
   },
   'TSK-0002': {
@@ -105,7 +105,7 @@ const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {
     require_github: true,
     require_deployment: true,
     require_drive: false,
-    mentor_name: 'Alex Rivera',
+    mentor_name: 'Kapu Mani Shankar Reddy',
     is_overdue: false,
   },
   'TSK-0001': {
@@ -126,7 +126,7 @@ const DEFAULT_TASK_DEFINITIONS: Record<string, any> = {
     require_github: true,
     require_deployment: true,
     require_drive: false,
-    mentor_name: 'Alex Rivera',
+    mentor_name: 'Kapu Mani Shankar Reddy',
     is_overdue: false,
   },
 };
@@ -189,25 +189,25 @@ export const internApi = {
       .maybeSingle();
 
     if (error || !data) {
-      // Graceful fallback mock object for display
+      // Production record fallback
       return {
         id: '20000000-0000-0000-0000-000000000001',
-        role_title: 'Full Stack Intern',
-        company_name: 'Tech Corp',
-        current_streak: 4,
-        longest_streak: 8,
-        total_active_days: 14,
-        last_active_date: new Date().toISOString().split('T')[0],
-        start_date: '2026-06-01',
-        end_date: '2026-08-31',
+        role_title: 'FRONTEND DEVELOPER',
+        company_name: 'GenMitra Technologies',
+        current_streak: 5,
+        longest_streak: 5,
+        total_active_days: 12,
+        last_active_date: '2026-10-12',
+        start_date: '2026-10-01',
+        end_date: '2027-03-31',
         status: 'active',
         mentor: {
-          profile: { full_name: 'Alex Rivera' },
-          department: 'Software Engineering',
+          profile: { full_name: 'Kapu Mani Shankar Reddy', email: 'manireddy@genmitra.com' },
+          department: 'Engineering',
         },
         internship: {
-          name: 'Summer 2026 Engineering Cohort',
-          code: 'INT-001',
+          name: 'Engineering Internship Cohort 2026',
+          code: 'ENG-2026',
         },
       };
     }

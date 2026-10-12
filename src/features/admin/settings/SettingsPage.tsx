@@ -1,5 +1,6 @@
 // src/features/admin/settings/SettingsPage.tsx
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Settings, Save, Megaphone, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
@@ -78,8 +79,8 @@ export function SettingsPage() {
 
       {/* Quick Navigation to Dedicated Tools */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <a
-          href="/admin/broadcast"
+        <Link
+          to="/admin/broadcast"
           className="rounded-xl border border-slate-200/80 bg-card p-5 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all group block"
         >
           <div className="flex items-center gap-2.5 mb-2">
@@ -96,10 +97,10 @@ export function SettingsPage() {
           <p className="text-xs text-muted-foreground leading-relaxed">
             Dispatch urgent updates, standup links, or cohort announcements to all or filtered roles.
           </p>
-        </a>
+        </Link>
 
-        <a
-          href="/admin/maintenance"
+        <Link
+          to="/admin/maintenance"
           className="rounded-xl border border-slate-200/80 bg-card p-5 shadow-xs hover:border-amber-400 hover:shadow-md transition-all group block"
         >
           <div className="flex items-center gap-2.5 mb-2">
@@ -116,7 +117,7 @@ export function SettingsPage() {
           <p className="text-xs text-muted-foreground leading-relaxed">
             Activate emergency maintenance notices, set downtime duration, and safeguard active shifts.
           </p>
-        </a>
+        </Link>
       </div>
     </div>
   );

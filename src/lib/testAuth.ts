@@ -11,16 +11,16 @@ export interface TestAccount {
 }
 
 export const TEST_ACCOUNTS: Record<string, TestAccount> = {
-  // Intern accounts
-  'test@intern': {
-    email: 'test@intern',
+  // Intern Account
+  'sindhugangisetty910@gmail.com': {
+    email: 'sindhugangisetty910@gmail.com',
     role: 'intern',
-    supabaseEmail: 'intern.david@internship.org',
-    supabasePassword: 'Password123!',
+    supabaseEmail: 'sindhugangisetty910@gmail.com',
+    supabasePassword: 'GENMITRA@INTERN',
     profile: {
-      id: '00000000-0000-0000-0000-000000000011',
-      email: 'intern.david@internship.org',
-      full_name: 'David Kim (Intern)',
+      id: '6272414b-a663-4295-b5ba-5654270e139d',
+      email: 'sindhugangisetty910@gmail.com',
+      full_name: 'SINDHU GANGISETTY',
       avatar_url: null,
       role: 'intern',
       status: 'active',
@@ -28,47 +28,15 @@ export const TEST_ACCOUNTS: Record<string, TestAccount> = {
       intern_id: '20000000-0000-0000-0000-000000000001',
     },
   },
-  'test@intern.com': {
-    email: 'test@intern.com',
+  'sindhu': {
+    email: 'sindhu',
     role: 'intern',
-    supabaseEmail: 'intern.david@internship.org',
-    supabasePassword: 'Password123!',
+    supabaseEmail: 'sindhugangisetty910@gmail.com',
+    supabasePassword: 'GENMITRA@INTERN',
     profile: {
-      id: '00000000-0000-0000-0000-000000000011',
-      email: 'intern.david@internship.org',
-      full_name: 'David Kim (Intern)',
-      avatar_url: null,
-      role: 'intern',
-      status: 'active',
-      must_change_password: false,
-      intern_id: '20000000-0000-0000-0000-000000000001',
-    },
-  },
-  'intern@test.com': {
-    email: 'intern@test.com',
-    role: 'intern',
-    supabaseEmail: 'intern.david@internship.org',
-    supabasePassword: 'Password123!',
-    profile: {
-      id: '00000000-0000-0000-0000-000000000011',
-      email: 'intern.david@internship.org',
-      full_name: 'David Kim (Intern)',
-      avatar_url: null,
-      role: 'intern',
-      status: 'active',
-      must_change_password: false,
-      intern_id: '20000000-0000-0000-0000-000000000001',
-    },
-  },
-  'intern': {
-    email: 'intern',
-    role: 'intern',
-    supabaseEmail: 'intern.david@internship.org',
-    supabasePassword: 'Password123!',
-    profile: {
-      id: '00000000-0000-0000-0000-000000000011',
-      email: 'intern.david@internship.org',
-      full_name: 'David Kim (Intern)',
+      id: '6272414b-a663-4295-b5ba-5654270e139d',
+      email: 'sindhugangisetty910@gmail.com',
+      full_name: 'SINDHU GANGISETTY',
       avatar_url: null,
       role: 'intern',
       status: 'active',
@@ -77,16 +45,16 @@ export const TEST_ACCOUNTS: Record<string, TestAccount> = {
     },
   },
 
-  // Mentor accounts
-  'test@mentor': {
-    email: 'test@mentor',
+  // Mentor Account
+  'manireddy@genmitra.com': {
+    email: 'manireddy@genmitra.com',
     role: 'mentor',
-    supabaseEmail: 'mentor.alex@internship.org',
-    supabasePassword: 'Password123!',
+    supabaseEmail: 'manireddy@genmitra.com',
+    supabasePassword: 'GENMITRA@MENTOR',
     profile: {
-      id: '00000000-0000-0000-0000-000000000002',
-      email: 'mentor.alex@internship.org',
-      full_name: 'Alex Rivera (Staff Mentor)',
+      id: '75f9c52b-4810-43b1-923f-4995611c0071',
+      email: 'manireddy@genmitra.com',
+      full_name: 'Kapu Mani Shankar Reddy',
       avatar_url: null,
       role: 'mentor',
       status: 'active',
@@ -94,47 +62,15 @@ export const TEST_ACCOUNTS: Record<string, TestAccount> = {
       mentor_id: '10000000-0000-0000-0000-000000000001',
     },
   },
-  'test@mentor.com': {
-    email: 'test@mentor.com',
+  'manireddy': {
+    email: 'manireddy',
     role: 'mentor',
-    supabaseEmail: 'mentor.alex@internship.org',
-    supabasePassword: 'Password123!',
+    supabaseEmail: 'manireddy@genmitra.com',
+    supabasePassword: 'GENMITRA@MENTOR',
     profile: {
-      id: '00000000-0000-0000-0000-000000000002',
-      email: 'mentor.alex@internship.org',
-      full_name: 'Alex Rivera (Staff Mentor)',
-      avatar_url: null,
-      role: 'mentor',
-      status: 'active',
-      must_change_password: false,
-      mentor_id: '10000000-0000-0000-0000-000000000001',
-    },
-  },
-  'mentor@test.com': {
-    email: 'mentor@test.com',
-    role: 'mentor',
-    supabaseEmail: 'mentor.alex@internship.org',
-    supabasePassword: 'Password123!',
-    profile: {
-      id: '00000000-0000-0000-0000-000000000002',
-      email: 'mentor.alex@internship.org',
-      full_name: 'Alex Rivera (Staff Mentor)',
-      avatar_url: null,
-      role: 'mentor',
-      status: 'active',
-      must_change_password: false,
-      mentor_id: '10000000-0000-0000-0000-000000000001',
-    },
-  },
-  'mentor': {
-    email: 'mentor',
-    role: 'mentor',
-    supabaseEmail: 'mentor.alex@internship.org',
-    supabasePassword: 'Password123!',
-    profile: {
-      id: '00000000-0000-0000-0000-000000000002',
-      email: 'mentor.alex@internship.org',
-      full_name: 'Alex Rivera (Staff Mentor)',
+      id: '75f9c52b-4810-43b1-923f-4995611c0071',
+      email: 'manireddy@genmitra.com',
+      full_name: 'Kapu Mani Shankar Reddy',
       avatar_url: null,
       role: 'mentor',
       status: 'active',
@@ -143,46 +79,16 @@ export const TEST_ACCOUNTS: Record<string, TestAccount> = {
     },
   },
 
-  // Admin accounts
-  'test@admin': {
-    email: 'test@admin',
+  // Admin Account
+  'ops@genmitra.com': {
+    email: 'ops@genmitra.com',
     role: 'admin',
-    supabaseEmail: 'admin@internship.org',
-    supabasePassword: 'Password123!',
+    supabaseEmail: 'ops@genmitra.com',
+    supabasePassword: 'GENMITRA@ADMIN2026',
     profile: {
-      id: '00000000-0000-0000-0000-000000000001',
-      email: 'admin@internship.org',
-      full_name: 'Admin',
-      avatar_url: null,
-      role: 'admin',
-      status: 'active',
-      must_change_password: false,
-    },
-  },
-  'test@admin.com': {
-    email: 'test@admin.com',
-    role: 'admin',
-    supabaseEmail: 'admin@internship.org',
-    supabasePassword: 'Password123!',
-    profile: {
-      id: '00000000-0000-0000-0000-000000000001',
-      email: 'admin@internship.org',
-      full_name: 'Admin',
-      avatar_url: null,
-      role: 'admin',
-      status: 'active',
-      must_change_password: false,
-    },
-  },
-  'admin@test.com': {
-    email: 'admin@test.com',
-    role: 'admin',
-    supabaseEmail: 'admin@internship.org',
-    supabasePassword: 'Password123!',
-    profile: {
-      id: '00000000-0000-0000-0000-000000000001',
-      email: 'admin@internship.org',
-      full_name: 'Admin',
+      id: '2256856d-922f-454b-bda8-b16eae81d7f6',
+      email: 'ops@genmitra.com',
+      full_name: 'GenMitra Operations',
       avatar_url: null,
       role: 'admin',
       status: 'active',
@@ -192,12 +98,12 @@ export const TEST_ACCOUNTS: Record<string, TestAccount> = {
   'admin': {
     email: 'admin',
     role: 'admin',
-    supabaseEmail: 'admin@internship.org',
-    supabasePassword: 'Password123!',
+    supabaseEmail: 'ops@genmitra.com',
+    supabasePassword: 'GENMITRA@ADMIN2026',
     profile: {
-      id: '00000000-0000-0000-0000-000000000001',
-      email: 'admin@internship.org',
-      full_name: 'Admin',
+      id: '2256856d-922f-454b-bda8-b16eae81d7f6',
+      email: 'ops@genmitra.com',
+      full_name: 'GenMitra Operations',
       avatar_url: null,
       role: 'admin',
       status: 'active',
@@ -206,23 +112,7 @@ export const TEST_ACCOUNTS: Record<string, TestAccount> = {
   },
 };
 
-export function findTestAccount(emailInput: string): TestAccount | null {
-  const normalized = emailInput.trim().toLowerCase();
-  
-  if (TEST_ACCOUNTS[normalized]) {
-    return TEST_ACCOUNTS[normalized];
-  }
-
-  // Also check if someone typed intern.david / mentor.alex / admin with password '123'
-  if (normalized.includes('intern.david')) {
-    return TEST_ACCOUNTS['test@intern'];
-  }
-  if (normalized.includes('mentor.alex')) {
-    return TEST_ACCOUNTS['test@mentor'];
-  }
-  if (normalized === 'admin@internship.org') {
-    return TEST_ACCOUNTS['test@admin'];
-  }
-
-  return null;
+export function findTestAccount(email: string): TestAccount | null {
+  const normalized = email.trim().toLowerCase();
+  return TEST_ACCOUNTS[normalized] || null;
 }

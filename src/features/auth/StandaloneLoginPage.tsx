@@ -105,15 +105,15 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
           return;
         }
 
-        if (data.password === '123' || data.password === 'Password123!' || data.password === testAcc.supabasePassword) {
-          // Attempt Supabase sign-in with seed account
+        if (data.password === testAcc.supabasePassword) {
+          // Attempt Supabase sign-in with account
           const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
             email: testAcc.supabaseEmail,
             password: testAcc.supabasePassword,
           });
 
           if (signInError || !authData.user) {
-            // Fallback to local test session
+            // Fallback to local session
             loginAsTestAccount(testAcc);
           }
 
@@ -253,7 +253,7 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
                   type="text"
                   autoComplete="username"
                   inputMode="email"
-                  placeholder={`test@${role} or name@internship.org`}
+                  placeholder={role === 'intern' ? 'sindhugangisetty910@gmail.com' : role === 'mentor' ? 'manireddy@genmitra.com' : 'ops@genmitra.com'}
                   className="pl-9"
                   disabled={isSubmitting}
                 />

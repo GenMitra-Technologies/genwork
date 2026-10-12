@@ -8,33 +8,36 @@ import { findTestAccount, TEST_ACCOUNTS } from '../lib/testAuth';
 describe('A to Z Comprehensive Platform Test Suite', () => {
   describe('1. Authentication & Role Accounts Verification', () => {
     it('should have predefined valid credentials for all three user roles', () => {
-      expect(TEST_ACCOUNTS['test@intern']).toBeDefined();
-      expect(TEST_ACCOUNTS['test@intern'].role).toBe('intern');
+      expect(TEST_ACCOUNTS['sindhugangisetty910@gmail.com']).toBeDefined();
+      expect(TEST_ACCOUNTS['sindhugangisetty910@gmail.com'].role).toBe('intern');
+      expect(TEST_ACCOUNTS['sindhugangisetty910@gmail.com'].supabasePassword).toBe('GENMITRA@INTERN');
 
-      expect(TEST_ACCOUNTS['test@mentor']).toBeDefined();
-      expect(TEST_ACCOUNTS['test@mentor'].role).toBe('mentor');
+      expect(TEST_ACCOUNTS['manireddy@genmitra.com']).toBeDefined();
+      expect(TEST_ACCOUNTS['manireddy@genmitra.com'].role).toBe('mentor');
+      expect(TEST_ACCOUNTS['manireddy@genmitra.com'].supabasePassword).toBe('GENMITRA@MENTOR');
 
-      expect(TEST_ACCOUNTS['test@admin']).toBeDefined();
-      expect(TEST_ACCOUNTS['test@admin'].role).toBe('admin');
+      expect(TEST_ACCOUNTS['ops@genmitra.com']).toBeDefined();
+      expect(TEST_ACCOUNTS['ops@genmitra.com'].role).toBe('admin');
+      expect(TEST_ACCOUNTS['ops@genmitra.com'].supabasePassword).toBe('GENMITRA@ADMIN2026');
     });
 
     it('should correctly resolve test accounts via findTestAccount helper', () => {
-      const internAcc = findTestAccount('test@intern');
+      const internAcc = findTestAccount('sindhugangisetty910@gmail.com');
       expect(internAcc).not.toBeNull();
       expect(internAcc?.role).toBe('intern');
 
-      const mentorAcc = findTestAccount('test@mentor');
+      const mentorAcc = findTestAccount('manireddy@genmitra.com');
       expect(mentorAcc).not.toBeNull();
       expect(mentorAcc?.role).toBe('mentor');
 
-      const adminAcc = findTestAccount('test@admin');
+      const adminAcc = findTestAccount('ops@genmitra.com');
       expect(adminAcc).not.toBeNull();
       expect(adminAcc?.role).toBe('admin');
     });
 
-    it('admin profile full_name should be strictly "Admin" without individual names', () => {
-      const adminAcc = findTestAccount('test@admin');
-      expect(adminAcc?.profile.full_name).toBe('Admin');
+    it('admin profile full_name should be strictly "GenMitra Operations" without individual names', () => {
+      const adminAcc = findTestAccount('ops@genmitra.com');
+      expect(adminAcc?.profile.full_name).toBe('GenMitra Operations');
     });
   });
 

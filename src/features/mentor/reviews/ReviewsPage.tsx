@@ -1,5 +1,6 @@
 // src/features/mentor/reviews/ReviewsPage.tsx
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Eye,
@@ -27,7 +28,12 @@ export function ReviewsPage() {
   const { profile } = useAuth();
   const mentorId = profile?.mentor_id || '10000000-0000-0000-0000-000000000001';
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<'waiting' | 'all'>('waiting');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = (searchParams.get('tab') as 'waiting' | 'all') || 'waiting';
+
+  const setActiveTab = (tab: 'waiting' | 'all') => {
+    setSearchParams({ tab });
+  };
 
   // Dialog states
   const [selectedSubmission, setSelectedSubmission] = useState<any | null>(null);

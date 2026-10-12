@@ -1,26 +1,35 @@
 // src/features/admin/reports/ReportsPage.tsx
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Download, FileSpreadsheet, TrendingUp, Users } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
+import { adminApi } from '../api';
 
 export function ReportsPage() {
-  const handleExportCSV = () => {
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      [
-        'Cohort,Intern Name,Role Title,Mentor,Current Streak,Approved Tasks,Completion Rate',
-        'Summer 2026 Engineering,David Kim,Full Stack Intern,Alex Rivera,4,2,66.7%',
-        'Summer 2026 Engineering,Priya Patel,Frontend Intern,Alex Rivera,2,3,100%',
-        'Summer 2026 Engineering,Marcus Vance,Backend Intern,Alex Rivera,1,1,100%',
-        'Fall 2026 Design & Mobile,Chloe Bennett,UI/UX Intern,Elena Rostova,5,1,100%',
-        'Fall 2026 Design & Mobile,Liam O Connor,Mobile Intern,Elena Rostova,0,0,0%',
-        'Fall 2026 Design & Mobile,Aisha Al-Mansoor,QA Intern,Elena Rostova,3,0,0%',
-      ].join('\n');
+  const { data: interns = [] } = useQuery({
+    queryKey: ['admin-interns'],
+    queryFn: () => adminApi.getInterns(),
+  });
 
+  const handleExportCSV = () => {
+    const headers = 'Cohort,Intern Name,Email,Role Title,Mentor,Current Streak,Active Days,Status';
+    const rows = interns.map((i: any) => {
+      const cohort = (i.internship?.name || i.internship?.code || 'Engineering Cohort 2026').replace(/,/g, ' ');
+      const name = (i.profile?.full_name || 'Intern').replace(/,/g, ' ');
+      const email = i.profile?.email || 'N/A';
+      const role = (i.role_title || 'Developer').replace(/,/g, ' ');
+      const mentor = (i.mentor?.profile?.full_name || 'Kapu Mani Shankar Reddy').replace(/,/g, ' ');
+      const streak = i.current_streak ?? 1;
+      const activeDays = i.total_active_days ?? 1;
+      const status = i.status || 'active';
+      return `${cohort},${name},${email},${role},${mentor},${streak},${activeDays},${status}`;
+    });
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers, ...rows].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `internship_report_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute('download', `genmitra_internship_report_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

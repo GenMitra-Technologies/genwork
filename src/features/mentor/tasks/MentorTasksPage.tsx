@@ -1,7 +1,7 @@
 // src/features/mentor/tasks/MentorTasksPage.tsx
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, CheckSquare, Calendar, Users, Eye, Sparkles } from 'lucide-react';
@@ -21,8 +21,18 @@ export function MentorTasksPage() {
   const mentorId = profile?.mentor_id || '10000000-0000-0000-0000-000000000001';
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
-  const [createDialogOpen, setCreateDialogOpen] = useState(searchParams.get('new') === 'true');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isNewRoute = location.pathname.endsWith('/new') || searchParams.get('new') === 'true';
+  const [createDialogOpen, setCreateDialogOpen] = useState(isNewRoute);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const handleCloseDialog = () => {
+    setCreateDialogOpen(false);
+    if (location.pathname.endsWith('/new')) {
+      navigate('/mentor/tasks', { replace: true });
+    }
+  };
 
   const { data: myInterns = [] } = useQuery({
     queryKey: ['my-interns', mentorId],
@@ -67,7 +77,7 @@ export function MentorTasksPage() {
       await mentorApi.createTask(data);
     },
     onSuccess: () => {
-      setCreateDialogOpen(false);
+      handleCloseDialog();
       reset();
       setFormError(null);
       queryClient.invalidateQueries({ queryKey: ['mentor-created-tasks'] });
@@ -151,7 +161,7 @@ export function MentorTasksPage() {
       </div>
 
       {/* Create Task Dialog */}
-      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+      <Dialog open={createDialogOpen} onOpenChange={(open) => { if (!open) handleCloseDialog(); else setCreateDialogOpen(true); }}>
         <DialogHeader>
           <DialogTitle className="text-base font-semibold text-slate-900">Create Internship Task</DialogTitle>
           <DialogDescription className="text-xs text-slate-500">
@@ -266,7 +276,7 @@ export function MentorTasksPage() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0 pt-2">
-            <Button type="button" variant="outline" size="sm" onClick={() => setCreateDialogOpen(false)} className="h-8 text-xs rounded-lg">
+            <Button type="button" variant="outline" size="sm" onClick={handleCloseDialog} className="h-8 text-xs rounded-lg">
               Cancel
             </Button>
             <Button type="submit" size="sm" disabled={createTaskMutation.isPending} className="h-8 text-xs rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium">

@@ -1,7 +1,7 @@
 // src/features/mentor/assignments/MentorAssignmentsPage.tsx
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -35,14 +35,24 @@ export function MentorAssignmentsPage() {
   const mentorId = profile?.mentor_id || '10000000-0000-0000-0000-000000000001';
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const [createDialogOpen, setCreateDialogOpen] = useState(searchParams.get('new') === 'true');
+  const isNewRoute = location.pathname.endsWith('/new') || searchParams.get('new') === 'true';
+  const [createDialogOpen, setCreateDialogOpen] = useState(isNewRoute);
   const [selectedSubmissions, setSelectedSubmissions] = useState<any | null>(null);
   const [editingAssignment, setEditingAssignment] = useState<any | null>(null);
   const [deletingAssignment, setDeletingAssignment] = useState<any | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [formError, setFormError] = useState<string | null>(null);
+
+  const handleCloseCreateDialog = () => {
+    setCreateDialogOpen(false);
+    if (location.pathname.endsWith('/new')) {
+      navigate('/mentor/assignments', { replace: true });
+    }
+  };
 
   // Fetch Mentor's Interns
   const { data: myInterns = [] } = useQuery({
@@ -102,7 +112,7 @@ export function MentorAssignmentsPage() {
       await mentorApi.createAssignment(data, mentorId);
     },
     onSuccess: () => {
-      setCreateDialogOpen(false);
+      handleCloseCreateDialog();
       reset();
       setFormError(null);
       queryClient.invalidateQueries({ queryKey: ['mentor-assignments'] });
@@ -476,7 +486,7 @@ export function MentorAssignmentsPage() {
       )}
 
       {/* Create Assignment Dialog */}
-      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+      <Dialog open={createDialogOpen} onOpenChange={(open) => { if (!open) handleCloseCreateDialog(); else setCreateDialogOpen(true); }}>
         <DialogHeader>
           <DialogTitle className="text-sm font-semibold">Create New Assignment</DialogTitle>
           <DialogDescription className="text-xs">
@@ -599,7 +609,7 @@ export function MentorAssignmentsPage() {
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => setCreateDialogOpen(false)}
+              onClick={handleCloseCreateDialog}
               className="h-7 text-xs"
             >
               Cancel

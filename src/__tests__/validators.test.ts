@@ -55,12 +55,12 @@ describe('Internship Platform Validation Schemas', () => {
 
     it('correctly maps findTestAccount for all roles', async () => {
       const { findTestAccount } = await import('../lib/testAuth');
-      expect(findTestAccount('test@intern')?.role).toBe('intern');
-      expect(findTestAccount('test@intern.com')?.role).toBe('intern');
-      expect(findTestAccount('test@mentor')?.role).toBe('mentor');
-      expect(findTestAccount('test@mentor.com')?.role).toBe('mentor');
-      expect(findTestAccount('test@admin')?.role).toBe('admin');
-      expect(findTestAccount('test@admin.com')?.role).toBe('admin');
+      expect(findTestAccount('sindhugangisetty910@gmail.com')?.role).toBe('intern');
+      expect(findTestAccount('sindhu')?.role).toBe('intern');
+      expect(findTestAccount('manireddy@genmitra.com')?.role).toBe('mentor');
+      expect(findTestAccount('manireddy')?.role).toBe('mentor');
+      expect(findTestAccount('ops@genmitra.com')?.role).toBe('admin');
+      expect(findTestAccount('admin')?.role).toBe('admin');
       expect(findTestAccount('unknown@domain.com')).toBeNull();
     });
 

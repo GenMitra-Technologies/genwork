@@ -19,6 +19,11 @@ import {
   LogOut,
   CalendarCheck,
   ChevronRight,
+  ShieldCheck,
+  Megaphone,
+  Wrench,
+  Database,
+  HardDrive,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useUIStore } from '../../stores/ui.store';
@@ -158,6 +163,8 @@ export function MobileDrawer() {
       {
         title: 'ACCESS & GOVERNANCE',
         items: [
+          { label: 'Team Access & Permissions', to: '/admin/permissions', icon: Users },
+          { label: 'Authentication & Credentials', to: '/admin/auth-security', icon: ShieldCheck },
           { label: 'Users & Access', to: '/admin/credentials', icon: KeyRound },
           { label: 'Audit Logs', to: '/admin/activity-logs', icon: Activity },
           { label: 'Reports', to: '/admin/reports', icon: FileSpreadsheet },
@@ -166,6 +173,10 @@ export function MobileDrawer() {
       {
         title: 'SYSTEM & SETTINGS',
         items: [
+          { label: 'Broadcast Announcement', to: '/admin/broadcast', icon: Megaphone },
+          { label: 'Maintenance Mode', to: '/admin/maintenance', icon: Wrench },
+          { label: 'Supabase Database', to: '/admin/database', icon: Database },
+          { label: 'Auto-Backup & Export', to: '/admin/backup', icon: HardDrive },
           { label: 'Notifications', to: '/admin/notifications', icon: Bell, badge: unreadCount },
           { label: 'Settings', to: '/admin/settings', icon: Settings },
         ],

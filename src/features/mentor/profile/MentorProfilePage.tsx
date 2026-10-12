@@ -35,17 +35,17 @@ export function MentorProfilePage() {
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pb-4 border-b border-slate-100">
           <Avatar
             src={profile?.avatar_url}
-            name={profile?.full_name || 'Alex Rivera'}
+            name={profile?.full_name || 'Kapu Mani Shankar Reddy'}
             size="lg"
           />
           <div className="text-center sm:text-left space-y-0.5 min-w-0">
-            <h2 className="text-base font-bold text-slate-900">{profile?.full_name || 'Alex Rivera'}</h2>
+            <h2 className="text-base font-bold text-slate-900">{profile?.full_name || 'Kapu Mani Shankar Reddy'}</h2>
             <p className="text-xs text-slate-500 flex items-center justify-center sm:justify-start gap-1">
-              <Mail className="h-3 w-3 text-slate-400" /> {profile?.email || 'alex.rivera@internship.org'}
+              <Mail className="h-3 w-3 text-slate-400" /> {profile?.email || 'manireddy@genmitra.com'}
             </p>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 pt-1">
               <span className="rounded-md bg-indigo-50 border border-indigo-200/60 px-2 py-0.5 text-[10px] font-semibold text-indigo-700">
-                Role: Staff Mentor
+                Role: Chief Technology Officer (CTO) & Staff Mentor
               </span>
               <span className="rounded-md bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
                 Status: Active
@@ -61,9 +61,9 @@ export function MentorProfilePage() {
               <Building className="h-3 w-3 text-indigo-600" /> Department
             </span>
             <p className="font-semibold text-xs text-slate-900">
-              Software Engineering
+              Engineering & Innovation Cell
             </p>
-            <p className="text-[11px] text-slate-500">Full Stack & Distributed Systems</p>
+            <p className="text-[11px] text-slate-500">Frontend Architecture & Systems</p>
           </div>
 
           <div className="rounded-lg border border-slate-200/60 bg-slate-50/60 p-3 space-y-0.5">
@@ -73,7 +73,7 @@ export function MentorProfilePage() {
             <p className="font-semibold text-xs text-slate-900">
               {myInterns.length} Assigned Interns
             </p>
-            <p className="text-[11px] text-slate-500">Summer 2026 Engineering Cohort</p>
+            <p className="text-[11px] text-slate-500">Engineering Internship Cohort 2026</p>
           </div>
 
           <div className="rounded-lg border border-slate-200/60 bg-slate-50/60 p-3 space-y-0.5">

@@ -37,8 +37,11 @@ export function TaskDetailPage() {
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  const { profile } = useAuth();
+  const { profile, role } = useAuth();
   const internId = profile?.intern_id || '20000000-0000-0000-0000-000000000001';
+  const isMentor = role === 'mentor';
+  const isAdmin = role === 'admin';
+  const backPath = isMentor ? '/mentor/tasks' : isAdmin ? '/admin/tasks' : '/intern/tasks';
 
   // 1. Fetch Task
   const { data: task, isLoading: taskLoading } = useQuery({
@@ -81,10 +84,10 @@ export function TaskDetailPage() {
   } = useForm<SubmitTaskInput>({
     resolver: zodResolver(submitTaskSchema),
     defaultValues: {
-      github_url: 'https://github.com/internship-demo/project-repo',
-      deployment_url: 'https://demo-preview.vercel.app',
-      drive_url: 'https://drive.google.com/file/d/spec-demo',
-      note: 'Here is my completed work meeting all the acceptance criteria.',
+      github_url: '',
+      deployment_url: '',
+      drive_url: '',
+      note: '',
     },
   });
 
@@ -166,7 +169,7 @@ export function TaskDetailPage() {
       {/* Back Button */}
       <div className="flex items-center justify-between">
         <Link
-          to="/intern/tasks"
+          to={backPath}
           className="inline-flex items-center text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to tasks
@@ -194,33 +197,56 @@ export function TaskDetailPage() {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-3 shrink-0">
-            {canStart && (
-              <Button
-                onClick={() => startTaskMutation.mutate()}
-                disabled={startTaskMutation.isPending}
-                className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
-              >
-                <Play className="h-4 w-4" /> Start Task
-              </Button>
+            {!isMentor && !isAdmin && (
+              <>
+                {canStart && (
+                  <Button
+                    onClick={() => startTaskMutation.mutate()}
+                    disabled={startTaskMutation.isPending}
+                    className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <Play className="h-4 w-4" /> Start Task
+                  </Button>
+                )}
+
+                {canSubmit && (
+                  <Button
+                    onClick={() => setSubmitDialogOpen(true)}
+                    className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {currentStatus === 'changes_requested' ? 'Resubmit Task' : 'Submit Task'}
+                  </Button>
+                )}
+              </>
             )}
 
-            {canSubmit && (
-              <Button
-                onClick={() => setSubmitDialogOpen(true)}
-                className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
-              >
-                <Upload className="h-4 w-4" />
-                {currentStatus === 'changes_requested' ? 'Resubmit Task' : 'Submit Task'}
-              </Button>
+            {isMentor && (
+              <>
+                {isWaitingReview && (
+                  <Link to="/mentor/reviews">
+                    <Button className="gap-2 bg-amber-600 hover:bg-amber-700 text-white">
+                      <Clock className="h-4 w-4" /> Review Submissions
+                    </Button>
+                  </Link>
+                )}
+                {isApproved && (
+                  <Link to="/mentor/reviews">
+                    <Button variant="outline" className="gap-2 text-xs">
+                      View Review History
+                    </Button>
+                  </Link>
+                )}
+              </>
             )}
 
-            {isWaitingReview && (
+            {isWaitingReview && !isMentor && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-300 text-xs font-semibold border border-amber-500/20">
                 <Clock className="h-4 w-4 animate-spin text-amber-600" /> Waiting for Mentor Review
               </div>
             )}
 
-            {isApproved && (
+            {isApproved && !isMentor && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-semibold border border-emerald-500/20">
                 <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Task Approved
               </div>
@@ -266,7 +292,7 @@ export function TaskDetailPage() {
           </div>
           <div>
             <span className="text-muted-foreground block text-[11px]">Review Mentor</span>
-            <span className="font-medium text-foreground">{taskObj.mentor?.profile?.full_name || 'Alex Rivera'}</span>
+            <span className="font-medium text-foreground">{taskObj.mentor?.profile?.full_name || 'Kapu Mani Shankar Reddy'}</span>
           </div>
         </div>
       </div>

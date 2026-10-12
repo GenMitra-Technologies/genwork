@@ -14,8 +14,9 @@ export function InternshipsPage() {
   const [openModal, setOpenModal] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [startDate, setStartDate] = useState('2026-06-01');
-  const [endDate, setEndDate] = useState('2026-08-31');
+  const [startDate, setStartDate] = useState('2026-10-01');
+  const [endDate, setEndDate] = useState('2027-03-31');
+  const [formError, setFormError] = useState<string | null>(null);
 
   const { data: cohorts = [], isLoading } = useQuery({
     queryKey: ['admin-internships'],
@@ -24,9 +25,16 @@ export function InternshipsPage() {
 
   const createMutation = useMutation({
     mutationFn: async () => {
+      setFormError(null);
+      if (!name.trim() || name.trim().length < 3) {
+        throw new Error('Cohort name must be at least 3 characters long.');
+      }
+      if (new Date(endDate) <= new Date(startDate)) {
+        throw new Error('End date must be strictly after start date.');
+      }
       await adminApi.createInternship({
-        name,
-        description,
+        name: name.trim(),
+        description: description.trim(),
         start_date: startDate,
         end_date: endDate,
       });
@@ -35,7 +43,11 @@ export function InternshipsPage() {
       setOpenModal(false);
       setName('');
       setDescription('');
+      setFormError(null);
       queryClient.invalidateQueries({ queryKey: ['admin-internships'] });
+    },
+    onError: (err: any) => {
+      setFormError(err.message || 'Failed to create cohort');
     },
   });
 
@@ -88,6 +100,12 @@ export function InternshipsPage() {
           <DialogTitle>Create New Internship Cohort</DialogTitle>
           <DialogDescription>Define cohort title, description, and timeline bounds.</DialogDescription>
         </DialogHeader>
+
+        {formError && (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-2.5 text-xs text-destructive">
+            {formError}
+          </div>
+        )}
 
         <div className="space-y-4">
           <div className="space-y-1">

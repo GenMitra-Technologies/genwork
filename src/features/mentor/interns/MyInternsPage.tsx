@@ -1,19 +1,42 @@
 // src/features/mentor/interns/MyInternsPage.tsx
 import { useQuery } from '@tanstack/react-query';
-import { Users, Flame, CheckCircle2, Clock, Hourglass, RotateCcw, ArrowRight } from 'lucide-react';
+import { Users, Flame, CheckCircle2, Clock, Hourglass, RotateCcw, ArrowRight, ArrowLeft } from 'lucide-react';
 import { mentorApi } from '../api';
 import { useAuth } from '../../../hooks/useAuth';
 import { Avatar } from '../../../components/shared/Avatar';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { CandidateOperationalProfileCard } from '../../intern/profile/CandidateOperationalProfileCard';
 
 export function MyInternsPage() {
   const { profile } = useAuth();
+  const { internId } = useParams<{ internId?: string }>();
   const mentorId = profile?.mentor_id || '10000000-0000-0000-0000-000000000001';
 
   const { data: myInterns = [], isLoading } = useQuery({
     queryKey: ['my-interns', mentorId],
     queryFn: () => mentorApi.getMyInterns(mentorId),
   });
+
+  const selectedIntern = internId
+    ? myInterns.find((i: any) => i.intern_id === internId || i.id === internId) || myInterns[0]
+    : null;
+
+  if (internId && selectedIntern) {
+    return (
+      <div className="space-y-4 max-w-[1140px] mx-auto">
+        <div className="flex items-center justify-between">
+          <Link
+            to="/mentor/interns"
+            className="inline-flex items-center text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors"
+          >
+            <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to assigned interns
+          </Link>
+          <span className="text-xs text-slate-400">Mentee Profile View</span>
+        </div>
+        <CandidateOperationalProfileCard intern={selectedIntern} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 max-w-[1140px] mx-auto">
@@ -94,9 +117,12 @@ export function MyInternsPage() {
 
             {/* Quick Links */}
             <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-              <span className="text-slate-400 text-[10px]">
-                {intern.total_assigned_tasks} total tasks
-              </span>
+              <Link
+                to={`/mentor/interns/${intern.intern_id || intern.id}`}
+                className="font-medium text-slate-600 hover:text-slate-900 transition-colors"
+              >
+                View Profile
+              </Link>
               <Link
                 to={`/mentor/reviews`}
                 className="font-medium text-indigo-600 hover:text-indigo-700 flex items-center gap-1 transition-colors"
