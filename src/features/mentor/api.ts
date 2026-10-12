@@ -109,9 +109,9 @@ export const mentorApi = {
                 task_title: t.task_title,
                 task_priority: t.priority || 'medium',
                 task_due_date: t.due_date,
-                intern_name: 'David Kim',
-                intern_email: 'intern.david@internship.org',
-                intern_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
+                intern_name: s.intern_name || 'Intern',
+                intern_email: s.intern_email || '',
+                intern_avatar: null,
               });
             });
           }

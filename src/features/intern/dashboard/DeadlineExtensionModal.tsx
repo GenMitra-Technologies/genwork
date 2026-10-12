@@ -19,7 +19,7 @@ export function DeadlineExtensionModal({
   taskTitle,
   taskCode,
   currentDueDate,
-  mentorName = 'Alex Rivera',
+  mentorName = 'Assigned Mentor',
 }: DeadlineExtensionModalProps) {
   const [reason, setReason] = useState('Technical blockers / Need mentor guidance');
   const [notes, setNotes] = useState('');

@@ -125,7 +125,7 @@ export function InternDashboard() {
                   setExtensionModalTask({
                     isOpen: true,
                     taskTitle: attentionItems[0]?.task_title || 'Deliverable Task',
-                    taskCode: attentionItems[0]?.task_code || 'TSK-0042',
+                    taskCode: attentionItems[0]?.task_code || 'TASK',
                     currentDueDate: formatDateOnly(attentionItems[0]?.due_date),
                   })
                 }
@@ -200,9 +200,9 @@ export function InternDashboard() {
                       <div className="space-y-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                            {t.task_code || 'TSK-0042'}
+                            {t.task_code || 'TASK'}
                           </span>
-                          <PriorityBadge priority={t.priority || 'high'} />
+                          <PriorityBadge priority={t.priority || 'medium'} />
                           <StatusBadge status={t.status} isOverdue={isOverdue} />
                         </div>
                         <h4 className="text-sm font-semibold text-slate-900 line-clamp-1">
@@ -233,7 +233,7 @@ export function InternDashboard() {
                       <div className="flex items-center gap-3 text-slate-500">
                         <span className="flex items-center gap-1">
                           <UserCheck className="h-3 w-3 text-slate-400" />
-                          {t.mentor_name || internProfile?.mentor?.profile?.full_name || 'Alex Rivera'}
+                          {t.mentor_name || internProfile?.mentor?.profile?.full_name || 'Assigned Mentor'}
                         </span>
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3 w-3 text-slate-400" />
@@ -371,7 +371,7 @@ export function InternDashboard() {
         taskTitle={extensionModalTask.taskTitle}
         taskCode={extensionModalTask.taskCode}
         currentDueDate={extensionModalTask.currentDueDate}
-        mentorName={internProfile?.mentor?.profile?.full_name || 'Alex Rivera'}
+        mentorName={internProfile?.mentor?.profile?.full_name || 'Assigned Mentor'}
       />
 
       {/* Deliverable Preview Side-Sheet Modal */}

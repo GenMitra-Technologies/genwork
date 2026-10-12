@@ -115,7 +115,7 @@ export const internApi = {
           assigned_at: d.assigned_at,
           started_at: d.started_at,
           current_version: d.current_version,
-          task_code: d.task?.code || 'TSK-0001',
+          task_code: d.task?.code || 'TASK',
           task_title: d.task?.title || 'Task',
           task_description: d.task?.description || '',
           priority: d.task?.priority || 'medium',
@@ -167,7 +167,7 @@ export const internApi = {
         require_deployment: match?.require_deployment ?? true,
         require_drive: match?.require_drive ?? false,
         mentor: {
-          profile: { full_name: match?.mentor_name || 'Alex Rivera' },
+          profile: { full_name: match?.mentor_name || 'Assigned Mentor' },
           department: 'Software Engineering',
         },
       };
@@ -268,7 +268,7 @@ export const internApi = {
           id: 'evt-assigned',
           event_type: 'assigned',
           created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-          actor: { full_name: 'Alex Rivera' },
+          actor: { full_name: 'Assigned Mentor' },
         },
       ];
     }
@@ -300,7 +300,7 @@ export const internApi = {
           id: `evt-started-${Date.now()}`,
           event_type: 'started',
           created_at: now,
-          actor: { full_name: 'David Kim' },
+          actor: { full_name: 'Intern' },
         });
         localStorage.setItem(eventsKey, JSON.stringify(prevEvents));
       } catch {}
@@ -363,7 +363,7 @@ export const internApi = {
           id: `evt-submitted-${Date.now()}`,
           event_type: 'submitted',
           created_at: now,
-          actor: { full_name: 'David Kim' },
+          actor: { full_name: 'Intern' },
         });
         localStorage.setItem(eventsKey, JSON.stringify(prevEvents));
       } catch {}

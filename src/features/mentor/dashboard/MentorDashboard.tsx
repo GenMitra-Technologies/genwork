@@ -102,7 +102,7 @@ export function MentorDashboard() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg font-semibold tracking-tight text-slate-900">
-                Welcome back, {profile?.full_name || 'Alex Rivera'}
+                Welcome back, {profile?.full_name || 'Mentor'}
               </h1>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-indigo-50 border border-indigo-200/60 text-indigo-700">
                 <Sparkles className="w-2.5 h-2.5" /> Staff Mentor

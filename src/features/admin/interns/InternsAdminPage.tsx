@@ -111,10 +111,10 @@ export function InternsAdminPage() {
                     <p className="text-muted-foreground text-[11px]">{intern.company_name}</p>
                   </td>
                   <td className="p-4 text-muted-foreground font-mono text-[11px]">
-                    {intern.internship?.name || 'INT-001'}
+                    {intern.internship?.name || 'Cohort 1'}
                   </td>
                   <td className="p-4 font-medium text-foreground">
-                    {intern.mentor?.profile?.full_name || 'Alex Rivera'}
+                    {intern.mentor?.profile?.full_name || 'Unassigned'}
                   </td>
                   <td className="p-4 font-semibold text-orange-600">
                     🔥 {intern.current_streak}d

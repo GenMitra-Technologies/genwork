@@ -157,25 +157,25 @@ export function DeliverablePreviewModal({
                       <p className="font-medium text-slate-800">
                         feat: add complete Supabase RLS security policies & RPC handlers
                       </p>
-                      <p className="text-[11px] text-slate-400">commit 7a2b91c • 2 hours ago by David Kim</p>
+                      <p className="text-[11px] text-slate-400">commit 7a2b91c • 2 hours ago by Intern</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-2.5">
                     <GitCommit className="h-4 w-4 text-indigo-600 mt-0.5 shrink-0" />
                     <div className="space-y-0.5">
                       <p className="font-medium text-slate-800">
-                        test: add 15 integration unit tests covering deadline extensions
+                        test: add integration tests covering platform workflow
                       </p>
-                      <p className="text-[11px] text-slate-400">commit 4c8e12a • 5 hours ago by David Kim</p>
+                      <p className="text-[11px] text-slate-400">commit 4c8e12a • 5 hours ago by Intern</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-2.5">
                     <GitCommit className="h-4 w-4 text-indigo-600 mt-0.5 shrink-0" />
                     <div className="space-y-0.5">
                       <p className="font-medium text-slate-800">
-                        chore: optimize Tailwind layout tokens and remove horizontal overflow
+                        chore: optimize layout tokens and responsive containers
                       </p>
-                      <p className="text-[11px] text-slate-400">commit 1f9d50b • yesterday by David Kim</p>
+                      <p className="text-[11px] text-slate-400">commit 1f9d50b • yesterday by Intern</p>
                     </div>
                   </div>
                 </div>

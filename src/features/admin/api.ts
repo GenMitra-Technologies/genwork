@@ -8,16 +8,16 @@ export const adminApi = {
     const { data, error } = await supabase.rpc('get_dashboard_stats');
     if (error) {
       return {
-        total_internships: 2,
-        active_internships: 2,
-        total_interns: 6,
-        active_interns: 6,
-        total_mentors: 2,
-        active_mentors: 2,
-        total_tasks: 12,
-        total_submissions: 6,
-        waiting_reviews: 2,
-        completed_tasks: 4,
+        total_internships: 0,
+        active_internships: 0,
+        total_interns: 0,
+        active_interns: 0,
+        total_mentors: 0,
+        active_mentors: 0,
+        total_tasks: 0,
+        total_submissions: 0,
+        waiting_reviews: 0,
+        completed_tasks: 0,
       };
     }
     return data;
@@ -485,53 +485,13 @@ export const adminApi = {
     } catch {}
 
     if (list.length === 0) {
-      list = [
-        {
-          id: 'log-1',
-          created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
-          role: 'admin',
-          action: 'BROADCAST_ANNOUNCEMENT',
-          entity_type: 'announcements',
-          entity_id: '80000000-0000-0000-0000-000000000001',
-          details: { title: 'Welcome to Genmitra Engineering & Mentorship Workspace', target: 'all' },
-        },
-        {
-          id: 'log-2',
-          created_at: new Date(Date.now() - 3600000 * 3).toISOString(),
-          role: 'mentor',
-          action: 'REVIEW_SUBMISSION',
-          entity_type: 'reviews',
-          entity_id: '50000000-0000-0000-0000-000000000001',
-          details: { intern: 'David Kim', result: 'approved', task_code: 'TSK-0002' },
-        },
-        {
-          id: 'log-3',
-          created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
-          role: 'intern',
-          action: 'SUBMIT_TASK',
-          entity_type: 'task_submissions',
-          entity_id: 'sub-2001',
-          details: { intern: 'David Kim', task_code: 'TSK-0003', version: 1 },
-        },
-        {
-          id: 'log-4',
-          created_at: new Date(Date.now() - 3600000 * 7).toISOString(),
-          role: 'admin',
-          action: 'REASSIGN_MENTOR',
-          entity_type: 'interns',
-          entity_id: '20000000-0000-0000-0000-000000000003',
-          details: { intern: 'Marcus Vance', new_mentor: 'Jordan Lee' },
-        },
-        {
-          id: 'log-5',
-          created_at: new Date(Date.now() - 86400000 * 1).toISOString(),
-          role: 'admin',
-          action: 'USER_LOGIN',
-          entity_type: 'profiles',
-          entity_id: '00000000-0000-0000-0000-000000000001',
-          details: { email: 'admin@internship.org', method: 'password' },
-        },
-      ];
+      try {
+        const local = JSON.parse(localStorage.getItem('genmitra_activity_logs') || '[]');
+        if (Array.isArray(local) && local.length > 0) {
+          return local;
+        }
+      } catch {}
+      return [];
     }
     return list;
   },
@@ -561,15 +521,7 @@ export const adminApi = {
     }
 
     if (list.length === 0) {
-      return [
-        {
-          id: '80000000-0000-0000-0000-000000000001',
-          title: 'Welcome to Genmitra Engineering & Mentorship Workspace',
-          body: 'All engineering cohorts are scheduled for daily remote standups. Please review your assigned deliverables and submit on time.',
-          target_role: 'all',
-          created_at: new Date(Date.now() - 86400000).toISOString(),
-        },
-      ];
+      return [];
     }
 
     const uniqueMap = new Map();

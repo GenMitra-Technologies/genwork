@@ -273,7 +273,7 @@ export function Topbar() {
             />
             <div className="hidden sm:flex flex-col">
               <span className="text-xs font-semibold leading-tight text-slate-900 truncate max-w-[120px]">
-                {role === 'admin' ? 'Admin' : (profile?.full_name || 'David Kim')}
+                {role === 'admin' ? 'Admin' : (profile?.full_name || (role === 'mentor' ? 'Mentor' : 'Intern'))}
               </span>
               <span className="text-[10px] capitalize text-slate-500 leading-tight">
                 {role || 'Intern'}
@@ -287,10 +287,10 @@ export function Topbar() {
               {/* User Meta Header */}
               <div className="px-3 py-2 border-b border-slate-100 space-y-0.5">
                 <p className="text-xs font-semibold text-slate-900 truncate">
-                  {role === 'admin' ? 'Admin' : (profile?.full_name || 'David Kim')}
+                  {role === 'admin' ? 'Admin' : (profile?.full_name || (role === 'mentor' ? 'Mentor' : 'Intern'))}
                 </p>
                 <p className="text-[11px] text-slate-500 truncate">
-                  {profile?.email || 'intern.david@internship.org'}
+                  {profile?.email || 'user@genmitra.com'}
                 </p>
                 <span className="inline-block rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-semibold text-indigo-700 capitalize border border-indigo-200">
                   {role} Account

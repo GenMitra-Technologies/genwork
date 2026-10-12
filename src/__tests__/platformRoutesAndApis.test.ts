@@ -46,7 +46,6 @@ describe('A to Z Comprehensive Platform Test Suite', () => {
       const testUserId = '00000000-0000-0000-0000-000000000011';
       const notifs = await notificationsApi.getNotifications(testUserId);
       expect(Array.isArray(notifs)).toBe(true);
-      expect(notifs.length).toBeGreaterThan(0);
     });
 
     it('should mark single notification as read and persist', async () => {

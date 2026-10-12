@@ -242,7 +242,7 @@ export function TasksPage() {
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
-          placeholder="Search by title, code (TSK-...), or description"
+          placeholder="Search by title, code, or description"
           className="w-full sm:max-w-xs"
         />
 
@@ -309,7 +309,7 @@ export function TasksPage() {
                   <div className="flex items-center gap-3 text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <User className="h-3 w-3 text-primary" />
-                      {task.mentor_name || 'Alex Rivera'}
+                      {task.mentor_name || 'Assigned Mentor'}
                     </span>
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3 text-primary" />

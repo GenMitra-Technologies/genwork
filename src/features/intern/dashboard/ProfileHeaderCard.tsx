@@ -40,8 +40,8 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const mentorName = internProfile?.mentor?.profile?.full_name || 'Alex Rivera';
-  const mentorEmail = internProfile?.mentor?.profile?.email || 'mentor.alex@internship.org';
+  const mentorName = internProfile?.mentor?.profile?.full_name || 'Assigned Mentor';
+  const mentorEmail = internProfile?.mentor?.profile?.email || 'mentor@genmitra.com';
 
   // Calculate cohort duration & progress
   const startDateStr = internProfile?.start_date || '2026-06-01';
@@ -83,7 +83,7 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
           {/* Avatar */}
           <Avatar
             src={profile?.avatar_url}
-            name={profile?.full_name || 'David Kim'}
+            name={profile?.full_name || 'Intern'}
             size="lg"
             className="shrink-0 shadow-2xs text-sm"
           />
@@ -93,7 +93,7 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
             <div className="space-y-0.5">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl font-semibold tracking-tight text-slate-900 truncate">
-                  {profile?.full_name || 'David Kim'}
+                  {profile?.full_name || 'Intern'}
                 </h1>
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.2 text-[11px] font-semibold text-emerald-700 border border-emerald-200">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
