@@ -174,7 +174,7 @@ export function LoginPage() {
                   type="text"
                   autoComplete="username"
                   inputMode="email"
-                  placeholder="sindhugangisetty910@gmail.com, manireddy, or admin"
+                  placeholder="name@example.com"
                   className="pl-9"
                   disabled={isSubmitting}
                 />

@@ -47,7 +47,7 @@ export function Sidebar() {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/genmitraworkspace');
+    navigate('/');
   };
 
   const getNavCategories = (): NavCategory[] => {

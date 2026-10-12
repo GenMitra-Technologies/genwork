@@ -232,7 +232,7 @@ export function AdminAuthSecurityPage() {
               onClick={() => {
                 showFeedback('Revoking all active sessions and redirecting...');
                 setTimeout(() => {
-                  window.location.href = '/genmitraworkspace';
+                  window.location.href = '/';
                 }, 1000);
               }}
               className="text-xs h-8 text-rose-600 border-rose-200 hover:bg-rose-50"

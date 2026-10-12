@@ -16,7 +16,7 @@ export function RoleGuard({ allow }: { allow: UserRole[] }) {
 
   // Deactivated users blocked
   if (profile?.status === 'inactive' || profile?.status === 'suspended') {
-    return <Navigate to="/genmitraworkspace?reason=deactivated" replace />;
+    return <Navigate to="/?reason=deactivated" replace />;
   }
 
   if (!role || !allow.includes(role)) {

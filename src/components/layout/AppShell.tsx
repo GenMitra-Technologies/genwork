@@ -10,7 +10,11 @@ import { useAuth } from '../../hooks/useAuth';
 import { useAttendanceStore } from '../../stores/attendance.store';
 import { cn } from '../../lib/utils';
 
-export function AppShell() {
+interface AppShellProps {
+  children?: React.ReactNode;
+}
+
+export function AppShell({ children }: AppShellProps = {}) {
   const { sidebarCollapsed } = useUIStore();
   const { profile } = useAuth();
   const location = useLocation();
@@ -89,7 +93,7 @@ export function AppShell() {
               : 'max-w-[1240px] px-3.5 sm:px-5 lg:px-6 py-4 space-y-4'
           )}
         >
-          <Outlet />
+          {children || <Outlet />}
         </main>
       </div>
     </div>

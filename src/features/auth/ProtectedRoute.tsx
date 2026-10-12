@@ -18,7 +18,7 @@ export function ProtectedRoute() {
   }
 
   if (!session) {
-    return <Navigate to="/genmitraworkspace" state={{ from: location }} replace />;
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

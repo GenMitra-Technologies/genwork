@@ -67,7 +67,7 @@ export function MobileDrawer() {
   const handleSignOut = async () => {
     setMobileDrawerOpen(false);
     await signOut();
-    navigate('/genmitraworkspace');
+    navigate('/');
   };
 
   const getNavCategories = (): NavCategory[] => {

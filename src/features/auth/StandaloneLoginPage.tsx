@@ -253,7 +253,7 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
                   type="text"
                   autoComplete="username"
                   inputMode="email"
-                  placeholder={role === 'intern' ? 'sindhugangisetty910@gmail.com' : role === 'mentor' ? 'manireddy@genmitra.com' : 'ops@genmitra.com'}
+                  placeholder={role === 'intern' ? 'intern@example.com' : role === 'mentor' ? 'mentor@example.com' : 'admin@example.com'}
                   className="pl-9"
                   disabled={isSubmitting}
                 />
@@ -288,10 +288,10 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
           {/* Back to Unified Login */}
           <div className="mt-5 pt-4 border-t border-border/70 text-center">
             <Link
-              to="/genmitraworkspace"
+              to="/"
               className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium inline-flex items-center gap-1"
             >
-              ← Back to Unified Login
+              ← Back to Intern Login
             </Link>
           </div>
         </div>

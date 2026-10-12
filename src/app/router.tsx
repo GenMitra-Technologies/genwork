@@ -47,7 +47,7 @@ import { SupabaseDatabasePage } from '../features/admin/database/SupabaseDatabas
 import { NotificationsPage } from '../features/notifications/NotificationsPage';
 import { useAuth } from '../hooks/useAuth';
 
-function RootRedirect() {
+function RootInternLogin() {
   const { session, role, loading } = useAuth();
 
   if (loading) {
@@ -67,48 +67,123 @@ function RootRedirect() {
     if (role === 'admin') return <Navigate to="/admin" replace />;
   }
 
-  return <Navigate to="/genmitraworkspace" replace />;
+  // Root loads the Intern login directly
+  return <StandaloneLoginPage role="intern" />;
+}
+
+function MentorEntry() {
+  const { session, role, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+          <p className="text-sm text-slate-500">Verifying mentor credentials...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If logged in as mentor, show mentor dashboard within AppShell
+  if (session && role === 'mentor') {
+    return (
+      <AppShell>
+        <MentorDashboard />
+      </AppShell>
+    );
+  }
+
+  // If logged in as another role, redirect to unauthorized
+  if (session && role && role !== 'mentor') {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  // Unauthenticated: render Mentor Login directly
+  return <StandaloneLoginPage role="mentor" />;
+}
+
+function AdminEntry() {
+  const { session, role, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent" />
+          <p className="text-sm text-slate-500">Verifying administrator credentials...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If logged in as admin, show admin dashboard within AppShell
+  if (session && role === 'admin') {
+    return (
+      <AppShell>
+        <AdminDashboard />
+      </AppShell>
+    );
+  }
+
+  // If logged in as another role, redirect to unauthorized
+  if (session && role && role !== 'admin') {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  // Unauthenticated: render Admin Login directly
+  return <StandaloneLoginPage role="admin" />;
 }
 
 export const router = createBrowserRouter([
-  // Root Redirect to appropriate role workspace or login
+  // Root URL: Intern Login directly (or redirect to active workspace if authenticated)
   {
     path: '/',
-    element: <RootRedirect />,
+    element: <RootInternLogin />,
   },
-  // Primary Genmitra Workspace Login Routes
+  // Dedicated Mentor Route: Mentor Login if unauthenticated, or Mentor Dashboard if authenticated
+  {
+    path: '/mentor',
+    element: <MentorEntry />,
+  },
+  // Dedicated Admin Route: Admin Login if unauthenticated, or Admin Dashboard if authenticated
+  {
+    path: '/admin',
+    element: <AdminEntry />,
+  },
+  // Backward compatibility redirects for legacy /genmitraworkspace URLs
   {
     path: '/genmitraworkspace',
-    element: <LoginPage />,
+    element: <Navigate to="/" replace />,
   },
   {
     path: '/genmitraworkspace/intern',
-    element: <StandaloneLoginPage role="intern" />,
+    element: <Navigate to="/" replace />,
   },
   {
     path: '/genmitraworkspace/mentor',
-    element: <StandaloneLoginPage role="mentor" />,
+    element: <Navigate to="/mentor" replace />,
   },
   {
     path: '/genmitraworkspace/admin',
-    element: <StandaloneLoginPage role="admin" />,
+    element: <Navigate to="/admin" replace />,
   },
-  // Backward-compatible redirects
+  // Unified multi-role login route
   {
     path: '/login',
-    element: <Navigate to="/genmitraworkspace" replace />,
+    element: <LoginPage />,
   },
   {
     path: '/login/intern',
-    element: <Navigate to="/genmitraworkspace/intern" replace />,
+    element: <Navigate to="/" replace />,
   },
   {
     path: '/login/mentor',
-    element: <Navigate to="/genmitraworkspace/mentor" replace />,
+    element: <Navigate to="/mentor" replace />,
   },
   {
     path: '/login/admin',
-    element: <Navigate to="/genmitraworkspace/admin" replace />,
+    element: <Navigate to="/admin" replace />,
   },
   {
     path: '/unauthorized',
@@ -196,6 +271,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <Navigate to="/genmitraworkspace" replace />,
+    element: <Navigate to="/" replace />,
   },
 ]);

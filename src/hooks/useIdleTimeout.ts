@@ -14,7 +14,7 @@ export function useIdleTimeout(enabled: boolean = true) {
     } catch {
       // ignore
     }
-    navigate('/genmitraworkspace?reason=expired', { replace: true });
+    navigate('/?reason=expired', { replace: true });
   }, [navigate]);
 
   const resetTimer = useCallback(() => {

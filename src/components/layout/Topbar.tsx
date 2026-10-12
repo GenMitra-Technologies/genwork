@@ -70,7 +70,7 @@ export function Topbar() {
   const handleSignOut = async () => {
     setUserMenuOpen(false);
     await signOut();
-    navigate('/genmitraworkspace');
+    navigate('/');
   };
 
   const getNotificationsPath = () => {
