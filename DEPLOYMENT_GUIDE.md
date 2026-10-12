@@ -72,3 +72,16 @@ The platform includes two dedicated administrative management interfaces:
    - Configurable recurring snapshots (Hourly, Daily, Weekly).
    - Retention policy (7, 30, or 90 days).
    - One-click full database & state export to timestamped `.json` file.
+
+---
+
+## 5. Deployment Verification (v1.0.1)
+
+- **Status:** Verified & Live
+- **Render Production:** [https://genwork.onrender.com](https://genwork.onrender.com)
+- **Portals:**
+  - Intern: `/` (or `/login/intern`)
+  - Mentor: `/mentor` (or `/login/mentor`)
+  - Admin: `/admin` (or `/login/admin`)
+- **Features Tested:** 100% mobile responsiveness (320px–480px), zero horizontal scroll, live Supabase database sync, 30/30 vitest pass.
+
