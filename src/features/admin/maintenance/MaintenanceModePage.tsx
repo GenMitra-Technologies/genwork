@@ -75,11 +75,11 @@ export function MaintenanceModePage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-5 sm:space-y-6 max-w-4xl">
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
-          <Wrench className="h-6 w-6 text-amber-500" /> Maintenance Mode & System Lock
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
+          <Wrench className="h-5 w-5 sm:h-6 sm:w-6 text-amber-500" /> Maintenance Mode & System Lock
         </h1>
         <p className="text-xs text-muted-foreground mt-1">
           Temporarily place the workspace under maintenance, display outage notices, or restrict portal access.
@@ -124,12 +124,12 @@ export function MaintenanceModePage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             {enabled ? (
               <Button
                 type="button"
                 onClick={() => handleToggleState(false)}
-                className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9"
+                className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 w-full sm:w-auto min-h-[36px] justify-center"
               >
                 <Power className="h-4 w-4" /> Deactivate Maintenance Mode
               </Button>
@@ -137,7 +137,7 @@ export function MaintenanceModePage() {
               <Button
                 type="button"
                 onClick={() => handleToggleState(true)}
-                className="gap-2 bg-amber-600 hover:bg-amber-700 text-white text-xs h-9"
+                className="gap-2 bg-amber-600 hover:bg-amber-700 text-white text-xs h-9 w-full sm:w-auto min-h-[36px] justify-center"
               >
                 <ShieldAlert className="h-4 w-4" /> Enable Maintenance Mode
               </Button>
@@ -208,7 +208,7 @@ export function MaintenanceModePage() {
           </div>
 
           <div className="pt-2 flex justify-end">
-            <Button type="submit" size="sm" className="gap-2 text-xs bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Button type="submit" size="sm" className="gap-2 text-xs bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto min-h-[36px] justify-center">
               <Save className="h-3.5 w-3.5" /> Save Configuration
             </Button>
           </div>

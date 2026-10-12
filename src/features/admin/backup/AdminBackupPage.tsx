@@ -152,7 +152,7 @@ export function AdminBackupPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
           <input
             ref={fileInputRef}
             type="file"
@@ -166,7 +166,7 @@ export function AdminBackupPage() {
             size="sm"
             onClick={() => refetch()}
             disabled={isLoading}
-            className="h-8 text-xs gap-1.5 bg-white text-slate-700"
+            className="h-8 text-xs gap-1.5 bg-white text-slate-700 flex-1 sm:flex-initial min-h-[36px] justify-center"
           >
             <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} />
             Refresh Telemetry
@@ -177,7 +177,7 @@ export function AdminBackupPage() {
             size="sm"
             onClick={() => fileInputRef.current?.click()}
             disabled={restoreMutation.isPending}
-            className="h-8 text-xs gap-1.5 bg-white border-dashed border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+            className="h-8 text-xs gap-1.5 bg-white border-dashed border-indigo-300 text-indigo-700 hover:bg-indigo-50 flex-1 sm:flex-initial min-h-[36px] justify-center"
           >
             <Upload className={cn('h-3.5 w-3.5', restoreMutation.isPending && 'animate-spin')} />
             {restoreMutation.isPending ? 'Restoring Snapshot...' : 'Restore from JSON'}
@@ -187,7 +187,7 @@ export function AdminBackupPage() {
             size="sm"
             onClick={() => createSnapshotMutation.mutate()}
             disabled={createSnapshotMutation.isPending}
-            className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 shadow-2xs"
+            className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 shadow-2xs w-full sm:w-auto min-h-[36px] justify-center"
           >
             <Download className="h-3.5 w-3.5" />
             {createSnapshotMutation.isPending ? 'Generating Snapshot...' : 'Create Full Backup Now'}

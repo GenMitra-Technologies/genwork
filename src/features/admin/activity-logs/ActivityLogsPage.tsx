@@ -30,10 +30,10 @@ export function ActivityLogsPage() {
   }, [logs, searchQuery]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-5 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Immutable Activity Logs</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Immutable Activity Logs</h1>
           <p className="text-xs text-muted-foreground mt-1">
             Complete compliance audit trail of logins, state transitions, reviews, and administrative changes.
           </p>
@@ -140,7 +140,7 @@ export function ActivityLogsPage() {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setSelectedLog(null)}>
+          <Button variant="outline" onClick={() => setSelectedLog(null)} className="w-full sm:w-auto min-h-[36px]">
             Close
           </Button>
         </DialogFooter>

@@ -56,8 +56,8 @@ export function AdminBroadcastPage() {
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
-          <Megaphone className="h-6 w-6 text-indigo-600" /> Broadcast Platform Announcement
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
+          <Megaphone className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-600" /> Broadcast Platform Announcement
         </h1>
         <p className="text-xs text-muted-foreground mt-1">
           Publish real-time system broadcasts and notifications dispatched across interns and mentors.
@@ -133,8 +133,8 @@ export function AdminBroadcastPage() {
             />
           </div>
 
-          <div className="flex items-center justify-between pt-2">
-            <span className="text-[11px] text-slate-500 flex items-center gap-1">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
+            <span className="text-[11px] text-slate-500 flex items-center gap-1 justify-center sm:justify-start">
               <Users className="h-3.5 w-3.5 text-slate-400" /> Target Audience: {targetRole.toUpperCase()}
             </span>
 
@@ -142,7 +142,7 @@ export function AdminBroadcastPage() {
               type="submit"
               size="sm"
               disabled={!announcementTitle.trim() || !announcementBody.trim() || broadcastMutation.isPending}
-              className="gap-2 text-xs bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="gap-2 text-xs bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto min-h-[36px] justify-center"
             >
               <Send className="h-3.5 w-3.5" />
               {broadcastMutation.isPending ? 'Publishing...' : 'Dispatch Announcement'}

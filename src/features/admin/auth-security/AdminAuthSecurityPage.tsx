@@ -102,11 +102,11 @@ export function AdminAuthSecurityPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-5 sm:space-y-6 max-w-4xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
-          <ShieldCheck className="h-6 w-6 text-indigo-600" /> Authentication & Credentials
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
+          <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-600" /> Authentication & Credentials
         </h1>
         <p className="text-xs text-muted-foreground mt-1">
           Manage your account login credentials, primary email address, and password security.
@@ -347,10 +347,10 @@ export function AdminAuthSecurityPage() {
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setEmailModalOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setEmailModalOpen(false)} className="w-full sm:w-auto min-h-[36px]">
               Cancel
             </Button>
-            <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto min-h-[36px]">
               Save Email
             </Button>
           </DialogFooter>
@@ -405,13 +405,13 @@ export function AdminAuthSecurityPage() {
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" onClick={() => setPasswordModalOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setPasswordModalOpen(false)} className="w-full sm:w-auto min-h-[36px]">
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={newPassword.length < 8 || newPassword !== confirmPassword}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto min-h-[36px]"
             >
               Update Password
             </Button>
@@ -456,13 +456,13 @@ export function AdminAuthSecurityPage() {
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" onClick={() => setPinModalOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setPinModalOpen(false)} className="w-full sm:w-auto min-h-[36px]">
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={pinInput.length < 6 || pinInput !== confirmPinInput}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto min-h-[36px]"
             >
               Save PIN
             </Button>

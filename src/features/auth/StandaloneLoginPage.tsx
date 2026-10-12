@@ -275,7 +275,7 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
               )}
             </div>
 
-            <Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
+            <Button type="submit" className="w-full mt-2 min-h-[44px]" disabled={isSubmitting}>
               {isSubmitting ? 'Authenticating...' : `Sign in to ${config.portalBadge}`}
             </Button>
           </form>

@@ -106,7 +106,7 @@ export function MentorTasksPage() {
 
         <Button
           onClick={() => setCreateDialogOpen(true)}
-          className="h-7 px-3 text-xs rounded-lg font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs gap-1.5 self-start sm:self-auto"
+          className="h-8 px-3 text-xs rounded-lg font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs gap-1.5 w-full sm:w-auto min-h-[36px] justify-center"
         >
           <Plus className="h-3 w-3" /> Create New Task
         </Button>

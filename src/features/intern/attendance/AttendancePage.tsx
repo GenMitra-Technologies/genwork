@@ -158,7 +158,7 @@ export function AttendancePage() {
       </div>
 
       {/* 2. Live Shift Punch Card */}
-      <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm space-y-6">
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-6 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 shadow-2xs">
@@ -243,7 +243,7 @@ export function AttendancePage() {
               <Button
                 onClick={() => checkIn()}
                 size="default"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-sm font-semibold text-xs w-full lg:w-auto"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-sm font-semibold text-xs w-full lg:w-auto min-h-[42px] justify-center"
               >
                 <Laptop className="h-4 w-4" /> Check In (Online Remote)
               </Button>
@@ -255,7 +255,7 @@ export function AttendancePage() {
                   onClick={toggleBreak}
                   variant="outline"
                   size="default"
-                  className="text-xs text-slate-700 border-slate-200 gap-1.5"
+                  className="flex-1 lg:flex-initial text-xs text-slate-700 border-slate-200 gap-1.5 min-h-[42px] justify-center"
                 >
                   {isOnBreak ? (
                     <>
@@ -270,7 +270,7 @@ export function AttendancePage() {
                 <Button
                   onClick={() => setShowCheckOutModal(true)}
                   size="default"
-                  className="bg-slate-900 hover:bg-slate-800 text-white gap-2 text-xs font-semibold shadow-sm"
+                  className="flex-1 lg:flex-initial bg-slate-900 hover:bg-slate-800 text-white gap-2 text-xs font-semibold shadow-sm min-h-[42px] justify-center"
                 >
                   <LogOut className="h-4 w-4" /> Check Out
                 </Button>
@@ -311,8 +311,8 @@ export function AttendancePage() {
         const activeStreakDays = (isCheckedIn || isCompletedToday) ? (records.length + 1) : records.length;
 
         return (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-sm space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[13px] font-medium text-slate-500">Total hours this month</span>
                 <div className="h-9 w-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -323,7 +323,7 @@ export function AttendancePage() {
               <p className="text-[11px] text-slate-400">Target: {targetHours * 20}h mandatory / month</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-sm space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[13px] font-medium text-slate-500">Attendance rate</span>
                 <div className="h-9 w-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -334,7 +334,7 @@ export function AttendancePage() {
               <p className="text-[11px] text-slate-400">{presentDaysCount} compliant of {totalLoggedDays || 1} day(s)</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-sm space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[13px] font-medium text-slate-500">Average daily shift</span>
                 <div className="h-9 w-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
@@ -345,7 +345,7 @@ export function AttendancePage() {
               <p className="text-[11px] text-slate-400">{targetHours}h required daily shift</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-sm space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[13px] font-medium text-slate-500">Active work streak</span>
                 <div className="h-9 w-9 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
@@ -360,7 +360,7 @@ export function AttendancePage() {
       })()}
 
       {/* 4. Historical Attendance Timesheet Log */}
-      <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm space-y-4">
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-6 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
             <h3 className="text-base font-semibold text-slate-900">Attendance Timesheet Logs</h3>
@@ -517,7 +517,7 @@ export function AttendancePage() {
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 pt-2">
                 <Button
                   type="button"
                   variant="outline"

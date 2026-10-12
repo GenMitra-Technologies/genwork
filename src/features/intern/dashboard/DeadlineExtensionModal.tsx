@@ -124,7 +124,7 @@ export function DeadlineExtensionModal({
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 pt-2">
               <Button type="button" variant="outline" size="sm" onClick={onClose}>
                 Cancel
               </Button>

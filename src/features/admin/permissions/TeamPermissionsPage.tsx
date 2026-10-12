@@ -394,13 +394,13 @@ export function TeamPermissionsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className="space-y-5 sm:space-y-6 max-w-7xl">
       {/* Header Matching Screenshot */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600">
-              <Users className="h-6 w-6" />
+              <Users className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
             Team Access & Permissions Management
           </h1>
@@ -409,19 +409,19 @@ export function TeamPermissionsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto shrink-0">
           <Button
             variant="outline"
             size="sm"
             onClick={() => showFeedback('Directory refreshed.')}
-            className="text-xs gap-1.5 h-9 bg-white"
+            className="text-xs gap-1.5 h-9 bg-white flex-1 sm:flex-initial min-h-[36px] justify-center"
           >
             <RefreshCw className="h-3.5 w-3.5" /> Refresh
           </Button>
           <Button
             size="sm"
             onClick={() => setInviteModalOpen(true)}
-            className="text-xs gap-1.5 h-9 bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+            className="text-xs gap-1.5 h-9 bg-blue-600 hover:bg-blue-700 text-white shadow-xs flex-1 sm:flex-initial min-h-[36px] justify-center"
           >
             <UserPlus className="h-3.5 w-3.5" /> Invite User
           </Button>
@@ -436,11 +436,11 @@ export function TeamPermissionsPage() {
       )}
 
       {/* Tabs Pill Navigation */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         <button
           onClick={() => setActiveTab('directory')}
           className={cn(
-            'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all',
+            'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 whitespace-nowrap min-h-[36px]',
             activeTab === 'directory'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
@@ -449,11 +449,10 @@ export function TeamPermissionsPage() {
           <Users className="h-3.5 w-3.5" />
           <span>Team Directory & Access ({teamMembers.length})</span>
         </button>
-
         <button
           onClick={() => setActiveTab('matrix')}
           className={cn(
-            'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all',
+            'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 whitespace-nowrap min-h-[36px]',
             activeTab === 'matrix'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
@@ -874,10 +873,10 @@ export function TeamPermissionsPage() {
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" onClick={() => setInviteModalOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setInviteModalOpen(false)} className="w-full sm:w-auto min-h-[36px]">
               Cancel
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto min-h-[36px]">
               Send Invitation
             </Button>
           </DialogFooter>

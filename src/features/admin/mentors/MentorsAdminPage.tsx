@@ -186,7 +186,7 @@ export function MentorsAdminPage() {
         <Button
           onClick={handleOpenCreate}
           size="sm"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 text-xs shadow-2xs h-8"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 text-xs shadow-2xs h-8 w-full sm:w-auto min-h-[36px] justify-center"
         >
           <Plus className="h-3.5 w-3.5" /> Add New Mentor
         </Button>
@@ -204,11 +204,11 @@ export function MentorsAdminPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <select
             value={selectedDept}
             onChange={(e) => setSelectedDept(e.target.value)}
-            className="h-8 rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="h-8 rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full sm:w-auto"
           >
             <option value="all">All Departments ({mentors.length})</option>
             {departments.map((dept) => (
@@ -390,14 +390,14 @@ export function MentorsAdminPage() {
                 setEditingMentor(null);
                 resetForm();
               }}
-              className="text-xs"
+              className="text-xs w-full sm:w-auto min-h-[36px]"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               size="sm"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs w-full sm:w-auto min-h-[36px]"
               disabled={createMutation.isPending || updateMutation.isPending}
             >
               {createMutation.isPending || updateMutation.isPending
@@ -431,7 +431,7 @@ export function MentorsAdminPage() {
             variant="outline"
             size="sm"
             onClick={() => setDeletingMentor(null)}
-            className="text-xs"
+            className="text-xs w-full sm:w-auto min-h-[36px]"
           >
             Cancel
           </Button>
@@ -440,7 +440,7 @@ export function MentorsAdminPage() {
             size="sm"
             onClick={() => deletingMentor && deleteMutation.mutate(deletingMentor.id)}
             disabled={deleteMutation.isPending}
-            className="text-xs"
+            className="text-xs w-full sm:w-auto min-h-[36px]"
           >
             {deleteMutation.isPending ? 'Deleting...' : 'Delete Mentor'}
           </Button>

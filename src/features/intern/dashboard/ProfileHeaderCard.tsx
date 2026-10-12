@@ -124,7 +124,7 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
                 </div>
 
                 {mentorPopoverOpen && (
-                  <div className="absolute left-0 top-6 z-40 w-64 rounded-2xl bg-white p-4 shadow-xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="absolute left-0 top-6 z-40 w-64 max-w-[calc(100vw-2.5rem)] rounded-2xl bg-white p-4 shadow-xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
                     <div className="flex items-start justify-between pb-2 border-b border-slate-100">
                       <div className="flex items-center gap-2">
                         <Avatar name={mentorName} size="sm" />
@@ -184,9 +184,9 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
 
             {/* Internship Progress Bar */}
             <div className="pt-2 space-y-1">
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-0.5 sm:gap-2">
                 <span className="text-slate-500 font-medium">Internship Progress</span>
-                <span className="text-slate-700 font-semibold">
+                <span className="text-slate-700 font-semibold break-words">
                   Day {displayElapsed} of {displayTotal} · {displayPercent}% ({displayRemaining} days left)
                 </span>
               </div>
@@ -220,7 +220,7 @@ export function ProfileHeaderCard({ profile, internProfile }: ProfileHeaderCardP
               </button>
 
               {streakInfoOpen && (
-                <div className="absolute right-0 top-6 z-40 w-64 rounded-xl bg-white p-3 shadow-lg border border-slate-200 text-xs text-slate-600 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute right-0 top-6 z-40 w-64 max-w-[calc(100vw-2.5rem)] rounded-xl bg-white p-3 shadow-lg border border-slate-200 text-xs text-slate-600 animate-in fade-in zoom-in-95 duration-150">
                   <p className="font-semibold text-slate-900 mb-1">How streaks work</p>
                   <p className="leading-relaxed">
                     An active day = starting, submitting or resubmitting a task, or submitting an assignment. Logging in alone does not count.

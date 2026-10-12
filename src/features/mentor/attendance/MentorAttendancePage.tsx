@@ -182,21 +182,21 @@ export function MentorAttendancePage() {
             <p className="text-[11px] text-slate-500">Assigned interns real-time status</p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             {/* Search Input */}
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2 h-3 w-3 text-slate-400" />
+            <div className="relative flex-1 sm:w-48">
+              <Search className="absolute left-2.5 top-2.5 h-3 w-3 text-slate-400" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search intern..."
-                className="h-7 rounded-lg border border-slate-200 bg-white pl-7 pr-2.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="h-8 w-full rounded-lg border border-slate-200 bg-white pl-7 pr-2.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
             </div>
 
             {/* Filter Pills */}
-            <div className="flex rounded-lg bg-slate-100 p-0.5 text-xs">
+            <div className="flex rounded-lg bg-slate-100 p-0.5 text-xs overflow-x-auto shrink-0">
               <button
                 onClick={() => setStatusFilter('all')}
                 className={`rounded-md px-2 py-0.5 text-[11px] font-medium transition-all ${
@@ -439,14 +439,14 @@ export function MentorAttendancePage() {
               )}
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-              <Button variant="outline" size="sm" onClick={() => setSelectedStandup(null)} className="h-7 text-xs rounded-lg">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-slate-100">
+              <Button variant="outline" size="sm" onClick={() => setSelectedStandup(null)} className="h-8 text-xs rounded-lg min-h-[36px] justify-center">
                 Close
               </Button>
               {!selectedStandup.isStandupApproved && (
                 <Button
                   size="sm"
-                  className="h-7 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
+                  className="h-8 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white gap-1 min-h-[36px] justify-center"
                   onClick={() => {
                     handleApproveStandup(selectedStandup.id);
                     setSelectedStandup(null);

@@ -210,7 +210,7 @@ export function MentorAssignmentsPage() {
 
         <Button
           onClick={() => setCreateDialogOpen(true)}
-          className="h-7 px-3 text-xs rounded-lg font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs gap-1.5 self-start sm:self-auto"
+          className="h-8 px-3 text-xs rounded-lg font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs gap-1.5 w-full sm:w-auto min-h-[36px] justify-center"
         >
           <Plus className="h-3.5 w-3.5" /> Create Assignment
         </Button>
@@ -379,12 +379,12 @@ export function MentorAssignmentsPage() {
                 </div>
 
                 {/* Card Action Buttons */}
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setSelectedSubmissions(asg)}
-                    className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50/60 px-2.5 gap-1.5 rounded-lg"
+                    className="flex-1 sm:flex-initial h-8 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50/60 px-2.5 gap-1.5 rounded-lg min-h-[36px] justify-center"
                   >
                     <Eye className="h-3.5 w-3.5" /> Submissions ({recipients.length})
                   </Button>
@@ -394,7 +394,7 @@ export function MentorAssignmentsPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => openEditModal(asg)}
-                      className="h-7 w-7 p-0 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg"
+                      className="h-8 w-8 p-0 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg min-h-[36px]"
                       title="Edit Assignment"
                     >
                       <Edit3 className="h-3.5 w-3.5" />
@@ -403,7 +403,7 @@ export function MentorAssignmentsPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setDeletingAssignment(asg)}
-                      className="h-7 w-7 p-0 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg"
+                      className="h-8 w-8 p-0 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg min-h-[36px]"
                       title="Delete Assignment"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -610,7 +610,7 @@ export function MentorAssignmentsPage() {
               variant="outline"
               size="sm"
               onClick={handleCloseCreateDialog}
-              className="h-7 text-xs"
+              className="h-8 text-xs w-full sm:w-auto min-h-[36px]"
             >
               Cancel
             </Button>
@@ -618,7 +618,7 @@ export function MentorAssignmentsPage() {
               type="submit"
               size="sm"
               disabled={isSubmitting || createMutation.isPending}
-              className="h-7 text-xs bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto min-h-[36px]"
             >
               {createMutation.isPending ? 'Publishing...' : 'Publish Assignment'}
             </Button>
@@ -706,7 +706,7 @@ export function MentorAssignmentsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setEditingAssignment(null)}
-                className="h-7 text-xs"
+                className="h-8 text-xs w-full sm:w-auto min-h-[36px]"
               >
                 Cancel
               </Button>
@@ -714,7 +714,7 @@ export function MentorAssignmentsPage() {
                 type="submit"
                 size="sm"
                 disabled={updateMutation.isPending}
-                className="h-7 text-xs bg-indigo-600 hover:bg-indigo-700 text-white"
+                className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto min-h-[36px]"
               >
                 {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
@@ -737,7 +737,7 @@ export function MentorAssignmentsPage() {
               variant="outline"
               size="sm"
               onClick={() => setDeletingAssignment(null)}
-              className="h-7 text-xs"
+              className="h-8 text-xs w-full sm:w-auto min-h-[36px]"
             >
               Cancel
             </Button>
@@ -745,7 +745,7 @@ export function MentorAssignmentsPage() {
               size="sm"
               disabled={deleteMutation.isPending}
               onClick={() => deleteMutation.mutate(deletingAssignment.id)}
-              className="h-7 text-xs bg-rose-600 hover:bg-rose-700 text-white"
+              className="h-8 text-xs bg-rose-600 hover:bg-rose-700 text-white w-full sm:w-auto min-h-[36px]"
             >
               {deleteMutation.isPending ? 'Deleting...' : 'Delete Assignment'}
             </Button>

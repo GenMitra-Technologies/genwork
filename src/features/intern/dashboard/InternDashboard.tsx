@@ -117,7 +117,7 @@ export function InternDashboard() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <Button
                 size="sm"
                 variant="outline"
@@ -129,12 +129,12 @@ export function InternDashboard() {
                     currentDueDate: formatDateOnly(attentionItems[0]?.due_date),
                   })
                 }
-                className="text-xs h-8 px-2.5 bg-white text-slate-700 border-amber-300 hover:bg-amber-100/60"
+                className="flex-1 sm:flex-initial text-xs h-8 px-2.5 bg-white text-slate-700 border-amber-300 hover:bg-amber-100/60 justify-center min-h-[36px]"
               >
                 Request Extension (+48h)
               </Button>
-              <Link to="/intern/tasks?tab=changes_requested">
-                <Button size="sm" className="text-xs h-8 px-3 bg-amber-600 hover:bg-amber-700 text-white gap-1 shadow-2xs">
+              <Link to="/intern/tasks?tab=changes_requested" className="flex-1 sm:flex-initial">
+                <Button size="sm" className="w-full text-xs h-8 px-3 bg-amber-600 hover:bg-amber-700 text-white gap-1 shadow-2xs justify-center min-h-[36px]">
                   Resubmit Now <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </Link>
@@ -241,7 +241,7 @@ export function InternDashboard() {
                         </span>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-1.5">
+                      <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
                         {/* Extension Button */}
                         <Button
                           variant="ghost"
@@ -254,7 +254,7 @@ export function InternDashboard() {
                               currentDueDate: formatDateOnly(t.due_date),
                             })
                           }
-                          className="text-[11px] h-7 px-2 text-slate-500 hover:text-slate-800"
+                          className="flex-1 sm:flex-initial text-[11px] h-7 px-2 text-slate-500 hover:text-slate-800 justify-center"
                         >
                           Request +48h
                         </Button>
@@ -271,14 +271,14 @@ export function InternDashboard() {
                               deploymentUrl: 'https://preview-staging.vercel.app',
                             })
                           }
-                          className="text-[11px] h-7 px-2 text-slate-600 border-slate-200"
+                          className="flex-1 sm:flex-initial text-[11px] h-7 px-2 text-slate-600 border-slate-200 justify-center"
                         >
                           Deliverables <ExternalLink className="h-3 w-3 ml-1" />
                         </Button>
 
                         {/* Primary Action Button */}
-                        <Link to={`/intern/tasks/${t.task_code}`}>
-                          <Button size="sm" className="text-xs h-7 px-3 bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs">
+                        <Link to={`/intern/tasks/${t.task_code}`} className="flex-1 sm:flex-initial">
+                          <Button size="sm" className="w-full text-xs h-7 px-3 bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs justify-center">
                             {t.status === 'pending' ? 'Start task' : 'Continue'}
                           </Button>
                         </Link>

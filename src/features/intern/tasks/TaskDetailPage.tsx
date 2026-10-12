@@ -185,25 +185,25 @@ export function TaskDetailPage() {
       )}
 
       {/* Main Task Header */}
-      <div className="rounded-2xl border bg-card p-6 shadow-xs space-y-4">
+      <div className="rounded-2xl border bg-card p-4 sm:p-6 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="font-mono text-sm font-bold text-primary">{taskObj.code}</span>
               <PriorityBadge priority={taskObj.priority || 'medium'} />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">{taskObj.title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">{taskObj.title}</h1>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
             {!isMentor && !isAdmin && (
               <>
                 {canStart && (
                   <Button
                     onClick={() => startTaskMutation.mutate()}
                     disabled={startTaskMutation.isPending}
-                    className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto min-h-[38px] justify-center"
                   >
                     <Play className="h-4 w-4" /> Start Task
                   </Button>
@@ -212,7 +212,7 @@ export function TaskDetailPage() {
                 {canSubmit && (
                   <Button
                     onClick={() => setSubmitDialogOpen(true)}
-                    className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                    className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto min-h-[38px] justify-center"
                   >
                     <Upload className="h-4 w-4" />
                     {currentStatus === 'changes_requested' ? 'Resubmit Task' : 'Submit Task'}
@@ -331,7 +331,7 @@ export function TaskDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Details */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-xl border bg-card p-6 shadow-xs space-y-4">
+          <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-4">
             <h2 className="text-base font-semibold text-foreground">Task Overview & Instructions</h2>
             <div className="prose prose-sm dark:prose-invert max-w-none text-xs text-foreground/90 space-y-4">
               <div>
@@ -371,7 +371,7 @@ export function TaskDetailPage() {
           </div>
 
           {/* Submission History */}
-          <div className="rounded-xl border bg-card p-6 shadow-xs space-y-4">
+          <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-4">
             <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
               <FileText className="h-4 w-4 text-primary" /> Submission Versions ({submissions.length})
             </h2>
@@ -475,7 +475,7 @@ export function TaskDetailPage() {
 
         {/* Right 1 Col: Event Timeline */}
         <div className="space-y-4">
-          <div className="rounded-xl border bg-card p-6 shadow-xs">
+          <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs">
             <h2 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
               <Clock className="h-4 w-4 text-primary" /> Lifecycle Timeline
             </h2>

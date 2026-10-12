@@ -202,18 +202,18 @@ export function AssignmentsPage() {
                 </div>
               )}
 
-              <div className="flex flex-wrap items-center justify-between pt-2 border-t text-xs gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 border-t text-xs gap-3">
                 <span className="flex items-center gap-1.5 text-muted-foreground">
                   <Calendar className="h-3.5 w-3.5 text-primary" /> Due {formatDateOnly(asg.due_date)}
                 </span>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                   {isPending && (
                     <Button
                       size="sm"
                       onClick={() => startMutation.mutate(item.id)}
                       disabled={startMutation.isPending}
-                      className="gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                      className="gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto min-h-[38px] justify-center"
                     >
                       <Play className="h-3.5 w-3.5" /> Start Assignment
                     </Button>
@@ -223,7 +223,7 @@ export function AssignmentsPage() {
                     <Button
                       size="sm"
                       onClick={() => setSelectedRecipient(item)}
-                      className="gap-1.5 text-xs"
+                      className="gap-1.5 text-xs w-full sm:w-auto min-h-[38px] justify-center"
                     >
                       <Upload className="h-3.5 w-3.5" /> Submit Work
                     </Button>

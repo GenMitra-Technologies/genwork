@@ -18,9 +18,9 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-5 sm:space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Platform Settings & Broadcasts</h1>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Platform Settings & Broadcasts</h1>
         <p className="text-xs text-muted-foreground mt-1">
           Configure security timeouts, timezones, and broadcast system-wide announcements.
         </p>
@@ -71,7 +71,7 @@ export function SettingsPage() {
             </div>
           </div>
 
-          <Button type="submit" size="sm" className="gap-1.5 text-xs">
+          <Button type="submit" size="sm" className="gap-1.5 text-xs w-full sm:w-auto min-h-[36px] justify-center">
             <Save className="h-3.5 w-3.5" /> Save Parameters
           </Button>
         </form>

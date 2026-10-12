@@ -59,21 +59,21 @@ export function InternsAdminPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Interns Directory</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Interns Directory</h1>
           <p className="text-xs text-muted-foreground mt-1">
             Manage intern placements, mentor assignments, and cohort affiliations.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             size="sm"
             onClick={exportCsv}
             disabled={isLoading || interns.length === 0}
-            className="h-8 text-xs gap-1.5"
+            className="h-8 text-xs gap-1.5 w-full sm:w-auto min-h-[36px] justify-center"
           >
             <Download className="h-3.5 w-3.5" />
             Export CSV ({interns.length})
@@ -163,12 +163,13 @@ export function InternsAdminPage() {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setReassignIntern(null)}>
+          <Button variant="outline" onClick={() => setReassignIntern(null)} className="w-full sm:w-auto min-h-[36px]">
             Cancel
           </Button>
           <Button
             onClick={() => moveMentorMutation.mutate()}
             disabled={moveMentorMutation.isPending}
+            className="w-full sm:w-auto min-h-[36px]"
           >
             {moveMentorMutation.isPending ? 'Reassigning...' : 'Confirm Reassignment'}
           </Button>

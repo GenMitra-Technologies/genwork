@@ -173,7 +173,7 @@ export function AttendanceWidget() {
                   onClick={toggleBreak}
                   variant="outline"
                   size="sm"
-                  className="text-xs text-slate-700 border-slate-200 gap-1"
+                  className="flex-1 md:flex-initial text-xs text-slate-700 border-slate-200 gap-1 min-h-[38px] justify-center"
                 >
                   {isOnBreak ? (
                     <>
@@ -188,7 +188,7 @@ export function AttendanceWidget() {
                 <Button
                   onClick={handleOpenCheckOut}
                   size="sm"
-                  className="bg-slate-900 hover:bg-slate-800 text-white gap-1.5 text-xs shadow-sm"
+                  className="flex-1 md:flex-initial bg-slate-900 hover:bg-slate-800 text-white gap-1.5 text-xs shadow-sm min-h-[38px] justify-center"
                 >
                   <LogOut className="h-3.5 w-3.5" /> Check Out
                 </Button>
@@ -196,8 +196,8 @@ export function AttendanceWidget() {
             )}
 
             {isCompletedToday && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-500 font-medium">Logged: {dailySummary ? `"${dailySummary.slice(0, 32)}..."` : 'Standup submitted'}</span>
+              <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                <span className="text-xs text-slate-500 font-medium truncate max-w-[200px]">Logged: {dailySummary ? `"${dailySummary.slice(0, 32)}..."` : 'Standup submitted'}</span>
                 <Button
                   onClick={resetDay}
                   variant="ghost"
@@ -215,7 +215,7 @@ export function AttendanceWidget() {
       {/* Check Out & Standup Modal */}
       {showCheckOutModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-5 sm:p-6 shadow-xl border border-slate-200 space-y-4">
+          <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-4 sm:p-6 shadow-xl border border-slate-200 space-y-4">
             <div className="flex items-start justify-between pb-2 border-b border-slate-100">
               <div className="space-y-0.5">
                 <h3 className="text-base font-semibold text-slate-900">Check-Out & Daily Standup</h3>
@@ -225,7 +225,7 @@ export function AttendanceWidget() {
               </div>
               <button
                 onClick={() => setShowCheckOutModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:text-slate-700"
+                className="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 min-h-[36px] min-w-[36px] flex items-center justify-center"
               >
                 ✕
               </button>
@@ -259,7 +259,7 @@ export function AttendanceWidget() {
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 pt-2">
                 <Button
                   type="button"
                   variant="outline"

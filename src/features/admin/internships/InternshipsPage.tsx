@@ -52,25 +52,25 @@ export function InternshipsPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-5 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Internship Cohorts</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Internship Cohorts</h1>
           <p className="text-xs text-muted-foreground mt-1">
             Create, schedule, and track cohorts and their respective start/end dates.
           </p>
         </div>
 
-        <Button onClick={() => setOpenModal(true)} className="gap-1.5 text-xs">
+        <Button onClick={() => setOpenModal(true)} className="gap-1.5 text-xs w-full sm:w-auto min-h-[36px] justify-center">
           <Plus className="h-4 w-4" /> Create Cohort
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {cohorts.map((cohort: any) => (
           <div
             key={cohort.id}
-            className="rounded-xl border bg-card p-6 shadow-xs space-y-4 hover:border-primary/40 transition-all"
+            className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs space-y-4 hover:border-primary/40 transition-all"
           >
             <div className="flex items-start justify-between">
               <div>
@@ -148,12 +148,13 @@ export function InternshipsPage() {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpenModal(false)}>
+          <Button variant="outline" onClick={() => setOpenModal(false)} className="w-full sm:w-auto min-h-[36px]">
             Cancel
           </Button>
           <Button
             onClick={() => createMutation.mutate()}
             disabled={createMutation.isPending || !name.trim()}
+            className="w-full sm:w-auto min-h-[36px]"
           >
             {createMutation.isPending ? 'Creating...' : 'Create Cohort'}
           </Button>

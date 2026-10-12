@@ -106,139 +106,75 @@ export function TasksPage() {
     goToPage,
   } = usePagination(filteredTasks, 8);
 
-  const tabs = [
-    { id: 'all', label: 'All Tasks' },
-    { id: 'pending', label: 'Pending' },
-    { id: 'in_progress', label: 'In Progress' },
-    { id: 'waiting_for_review', label: 'Under Review' },
-    { id: 'changes_requested', label: 'Changes Needed' },
-    { id: 'approved', label: 'Approved' },
-    { id: 'overdue', label: 'Overdue' },
-  ];
-
+  // Computed counts for tab badges
   const totalTasks = tasks.length;
-  const pendingTasksCount = useMemo(() => tasks.filter((t: any) => t.status === 'pending').length, [tasks]);
-  const inProgressCount = useMemo(() => tasks.filter((t: any) => t.status === 'in_progress').length, [tasks]);
-  const submittedCount = useMemo(() => tasks.filter((t: any) => t.status === 'submitted' || t.status === 'resubmitted').length, [tasks]);
-  const waitingCount = useMemo(() => tasks.filter((t: any) => t.status === 'waiting_for_review').length, [tasks]);
-  const approvedCount = useMemo(() => tasks.filter((t: any) => t.status === 'approved').length, [tasks]);
-  const changesCount = useMemo(() => tasks.filter((t: any) => t.status === 'changes_requested').length, [tasks]);
-  const overdueCount = useMemo(() => tasks.filter((t: any) => {
-    if (t.status === 'approved') return false;
-    return t.is_overdue || (t.due_date && new Date(t.due_date) < new Date());
-  }).length, [tasks]);
+  const pendingTasksCount = tasks.filter((t: any) => t.status === 'pending').length;
+  const inProgressCount = tasks.filter((t: any) => t.status === 'in_progress').length;
+  const submittedCount = tasks.filter((t: any) => t.status === 'submitted' || t.status === 'resubmitted').length;
+  const waitingCount = tasks.filter((t: any) => t.status === 'waiting_for_review').length;
+  const approvedCount = tasks.filter((t: any) => t.status === 'approved').length;
+  const changesCount = tasks.filter((t: any) => t.status === 'changes_requested').length;
+  const overdueCount = tasks.filter((t: any) =>
+    t.is_overdue || (t.status !== 'approved' && t.due_date && new Date(t.due_date) < new Date())
+  ).length;
+
+  const tabs = useMemo(() => [
+    { id: 'all', label: 'All Tasks', count: totalTasks },
+    { id: 'pending', label: 'Pending', count: pendingTasksCount },
+    { id: 'in_progress', label: 'In Progress', count: inProgressCount },
+    { id: 'submitted', label: 'Submitted', count: submittedCount },
+    { id: 'waiting_for_review', label: 'Under Review', count: waitingCount },
+    { id: 'approved', label: 'Approved', count: approvedCount },
+    { id: 'changes_requested', label: 'Changes Needed', count: changesCount },
+    { id: 'overdue', label: 'Overdue', count: overdueCount },
+  ], [totalTasks, pendingTasksCount, inProgressCount, submittedCount, waitingCount, approvedCount, changesCount, overdueCount]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Assigned Tasks</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Assigned Tasks</h1>
           <p className="text-xs text-muted-foreground mt-1">
             Execute, submit, and track the progress of your assigned internship tasks.
           </p>
         </div>
       </div>
 
-      {/* Unified Single Text-Only Interactive Filters & Metrics */}
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 py-2 px-1 text-xs border-b border-border/60">
-        <button
-          onClick={() => handleTabChange('all')}
-          className={cn(
-            'inline-flex items-center gap-1.5 transition-colors',
-            activeTab === 'all' ? 'font-bold text-foreground border-b-2 border-primary pb-0.5' : 'text-muted-foreground hover:text-foreground'
-          )}
-        >
-          <span>All Tasks</span>
-          <span className="font-semibold text-foreground">({totalTasks})</span>
-        </button>
-        <span className="text-border">·</span>
-
-        <button
-          onClick={() => handleTabChange('pending')}
-          className={cn(
-            'inline-flex items-center gap-1.5 transition-colors',
-            activeTab === 'pending' ? 'font-bold text-slate-900 dark:text-white border-b-2 border-slate-900 pb-0.5' : 'text-muted-foreground hover:text-foreground'
-          )}
-        >
-          <span>Pending</span>
-          <span className="font-semibold text-slate-800 dark:text-slate-200">({pendingTasksCount})</span>
-        </button>
-        <span className="text-border">·</span>
-
-        <button
-          onClick={() => handleTabChange('in_progress')}
-          className={cn(
-            'inline-flex items-center gap-1.5 transition-colors',
-            activeTab === 'in_progress' ? 'font-bold text-blue-600 border-b-2 border-blue-600 pb-0.5' : 'text-muted-foreground hover:text-blue-600'
-          )}
-        >
-          <span>In Progress</span>
-          <span className="font-semibold text-blue-600">({inProgressCount})</span>
-        </button>
-        <span className="text-border">·</span>
-
-        <button
-          onClick={() => handleTabChange('submitted')}
-          className={cn(
-            'inline-flex items-center gap-1.5 transition-colors',
-            activeTab === 'submitted' ? 'font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5' : 'text-muted-foreground hover:text-indigo-600'
-          )}
-        >
-          <span>Submitted</span>
-          <span className="font-semibold text-indigo-600">({submittedCount})</span>
-        </button>
-        <span className="text-border">·</span>
-
-        <button
-          onClick={() => handleTabChange('waiting_for_review')}
-          className={cn(
-            'inline-flex items-center gap-1.5 transition-colors',
-            activeTab === 'waiting_for_review' ? 'font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5' : 'text-muted-foreground hover:text-amber-600'
-          )}
-        >
-          <span>Under Review</span>
-          <span className="font-semibold text-amber-600">({waitingCount})</span>
-        </button>
-        <span className="text-border">·</span>
-
-        <button
-          onClick={() => handleTabChange('approved')}
-          className={cn(
-            'inline-flex items-center gap-1.5 transition-colors',
-            activeTab === 'approved' ? 'font-bold text-emerald-600 border-b-2 border-emerald-600 pb-0.5' : 'text-muted-foreground hover:text-emerald-600'
-          )}
-        >
-          <span>Approved</span>
-          <span className="font-semibold text-emerald-600">({approvedCount})</span>
-        </button>
-        <span className="text-border">·</span>
-
-        <button
-          onClick={() => handleTabChange('changes_requested')}
-          className={cn(
-            'inline-flex items-center gap-1.5 transition-colors',
-            activeTab === 'changes_requested' ? 'font-bold text-orange-600 border-b-2 border-orange-600 pb-0.5' : 'text-muted-foreground hover:text-orange-600'
-          )}
-        >
-          <span>Changes Needed</span>
-          <span className="font-semibold text-orange-600">({changesCount})</span>
-        </button>
-        <span className="text-border">·</span>
-
-        <button
-          onClick={() => handleTabChange('overdue')}
-          className={cn(
-            'inline-flex items-center gap-1.5 transition-colors',
-            activeTab === 'overdue' ? 'font-bold text-rose-600 border-b-2 border-rose-600 pb-0.5' : 'text-muted-foreground hover:text-rose-600'
-          )}
-        >
-          <span>Overdue</span>
-          <span className="font-semibold text-rose-600">({overdueCount})</span>
-        </button>
+      {/* Horizontally scrollable status filter tabs pill bar */}
+      <div className="overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 border-b border-border/60 pb-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-max">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all shrink-0 min-h-[36px]',
+                  isActive
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                    : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+                )}
+              >
+                <span>{tab.label}</span>
+                <span
+                  className={cn(
+                    'text-[10.5px] font-bold px-1.5 py-0.2 rounded-full tabular-nums',
+                    isActive
+                      ? 'bg-primary-foreground/20 text-primary-foreground'
+                      : 'bg-background text-muted-foreground border border-border/50'
+                  )}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Search and Priority Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
@@ -246,12 +182,12 @@ export function TasksPage() {
           className="w-full sm:max-w-xs"
         />
 
-        <div className="flex items-center gap-2 w-full sm:w-auto ml-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto sm:ml-auto">
           <label className="text-xs text-muted-foreground whitespace-nowrap">Priority:</label>
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="h-9 rounded-lg border border-input bg-background px-3 text-xs shadow-xs focus:outline-none focus:ring-1 focus:ring-ring"
+            className="flex-1 sm:w-36 h-9 rounded-lg border border-input bg-background px-3 text-xs shadow-xs focus:outline-none focus:ring-1 focus:ring-ring"
           >
             <option value="all">All Priorities</option>
             <option value="low">Low</option>
@@ -283,11 +219,11 @@ export function TasksPage() {
               <Link
                 key={task.task_assignment_id}
                 to={`/intern/tasks/${task.task_code}`}
-                className="group flex flex-col justify-between rounded-xl border bg-card p-4 sm:p-5 shadow-xs hover:border-primary/50 hover:shadow-md transition-all"
+                className="group flex flex-col justify-between rounded-xl border bg-card p-4 sm:p-5 shadow-xs hover:border-primary/50 hover:shadow-md transition-all space-y-3"
               >
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-2">
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                       <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-muted text-primary">
                         {task.task_code}
                       </span>
@@ -300,30 +236,30 @@ export function TasksPage() {
                     {task.task_title}
                   </h3>
 
-                  <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2">
+                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                     {task.task_description}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-border/60 flex flex-wrap items-center justify-between text-xs gap-2">
+                <div className="pt-3 border-t border-border/60 flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2">
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <User className="h-3 w-3 text-primary" />
-                      {task.mentor_name || 'Assigned Mentor'}
+                    <span className="flex items-center gap-1 truncate max-w-[160px] sm:max-w-none">
+                      <User className="h-3 w-3 text-primary shrink-0" />
+                      <span className="truncate">{task.mentor_name || 'Assigned Mentor'}</span>
                     </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3 text-primary" />
+                    <span className="flex items-center gap-1 shrink-0">
+                      <Calendar className="h-3 w-3 text-primary shrink-0" />
                       Due {formatDateOnly(task.due_date)}
                     </span>
                   </div>
 
                   <span
                     className={cn(
-                      'font-medium text-[11px] flex items-center gap-1',
+                      'font-medium text-[11px] flex items-center gap-1 shrink-0',
                       timeInfo.isOverdue ? 'text-rose-600 font-semibold' : 'text-muted-foreground'
                     )}
                   >
-                    {timeInfo.isOverdue && <AlertTriangle className="h-3 w-3" />}
+                    {timeInfo.isOverdue && <AlertTriangle className="h-3 w-3 shrink-0" />}
                     {timeInfo.text}
                   </span>
                 </div>

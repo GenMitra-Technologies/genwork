@@ -113,11 +113,11 @@ export function MentorDashboard() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0 w-full sm:w-auto">
             <Button
               asChild
               size="sm"
-              className="h-7 px-3 text-xs rounded-lg font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs gap-1.5"
+              className="h-8 px-3 text-xs rounded-lg font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs gap-1.5 flex-1 sm:flex-initial justify-center min-h-[36px]"
             >
               <Link to="/mentor/tasks?new=true">
                 <Plus className="h-3 w-3" /> Create Task
@@ -127,7 +127,7 @@ export function MentorDashboard() {
               asChild
               variant="outline"
               size="sm"
-              className="h-7 px-3 text-xs rounded-lg font-medium border-slate-200 bg-white/70 hover:bg-slate-50 text-slate-700 gap-1.5 shadow-2xs"
+              className="h-8 px-3 text-xs rounded-lg font-medium border-slate-200 bg-white/70 hover:bg-slate-50 text-slate-700 gap-1.5 shadow-2xs flex-1 sm:flex-initial justify-center min-h-[36px]"
             >
               <Link to="/mentor/reviews">
                 <Eye className="h-3 w-3 text-amber-500" /> Review Queue ({queue.length})

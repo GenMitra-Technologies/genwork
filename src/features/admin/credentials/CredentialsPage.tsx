@@ -48,10 +48,10 @@ export function CredentialsPage() {
   }, [users, searchQuery]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-5 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Logins & Account Credentials</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Logins & Account Credentials</h1>
           <p className="text-xs text-muted-foreground mt-1">
             Manage account active states, enforce password rotations, and deactivate departed users.
           </p>
@@ -176,13 +176,14 @@ export function CredentialsPage() {
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setResetModalUser(null)}>
+          <Button variant="outline" onClick={() => setResetModalUser(null)} className="w-full sm:w-auto min-h-[36px]">
             Close
           </Button>
           {!tempPasswordFeedback && (
             <Button
               onClick={() => resetPasswordMutation.mutate(resetModalUser.id)}
               disabled={resetPasswordMutation.isPending}
+              className="w-full sm:w-auto min-h-[36px]"
             >
               {resetPasswordMutation.isPending ? 'Processing...' : 'Confirm Reset Flag'}
             </Button>

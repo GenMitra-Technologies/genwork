@@ -223,19 +223,19 @@ export function ReviewsPage() {
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => openReviewModal(sub, 'changes_requested')}
-                    className="h-7 px-2.5 text-xs rounded-lg text-orange-600 border-orange-200 hover:bg-orange-50 font-medium"
+                    className="flex-1 sm:flex-initial h-8 px-2.5 text-xs rounded-lg text-orange-600 border-orange-200 hover:bg-orange-50 font-medium justify-center min-h-[36px]"
                   >
                     <RotateCcw className="h-3 w-3 mr-1" /> Request Changes
                   </Button>
                   <Button
                     size="sm"
                     onClick={() => openReviewModal(sub, 'approved')}
-                    className="h-7 px-2.5 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+                    className="flex-1 sm:flex-initial h-8 px-2.5 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium justify-center min-h-[36px]"
                   >
                     <CheckCircle2 className="h-3 w-3 mr-1" /> Approve
                   </Button>

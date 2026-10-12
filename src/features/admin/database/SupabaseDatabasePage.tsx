@@ -55,7 +55,7 @@ export function SupabaseDatabasePage() {
           size="sm"
           onClick={() => refetch()}
           disabled={isLoading}
-          className="h-8 text-xs gap-1.5 bg-white text-slate-700 shadow-2xs"
+          className="h-8 text-xs gap-1.5 bg-white text-slate-700 shadow-2xs w-full sm:w-auto min-h-[36px] justify-center"
         >
           <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} />
           Refresh Metrics

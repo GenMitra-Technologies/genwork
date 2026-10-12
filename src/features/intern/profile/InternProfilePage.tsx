@@ -16,9 +16,9 @@ export function InternProfilePage() {
   });
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-5 sm:space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Candidate Profile & Operational Terms</h1>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Candidate Profile & Operational Terms</h1>
         <p className="text-xs text-muted-foreground mt-1">
           Official offer terms, candidate operational credentials, cohort placement, and supervision details.
         </p>

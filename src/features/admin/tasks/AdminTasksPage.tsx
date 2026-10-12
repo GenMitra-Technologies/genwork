@@ -46,9 +46,9 @@ export function AdminTasksPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Global Tasks & Workflow Overrides</h1>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Global Tasks & Workflow Overrides</h1>
         <p className="text-xs text-muted-foreground mt-1">
           Full supervisory visibility of assignments across all mentees and mentors with administrative status override controls.
         </p>
@@ -191,13 +191,14 @@ export function AdminTasksPage() {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOverrideTarget(null)}>
+          <Button variant="outline" onClick={() => setOverrideTarget(null)} className="w-full sm:w-auto min-h-[36px]">
             Cancel
           </Button>
           <Button
             variant="destructive"
             onClick={() => overrideMutation.mutate()}
             disabled={overrideMutation.isPending || !overrideReason.trim()}
+            className="w-full sm:w-auto min-h-[36px]"
           >
             {overrideMutation.isPending ? 'Applying Override...' : 'Confirm Status Override'}
           </Button>

@@ -52,9 +52,9 @@ export function AdminDashboard() {
   ].filter((item) => item.value > 0);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
           Platform Administration Overview
         </h1>
         <p className="text-xs text-muted-foreground mt-1">
@@ -63,7 +63,7 @@ export function AdminDashboard() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
         <StatCard
           title="Internships"
           value={stats?.total_internships ?? 0}

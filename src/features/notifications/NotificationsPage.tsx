@@ -103,7 +103,7 @@ export function NotificationsPage() {
             size="sm"
             onClick={() => markAllMutation.mutate()}
             disabled={markAllMutation.isPending}
-            className="gap-1.5 text-xs"
+            className="gap-1.5 text-xs w-full sm:w-auto min-h-[38px] justify-center"
           >
             <CheckCheck className="h-3.5 w-3.5" /> Mark all as read
           </Button>

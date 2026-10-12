@@ -192,10 +192,10 @@ export function AdminAssignmentsPage() {
   return (
     <div className="space-y-6">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Global Coursework & Assignments</h1>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Global Coursework & Assignments</h1>
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
               {totalCount} Total
             </span>
@@ -207,7 +207,7 @@ export function AdminAssignmentsPage() {
 
         <Button
           onClick={() => setCreateDialogOpen(true)}
-          className="h-9 px-3.5 text-xs rounded-lg font-medium shadow-2xs gap-1.5 self-start sm:self-auto"
+          className="h-9 px-3.5 text-xs rounded-lg font-medium shadow-2xs gap-1.5 w-full sm:w-auto min-h-[36px] justify-center"
         >
           <Plus className="h-4 w-4" /> Create Assignment
         </Button>
@@ -611,7 +611,7 @@ export function AdminAssignmentsPage() {
               variant="outline"
               size="sm"
               onClick={() => setCreateDialogOpen(false)}
-              className="h-7 text-xs"
+              className="h-8 text-xs w-full sm:w-auto min-h-[36px]"
             >
               Cancel
             </Button>
@@ -619,7 +619,7 @@ export function AdminAssignmentsPage() {
               type="submit"
               size="sm"
               disabled={isSubmitting || createMutation.isPending}
-              className="h-7 text-xs"
+              className="h-8 text-xs w-full sm:w-auto min-h-[36px]"
             >
               {createMutation.isPending ? 'Publishing...' : 'Publish Assignment'}
             </Button>
@@ -723,7 +723,7 @@ export function AdminAssignmentsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setEditingAssignment(null)}
-                className="h-7 text-xs"
+                className="h-8 text-xs w-full sm:w-auto min-h-[36px]"
               >
                 Cancel
               </Button>
@@ -731,7 +731,7 @@ export function AdminAssignmentsPage() {
                 type="submit"
                 size="sm"
                 disabled={updateMutation.isPending}
-                className="h-7 text-xs"
+                className="h-8 text-xs w-full sm:w-auto min-h-[36px]"
               >
                 {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
@@ -756,7 +756,7 @@ export function AdminAssignmentsPage() {
               variant="outline"
               size="sm"
               onClick={() => setDeletingAssignment(null)}
-              className="h-7 text-xs"
+              className="h-8 text-xs w-full sm:w-auto min-h-[36px]"
             >
               Cancel
             </Button>
@@ -764,7 +764,7 @@ export function AdminAssignmentsPage() {
               size="sm"
               disabled={deleteMutation.isPending}
               onClick={() => deleteMutation.mutate(deletingAssignment.id)}
-              className="h-7 text-xs bg-rose-600 hover:bg-rose-700 text-white"
+              className="h-8 text-xs bg-rose-600 hover:bg-rose-700 text-white w-full sm:w-auto min-h-[36px]"
             >
               {deleteMutation.isPending ? 'Deleting...' : 'Delete Assignment'}
             </Button>

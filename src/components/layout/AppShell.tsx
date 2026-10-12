@@ -89,8 +89,8 @@ export function AppShell({ children }: AppShellProps = {}) {
           className={cn(
             'flex-1 w-full mx-auto transition-all',
             isMentor
-              ? 'max-w-[1140px] px-3 sm:px-5 lg:px-6 py-3.5 space-y-3.5'
-              : 'max-w-[1240px] px-3.5 sm:px-5 lg:px-6 py-4 space-y-4'
+              ? 'max-w-[1140px] px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4'
+              : 'max-w-[1240px] px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4'
           )}
         >
           {children || <Outlet />}

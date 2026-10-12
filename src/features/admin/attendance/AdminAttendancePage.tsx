@@ -108,12 +108,12 @@ export function AdminAttendancePage() {
   const overallRate = (data.reduce((acc, curr) => acc + curr.attendanceRate, 0) / data.length).toFixed(1);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* 1. Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Cohort Attendance & Timesheet Administration</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Cohort Attendance & Timesheet Administration</h1>
             <span className="rounded-full bg-indigo-50 px-3 py-0.5 text-xs font-semibold text-indigo-700 border border-indigo-200">
               Online Remote Shifts • 4h Standard
             </span>
@@ -127,14 +127,14 @@ export function AdminAttendancePage() {
           onClick={handleExportCSV}
           variant="outline"
           size="sm"
-          className="text-xs gap-1.5 bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-2xs self-start sm:self-auto"
+          className="text-xs gap-1.5 bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-2xs w-full sm:w-auto min-h-[36px] justify-center"
         >
           <Download className="h-3.5 w-3.5" /> Export Company Timesheets (CSV)
         </Button>
       </div>
 
       {/* 2. Top Metrics (4 Cards) */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-medium text-slate-500">Cohort attendance</span>
@@ -383,11 +383,11 @@ export function AdminAttendancePage() {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-                <Button variant="outline" size="sm" onClick={() => setRegularizeModal(null)}>
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <Button variant="outline" size="sm" onClick={() => setRegularizeModal(null)} className="w-full sm:w-auto min-h-[36px]">
                   Cancel
                 </Button>
-                <Button size="sm" type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5">
+                <Button size="sm" type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 w-full sm:w-auto min-h-[36px]">
                   <Save className="h-3.5 w-3.5" /> Apply Adjustment
                 </Button>
               </div>

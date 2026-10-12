@@ -36,16 +36,16 @@ export function ReportsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-5 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Analytics & Compliance Reports</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Analytics & Compliance Reports</h1>
           <p className="text-xs text-muted-foreground mt-1">
             Export cohort performance data and inspect mentor review turnaround metrics.
           </p>
         </div>
 
-        <Button onClick={handleExportCSV} className="gap-1.5 text-xs">
+        <Button onClick={handleExportCSV} className="gap-1.5 text-xs w-full sm:w-auto min-h-[36px] justify-center">
           <Download className="h-4 w-4" /> Export Cohort Report (CSV)
         </Button>
       </div>

@@ -69,43 +69,43 @@ export function CandidateOperationalProfileCard({
       {/* 2. Grid: Authoritative Offer Terms (Sealed) & Candidate Operational Profile */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Left Card: Authoritative Offer Terms (Sealed) */}
-        <div className="rounded-xl border border-slate-200/90 bg-white p-5 shadow-2xs space-y-3.5">
+        <div className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs space-y-3.5">
           <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wide border-b border-slate-100 pb-2.5">
             AUTHORITATIVE OFFER TERMS (SEALED)
           </h3>
 
           <div className="space-y-2.5 text-xs divide-y divide-slate-100">
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center justify-between pt-1 gap-2">
               <span className="text-slate-500">Position:</span>
-              <span className="font-bold text-slate-900 uppercase tracking-tight">{position}</span>
+              <span className="font-bold text-slate-900 uppercase tracking-tight truncate">{position}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500">Department:</span>
-              <span className="font-semibold text-slate-800">{department}</span>
+              <span className="font-semibold text-slate-800 truncate">{department}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500">Reporting Manager:</span>
               <span className="font-semibold text-slate-800">{reportingManager}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500">Start Date:</span>
               <span className="font-mono text-slate-800">{startDate}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500">End Date:</span>
               <span className="font-mono text-slate-800">{endDate}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500">Work Mode:</span>
               <span className="font-semibold text-slate-800">{workMode}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500">Compensation:</span>
               <span className="font-bold text-emerald-600 dark:text-emerald-400">{compensation}</span>
             </div>
@@ -113,42 +113,42 @@ export function CandidateOperationalProfileCard({
         </div>
 
         {/* Right Card: Candidate Operational Profile */}
-        <div className="rounded-xl border border-slate-200/90 bg-white p-5 shadow-2xs space-y-3.5">
+        <div className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs space-y-3.5">
           <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wide border-b border-slate-100 pb-2.5">
             CANDIDATE OPERATIONAL PROFILE
           </h3>
 
           <div className="space-y-2.5 text-xs divide-y divide-slate-100">
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center justify-between pt-1 gap-2">
               <span className="text-slate-500">Profile Category:</span>
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                 {profileCategory}
               </span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500">Recruitment Classification:</span>
               <span className="font-semibold text-slate-800">{recruitmentClassification}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500 shrink-0">Candidate Email:</span>
-              <span className="font-mono text-slate-900 font-medium truncate max-w-[180px] sm:max-w-none">{candidateEmail}</span>
+              <span className="font-mono text-slate-900 font-medium truncate max-w-[140px] min-[360px]:max-w-[180px] sm:max-w-none">{candidateEmail}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500 shrink-0">Student / Roll ID:</span>
               <span className="font-mono font-semibold text-slate-900">{rollId}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500 shrink-0">Emergency Contact:</span>
-              <span className="font-medium text-slate-800 truncate max-w-[180px] sm:max-w-none">{emergencyContact}</span>
+              <span className="font-medium text-slate-800 truncate max-w-[140px] min-[360px]:max-w-[180px] sm:max-w-none">{emergencyContact}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2">
               <span className="text-slate-500">Assigned Mentor:</span>
-              <span className="font-semibold text-blue-600 hover:text-blue-700 hover:underline cursor-pointer">
+              <span className="font-semibold text-blue-600 hover:text-blue-700 hover:underline cursor-pointer truncate">
                 {assignedMentorName}
               </span>
             </div>

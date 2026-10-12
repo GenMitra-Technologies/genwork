@@ -117,20 +117,20 @@ export function Topbar() {
   const formattedShiftTime = `${shiftHours}h ${String(shiftMinutes).padStart(2, '0')}m`;
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-slate-200/90 bg-white/95 px-4 sm:px-6 md:px-8 backdrop-blur-md">
+    <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-slate-200/90 bg-white/95 px-3 sm:px-6 md:px-8 backdrop-blur-md">
       {/* Left: Mobile hamburger + Breadcrumb & Title */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 mr-2">
         <button
           onClick={() => setMobileDrawerOpen(true)}
-          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 min-h-[44px] min-w-[44px] flex items-center justify-center shrink-0"
           aria-label="Open navigation menu"
         >
           <Menu className="h-5 w-5" />
         </button>
 
-        <div className="flex items-center gap-2 truncate">
-          <span className="text-xs font-medium text-slate-500 hidden sm:inline">{breadcrumb}</span>
-          <span className="text-slate-300 hidden sm:inline">/</span>
+        <div className="flex items-center gap-1.5 sm:gap-2 truncate min-w-0">
+          <span className="text-xs font-medium text-slate-500 hidden sm:inline shrink-0">{breadcrumb}</span>
+          <span className="text-slate-300 hidden sm:inline shrink-0">/</span>
           <h1 className="text-sm font-semibold text-slate-900 truncate tracking-tight">{pageTitle}</h1>
         </div>
       </div>
@@ -171,7 +171,7 @@ export function Topbar() {
         <div className="relative" ref={notifMenuRef}>
           <button
             onClick={() => setNotificationsOpen(!notificationsOpen)}
-            className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 min-h-[44px] min-w-[44px] flex items-center justify-center"
             title="Notifications"
             aria-label="Open notifications"
           >
@@ -184,7 +184,7 @@ export function Topbar() {
           </button>
 
           {notificationsOpen && (
-            <div className="absolute right-[-0.5rem] sm:right-0 mt-2 w-[calc(100vw-2rem)] max-w-sm sm:w-96 rounded-2xl bg-white p-4 shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in-95 duration-150">
+            <div className="fixed inset-x-3 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-96 max-w-[calc(100vw-1.5rem)] rounded-2xl bg-white p-3.5 sm:p-4 shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                   <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wide">Notifications</h4>
@@ -262,7 +262,7 @@ export function Topbar() {
         <div className="relative pl-1 sm:pl-2 border-l border-slate-200" ref={userMenuRef}>
           <button
             onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center gap-2 rounded-lg p-1 text-left hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="flex items-center gap-1.5 sm:gap-2 rounded-lg p-1 text-left hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 min-h-[44px]"
             aria-expanded={userMenuOpen}
             aria-label="User account menu"
           >
@@ -283,7 +283,7 @@ export function Topbar() {
           </button>
 
           {userMenuOpen && (
-            <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white p-2 shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute right-0 top-full mt-2 w-56 max-w-[calc(100vw-1.5rem)] rounded-2xl bg-white p-2 shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in-95 duration-150">
               {/* User Meta Header */}
               <div className="px-3 py-2 border-b border-slate-100 space-y-0.5">
                 <p className="text-xs font-semibold text-slate-900 truncate">
