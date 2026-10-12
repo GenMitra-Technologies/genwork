@@ -39,6 +39,36 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  const SECURITY_HEADERS = {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'Content-Security-Policy': [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' data: https: blob:",
+      "connect-src 'self' https://jgjiakofetyiimtobhey.supabase.co wss://jgjiakofetyiimtobhey.supabase.co https://genwork.onrender.com",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join('; '),
+    'Access-Control-Allow-Origin': 'https://genwork.onrender.com',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+
+  // Handle CORS Preflight OPTIONS requests
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, SECURITY_HEADERS);
+    res.end();
+    return;
+  }
+
   // Prevent path traversal
   const safePath = path.normalize(pathname).replace(/^(\.\.[\/\\])+/, '');
   let filePath = path.join(DIST_DIR, safePath);
@@ -51,12 +81,12 @@ const server = http.createServer((req, res) => {
       const isHashedAsset = filePath.includes(path.sep + 'assets' + path.sep);
 
       res.writeHead(200, {
+        ...SECURITY_HEADERS,
         'Content-Type': contentType,
         'Content-Length': stats.size,
         'Cache-Control': isHashedAsset
           ? 'public, max-age=31536000, immutable'
           : 'public, max-age=3600, must-revalidate',
-        'X-Content-Type-Options': 'nosniff',
       });
 
       if (req.method === 'HEAD') {
@@ -77,12 +107,12 @@ const server = http.createServer((req, res) => {
       }
 
       res.writeHead(200, {
+        ...SECURITY_HEADERS,
         'Content-Type': 'text/html; charset=utf-8',
         'Content-Length': indexStats.size,
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0',
-        'X-Content-Type-Options': 'nosniff',
       });
 
       if (req.method === 'HEAD') {
