@@ -221,11 +221,6 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
               <Logo size="lg" className="h-14" />
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-muted border border-border">
-              <config.icon className="h-3 w-3 text-primary" />
-              <span>{config.portalBadge}</span>
-            </div>
-
             <h1 className="text-xl font-bold tracking-tight text-foreground">{config.title}</h1>
             <p className="text-xs text-muted-foreground max-w-xs mx-auto">
               {config.subtitle}
@@ -284,16 +279,6 @@ export function StandaloneLoginPage({ role }: StandaloneLoginPageProps) {
               {isSubmitting ? 'Authenticating...' : `Sign in to ${config.portalBadge}`}
             </Button>
           </form>
-
-          {/* Back to Unified Login */}
-          <div className="mt-5 pt-4 border-t border-border/70 text-center">
-            <Link
-              to="/"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium inline-flex items-center gap-1"
-            >
-              ← Back to Intern Login
-            </Link>
-          </div>
         </div>
       </div>
     </div>
