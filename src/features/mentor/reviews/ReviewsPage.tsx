@@ -258,6 +258,71 @@ export function ReviewsPage() {
         )}
 
         <div className="space-y-3 py-1">
+          {/* Quick Feedback Preset Pills */}
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-medium text-slate-500">Quick Templates:</span>
+            <div className="flex flex-wrap gap-1.5">
+              {reviewAction === 'approved' ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setFeedback('LGTM! Approved. Clean architecture and meets all requirements.')}
+                    className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-[11px] transition-colors"
+                  >
+                    ✨ LGTM - Clean Arch
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeedback('Great implementation! Delivered on schedule with well-documented PR.')}
+                    className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-[11px] transition-colors"
+                  >
+                    🚀 Great Implementation
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeedback('Approved with distinction. Comprehensive test coverage and zero regressions.')}
+                    className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-[11px] transition-colors"
+                  >
+                    ⭐ High Distinction
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFeedback('Please add unit tests and verify edge case handling before resubmitting.');
+                      setRequiredChanges('1. Add unit tests with >80% coverage\n2. Verify input validation');
+                    }}
+                    className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] transition-colors"
+                  >
+                    🧪 Add Unit Tests
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFeedback('Missing live deployment preview link. Please deploy on Vercel or Netlify.');
+                      setRequiredChanges('1. Provide working deployment preview URL');
+                    }}
+                    className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] transition-colors"
+                  >
+                    🌐 Missing Deployment URL
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFeedback('Code formatting and linting errors present. Please run eslint and format code.');
+                      setRequiredChanges('1. Run npm run lint\n2. Clean up console logs');
+                    }}
+                    className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-[11px] transition-colors"
+                  >
+                    🧹 Fix Linting & Code Style
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+
           <div className="space-y-1">
             <label className="text-xs font-semibold text-slate-700">
               Review Feedback <span className="text-red-500">*</span>

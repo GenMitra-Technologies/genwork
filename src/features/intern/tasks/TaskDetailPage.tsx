@@ -29,6 +29,7 @@ import { Input } from '../../../components/ui/input';
 import { Textarea } from '../../../components/ui/textarea';
 import { submitTaskSchema, SubmitTaskInput } from '../../../lib/validators';
 import { formatDateTime, formatTimeTaken, formatTimeRemaining } from '../../../lib/formatters';
+import { cn } from '../../../lib/utils';
 
 export function TaskDetailPage() {
   const { code } = useParams<{ code: string }>();
@@ -75,6 +76,7 @@ export function TaskDetailPage() {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<SubmitTaskInput>({
     resolver: zodResolver(submitTaskSchema),
@@ -85,6 +87,11 @@ export function TaskDetailPage() {
       note: 'Here is my completed work meeting all the acceptance criteria.',
     },
   });
+
+  const watchedGithub = watch('github_url') || '';
+  const watchedDeployment = watch('deployment_url') || '';
+  const isGithubFormatValid = !watchedGithub || /^https?:\/\/(www\.)?github\.com\/[\w-]+\/[\w.-]+/i.test(watchedGithub.trim());
+  const isDeploymentFormatValid = !watchedDeployment || /^https?:\/\/.+/i.test(watchedDeployment.trim());
 
   // Start Task Mutation
   const startTaskMutation = useMutation({
@@ -475,6 +482,30 @@ export function TaskDetailPage() {
                 placeholder="https://github.com/org/repo"
                 disabled={isSubmitting || submitTaskMutation.isPending}
               />
+              {watchedGithub && (
+                <div className="flex items-center gap-1.5 pt-0.5 text-[11px]">
+                  <span
+                    className={cn(
+                      'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium font-mono',
+                      isGithubFormatValid
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                    )}
+                  >
+                    {isGithubFormatValid ? '✓ Valid GitHub URL' : '⚠ Invalid GitHub repository format'}
+                  </span>
+                  {isGithubFormatValid && (
+                    <a
+                      href={watchedGithub}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary hover:underline inline-flex items-center gap-0.5 text-[10px]"
+                    >
+                      Test Link <ExternalLink className="h-2.5 w-2.5" />
+                    </a>
+                  )}
+                </div>
+              )}
               {errors.github_url && (
                 <p className="text-[11px] text-destructive">{errors.github_url.message}</p>
               )}
@@ -491,6 +522,30 @@ export function TaskDetailPage() {
                 placeholder="https://project-preview.vercel.app"
                 disabled={isSubmitting || submitTaskMutation.isPending}
               />
+              {watchedDeployment && (
+                <div className="flex items-center gap-1.5 pt-0.5 text-[11px]">
+                  <span
+                    className={cn(
+                      'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium font-mono',
+                      isDeploymentFormatValid
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                    )}
+                  >
+                    {isDeploymentFormatValid ? '✓ Valid Preview URL' : '⚠ Must start with http:// or https://'}
+                  </span>
+                  {isDeploymentFormatValid && (
+                    <a
+                      href={watchedDeployment}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary hover:underline inline-flex items-center gap-0.5 text-[10px]"
+                    >
+                      Test Link <ExternalLink className="h-2.5 w-2.5" />
+                    </a>
+                  )}
+                </div>
+              )}
               {errors.deployment_url && (
                 <p className="text-[11px] text-destructive">{errors.deployment_url.message}</p>
               )}

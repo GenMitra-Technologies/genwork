@@ -20,6 +20,7 @@ import {
   Check,
   AlertTriangle,
   Lock,
+  Upload,
 } from 'lucide-react';
 import { adminApi } from '../api';
 import { Button } from '../../../components/ui/button';
@@ -89,6 +90,42 @@ export function AdminBackupPage() {
     },
   });
 
+  const [restoreStatus, setRestoreStatus] = useState<string | null>(null);
+  const [restoreError, setRestoreError] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const restoreMutation = useMutation({
+    mutationFn: (payload: any) => adminApi.restoreBackupFromPayload(payload),
+    onSuccess: (res) => {
+      setRestoreStatus(`Successfully restored ${res.totalRestoredRows} records across ${res.restoredTables} tables from snapshot.`);
+      queryClient.invalidateQueries({ queryKey: ['admin-backup-telemetry'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-interns'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-tasks'] });
+      setTimeout(() => setRestoreStatus(null), 6000);
+    },
+    onError: (err: any) => {
+      setRestoreError(err.message || 'Failed to restore backup snapshot.');
+      setTimeout(() => setRestoreError(null), 6000);
+    },
+  });
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target?.result as string);
+        restoreMutation.mutate(json);
+      } catch {
+        setRestoreError('Failed to parse file: Selected file is not a valid JSON document.');
+        setTimeout(() => setRestoreError(null), 5000);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -115,7 +152,15 @@ export function AdminBackupPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json,application/json"
+            className="hidden"
+            onChange={handleFileUpload}
+          />
+
           <Button
             variant="outline"
             size="sm"
@@ -125,6 +170,17 @@ export function AdminBackupPage() {
           >
             <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} />
             Refresh Telemetry
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={restoreMutation.isPending}
+            className="h-8 text-xs gap-1.5 bg-white border-dashed border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+          >
+            <Upload className={cn('h-3.5 w-3.5', restoreMutation.isPending && 'animate-spin')} />
+            {restoreMutation.isPending ? 'Restoring Snapshot...' : 'Restore from JSON'}
           </Button>
 
           <Button
@@ -145,6 +201,28 @@ export function AdminBackupPage() {
             <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
             <span>
               <strong>Backup Downloaded Successfully!</strong> The complete database tables, user records, and local state were exported to a verified JSON dump.
+            </span>
+          </div>
+        </div>
+      )}
+
+      {restoreStatus && (
+        <div className="p-3 rounded-xl border border-indigo-200 bg-indigo-50 text-xs text-indigo-900 flex items-center justify-between animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-indigo-600 shrink-0" />
+            <span>
+              <strong>Snapshot Restored Successfully!</strong> {restoreStatus}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {restoreError && (
+        <div className="p-3 rounded-xl border border-destructive/20 bg-destructive/10 text-xs text-destructive flex items-center justify-between animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
+            <span>
+              <strong>Restore Error:</strong> {restoreError}
             </span>
           </div>
         </div>

@@ -1,7 +1,7 @@
 // src/features/admin/interns/InternsAdminPage.tsx
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Users, UserCheck, ArrowRightLeft, Building } from 'lucide-react';
+import { Users, UserCheck, ArrowRightLeft, Building, Download } from 'lucide-react';
 import { adminApi } from '../api';
 import { Avatar } from '../../../components/shared/Avatar';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../../../components/ui/dialog';
@@ -22,6 +22,30 @@ export function InternsAdminPage() {
     queryFn: adminApi.getMentors,
   });
 
+  const exportCsv = () => {
+    if (!interns || interns.length === 0) return;
+    const headers = ['Full Name', 'Email', 'Role Title', 'Company', 'Cohort', 'Assigned Mentor', 'Streak Days'];
+    const rows = interns.map((intern: any) => [
+      `"${(intern.profile?.full_name || '').replace(/"/g, '""')}"`,
+      `"${(intern.profile?.email || '').replace(/"/g, '""')}"`,
+      `"${(intern.role_title || '').replace(/"/g, '""')}"`,
+      `"${(intern.company_name || '').replace(/"/g, '""')}"`,
+      `"${(intern.internship?.name || '').replace(/"/g, '""')}"`,
+      `"${(intern.mentor?.profile?.full_name || '').replace(/"/g, '""')}"`,
+      `"${intern.current_streak || 0}"`,
+    ]);
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `genmitra-interns-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const moveMentorMutation = useMutation({
     mutationFn: async () => {
       if (!reassignIntern || !newMentorId) return;
@@ -36,11 +60,25 @@ export function InternsAdminPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Interns Directory</h1>
-        <p className="text-xs text-muted-foreground mt-1">
-          Manage intern placements, mentor assignments, and cohort affiliations.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Interns Directory</h1>
+          <p className="text-xs text-muted-foreground mt-1">
+            Manage intern placements, mentor assignments, and cohort affiliations.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportCsv}
+            disabled={isLoading || interns.length === 0}
+            className="h-8 text-xs gap-1.5"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Export CSV ({interns.length})
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-xl border bg-card shadow-xs overflow-hidden">
