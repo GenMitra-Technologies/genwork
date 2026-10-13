@@ -127,6 +127,60 @@ export const mentorApi = {
     return data;
   },
 
+  async updateTask(taskId: string, payload: Partial<CreateTaskInput>) {
+    const updateData: Record<string, any> = {
+      updated_at: new Date().toISOString(),
+    };
+    if (payload.title !== undefined) updateData.title = payload.title;
+    if (payload.description !== undefined) updateData.description = payload.description;
+    if (payload.instructions !== undefined) updateData.instructions = payload.instructions || null;
+    if (payload.requirements !== undefined) updateData.requirements = payload.requirements || null;
+    if (payload.expected_output !== undefined) updateData.expected_output = payload.expected_output || null;
+    if (payload.priority !== undefined) updateData.priority = payload.priority;
+    if (payload.due_date !== undefined) updateData.due_date = payload.due_date;
+    if (payload.require_github !== undefined) updateData.require_github = payload.require_github;
+    if (payload.require_deployment !== undefined) updateData.require_deployment = payload.require_deployment;
+    if (payload.require_drive !== undefined) updateData.require_drive = payload.require_drive;
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .update(updateData)
+      .eq('id', taskId)
+      .select();
+
+    if (error) {
+      console.warn('Task update warning:', error);
+      throw new Error(error.message);
+    }
+
+    // Safely assign new mentees if specified without affecting existing assignments or submissions
+    if (payload.intern_ids && payload.intern_ids.length > 0) {
+      try {
+        const { data: existingAssignments } = await supabase
+          .from('task_assignments')
+          .select('intern_id')
+          .eq('task_id', taskId);
+
+        const existingIds = new Set((existingAssignments || []).map((a: any) => a.intern_id));
+        const newToAssign = payload.intern_ids.filter((id: string) => !existingIds.has(id));
+
+        if (newToAssign.length > 0) {
+          await supabase.from('task_assignments').insert(
+            newToAssign.map((intern_id: string) => ({
+              task_id: taskId,
+              intern_id,
+              status: 'pending',
+            }))
+          );
+        }
+      } catch (assignErr) {
+        console.warn('Assignees update notice:', assignErr);
+      }
+    }
+
+    return data;
+  },
+
   async reviewSubmission(submissionId: string, payload: ReviewSubmissionInput) {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(submissionId);
     if (isUuid) {

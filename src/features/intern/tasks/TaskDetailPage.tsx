@@ -17,8 +17,10 @@ import {
   FileText,
   Clock,
   ShieldCheck,
+  Pencil,
 } from 'lucide-react';
 import { internApi } from '../api';
+import { mentorApi } from '../../mentor/api';
 import { useAuth } from '../../../hooks/useAuth';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
@@ -27,7 +29,7 @@ import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } fr
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Textarea } from '../../../components/ui/textarea';
-import { submitTaskSchema, SubmitTaskInput } from '../../../lib/validators';
+import { submitTaskSchema, SubmitTaskInput, createTaskSchema, CreateTaskInput } from '../../../lib/validators';
 import { formatDateTime, formatTimeTaken, formatTimeRemaining } from '../../../lib/formatters';
 import { cn } from '../../../lib/utils';
 
@@ -35,7 +37,9 @@ export function TaskDetailPage() {
   const { code } = useParams<{ code: string }>();
   const queryClient = useQueryClient();
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [editFormError, setEditFormError] = useState<string | null>(null);
 
   const { profile, role } = useAuth();
   const internId = profile?.intern_id || '20000000-0000-0000-0000-000000000001';
@@ -135,6 +139,53 @@ export function TaskDetailPage() {
     },
   });
 
+  // Mentor Edit Task Form
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    reset: resetEdit,
+    formState: { errors: editErrors },
+  } = useForm<CreateTaskInput>({
+    resolver: zodResolver(createTaskSchema),
+  });
+
+  const handleOpenEditModal = () => {
+    if (!taskObj) return;
+    setEditFormError(null);
+    resetEdit({
+      title: taskObj.title || '',
+      description: taskObj.description || '',
+      instructions: taskObj.instructions || '',
+      requirements: taskObj.requirements || '',
+      expected_output: taskObj.expected_output || '',
+      priority: taskObj.priority || 'medium',
+      due_date: taskObj.due_date ? new Date(taskObj.due_date).toISOString().slice(0, 16) : new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 16),
+      require_github: !!taskObj.require_github,
+      require_deployment: !!taskObj.require_deployment,
+      require_drive: !!taskObj.require_drive,
+      assign_all: false,
+      intern_ids: [],
+    });
+    setEditDialogOpen(true);
+  };
+
+  const updateTaskMutation = useMutation({
+    mutationFn: async (data: CreateTaskInput) => {
+      if (!taskObj?.id) return;
+      await mentorApi.updateTask(taskObj.id, data);
+    },
+    onSuccess: () => {
+      setEditDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: ['task', code] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['mentor-created-tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'mentor'] });
+    },
+    onError: (err: any) => {
+      setEditFormError(err.message || 'Failed to update task');
+    },
+  });
+
   if (taskLoading) {
     return <div className="p-8 text-center text-sm text-muted-foreground">Loading task details...</div>;
   }
@@ -219,6 +270,16 @@ export function TaskDetailPage() {
                   </Button>
                 )}
               </>
+            )}
+
+            {(isMentor || isAdmin) && (
+              <Button
+                onClick={handleOpenEditModal}
+                variant="outline"
+                className="gap-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
+              >
+                <Pencil className="h-4 w-4" /> Edit Task
+              </Button>
             )}
 
             {isMentor && (
@@ -615,6 +676,96 @@ export function TaskDetailPage() {
             </Button>
             <Button type="submit" disabled={isSubmitting || submitTaskMutation.isPending}>
               {submitTaskMutation.isPending ? 'Verifying & Submitting...' : 'Confirm Submission'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </Dialog>
+
+      {/* Mentor Edit Task Modal */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogHeader>
+          <DialogTitle className="text-base font-semibold flex items-center gap-2">
+            <Pencil className="h-4 w-4 text-indigo-600" /> Edit Task: {taskObj.code}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            Update task instructions, deliverables, priority, or deadline. Submissions and grading history remain intact.
+          </DialogDescription>
+        </DialogHeader>
+
+        {editFormError && (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-2.5 text-xs text-destructive mb-2">
+            {editFormError}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmitEdit((d) => updateTaskMutation.mutate(d))} className="space-y-3 py-1">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-foreground">Task Title *</label>
+            <Input {...registerEdit('title')} className="h-8 text-xs" />
+            {editErrors.title && <p className="text-[10px] text-destructive">{editErrors.title.message}</p>}
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-foreground">Description *</label>
+            <Textarea {...registerEdit('description')} rows={2} className="text-xs" />
+            {editErrors.description && <p className="text-[10px] text-destructive">{editErrors.description.message}</p>}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">Priority</label>
+              <select
+                {...registerEdit('priority')}
+                className="w-full h-8 rounded-lg border border-input bg-background px-2.5 text-xs text-foreground"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">Due Date & Time *</label>
+              <Input type="datetime-local" {...registerEdit('due_date')} className="h-8 text-xs" />
+              {editErrors.due_date && <p className="text-[10px] text-destructive">{editErrors.due_date.message}</p>}
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-foreground">Instructions</label>
+            <Textarea {...registerEdit('instructions')} rows={2} className="text-xs" />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-foreground">Acceptance Requirements</label>
+            <Textarea {...registerEdit('requirements')} rows={2} className="text-xs" />
+          </div>
+
+          <div className="space-y-1.5 pt-2 border-t">
+            <span className="text-[11px] font-semibold text-foreground block">Required Deliverables on Submission:</span>
+            <div className="flex flex-wrap gap-3 text-xs">
+              <label className="flex items-center gap-1.5 cursor-pointer text-muted-foreground">
+                <input type="checkbox" {...registerEdit('require_github')} className="rounded text-primary" />
+                <span className="text-[11px]">GitHub Repository</span>
+              </label>
+              <label className="flex items-center gap-1.5 cursor-pointer text-muted-foreground">
+                <input type="checkbox" {...registerEdit('require_deployment')} className="rounded text-primary" />
+                <span className="text-[11px]">Live Preview</span>
+              </label>
+              <label className="flex items-center gap-1.5 cursor-pointer text-muted-foreground">
+                <input type="checkbox" {...registerEdit('require_drive')} className="rounded text-primary" />
+                <span className="text-[11px]">Drive Assets</span>
+              </label>
+            </div>
+          </div>
+
+          <DialogFooter className="pt-2">
+            <Button type="button" variant="outline" size="sm" onClick={() => setEditDialogOpen(false)} className="h-8 text-xs">
+              Cancel
+            </Button>
+            <Button type="submit" size="sm" disabled={updateTaskMutation.isPending} className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white">
+              {updateTaskMutation.isPending ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>
         </form>

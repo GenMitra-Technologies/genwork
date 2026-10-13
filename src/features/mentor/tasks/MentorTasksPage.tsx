@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, CheckSquare, Calendar, Users, Eye, Sparkles } from 'lucide-react';
+import { Plus, CheckSquare, Calendar, Users, Eye, Sparkles, Pencil } from 'lucide-react';
 import { mentorApi } from '../api';
 import { useAuth } from '../../../hooks/useAuth';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
@@ -26,6 +26,10 @@ export function MentorTasksPage() {
   const isNewRoute = location.pathname.endsWith('/new') || searchParams.get('new') === 'true';
   const [createDialogOpen, setCreateDialogOpen] = useState(isNewRoute);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Edit Task State
+  const [editingTask, setEditingTask] = useState<any | null>(null);
+  const [editFormError, setEditFormError] = useState<string | null>(null);
 
   const handleCloseDialog = () => {
     setCreateDialogOpen(false);
@@ -72,6 +76,45 @@ export function MentorTasksPage() {
   const assignAll = watch('assign_all');
   const selectedInternIds = watch('intern_ids');
 
+  // Edit Task Form
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    watch: watchEdit,
+    setValue: setValueEdit,
+    reset: resetEdit,
+    formState: { errors: editErrors },
+  } = useForm<CreateTaskInput>({
+    resolver: zodResolver(createTaskSchema),
+  });
+
+  const selectedEditInternIds = watchEdit('intern_ids') || [];
+
+  const handleOpenEditDialog = (task: any) => {
+    setEditingTask(task);
+    setEditFormError(null);
+    const assignedIds = task.assignments?.map((a: any) => a.intern_id) || [];
+    resetEdit({
+      title: task.title || '',
+      description: task.description || '',
+      instructions: task.instructions || '',
+      requirements: task.requirements || '',
+      expected_output: task.expected_output || '',
+      priority: task.priority || 'medium',
+      due_date: task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 16),
+      require_github: !!task.require_github,
+      require_deployment: !!task.require_deployment,
+      require_drive: !!task.require_drive,
+      assign_all: false,
+      intern_ids: assignedIds,
+    });
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditingTask(null);
+    setEditFormError(null);
+  };
+
   const createTaskMutation = useMutation({
     mutationFn: async (data: CreateTaskInput) => {
       await mentorApi.createTask(data);
@@ -85,6 +128,22 @@ export function MentorTasksPage() {
     },
     onError: (err: any) => {
       setFormError(err.message || 'Failed to create task');
+    },
+  });
+
+  const updateTaskMutation = useMutation({
+    mutationFn: async (data: CreateTaskInput) => {
+      if (!editingTask) return;
+      await mentorApi.updateTask(editingTask.id, data);
+    },
+    onSuccess: () => {
+      handleCloseEditDialog();
+      queryClient.invalidateQueries({ queryKey: ['mentor-created-tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'mentor'] });
+    },
+    onError: (err: any) => {
+      setEditFormError(err.message || 'Failed to update task');
     },
   });
 
@@ -131,9 +190,29 @@ export function MentorTasksPage() {
                 <p className="text-[11px] text-slate-500 line-clamp-2">{task.description}</p>
               </div>
 
-              <div className="flex items-center gap-1.5 shrink-0 text-[11px] text-slate-400">
-                <Calendar className="h-3 w-3 text-slate-400" />
-                <span>Due: {formatDateOnly(task.due_date)}</span>
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                  <Calendar className="h-3 w-3 text-slate-400" />
+                  <span>Due: {formatDateOnly(task.due_date)}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenEditDialog(task)}
+                    className="h-7 px-2.5 text-[11px] rounded-lg font-medium text-slate-700 hover:text-indigo-600 hover:border-indigo-200 gap-1"
+                  >
+                    <Pencil className="h-3 w-3" /> Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(`/intern/tasks/${task.code}`)}
+                    className="h-7 px-2 text-[11px] rounded-lg text-slate-500 hover:text-slate-800 gap-1"
+                  >
+                    <Eye className="h-3 w-3" /> View
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -281,6 +360,125 @@ export function MentorTasksPage() {
             </Button>
             <Button type="submit" size="sm" disabled={createTaskMutation.isPending} className="h-8 text-xs rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium">
               {createTaskMutation.isPending ? 'Publishing...' : 'Publish & Assign'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </Dialog>
+
+      {/* Edit Task Dialog */}
+      <Dialog open={!!editingTask} onOpenChange={(open) => { if (!open) handleCloseEditDialog(); }}>
+        <DialogHeader>
+          <DialogTitle className="text-base font-semibold text-slate-900 flex items-center gap-2">
+            <Pencil className="h-4 w-4 text-indigo-600" /> Edit Internship Task
+            {editingTask && <span className="font-mono text-xs text-indigo-600">({editingTask.code})</span>}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-slate-500">
+            Update task details, deadline, deliverables, or assign additional mentees in real time. Existing submissions and grades are preserved.
+          </DialogDescription>
+        </DialogHeader>
+
+        {editFormError && (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-2.5 text-xs text-red-600 mb-2">
+            {editFormError}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmitEdit((d) => updateTaskMutation.mutate(d))} className="space-y-3 py-1">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-700">Task Title *</label>
+            <Input {...registerEdit('title')} placeholder="e.g. Implement WebSocket Realtime Updates" className="h-8 text-xs rounded-lg" />
+            {editErrors.title && <p className="text-[10px] text-red-500">{editErrors.title.message}</p>}
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-700">Description *</label>
+            <Textarea {...registerEdit('description')} placeholder="Detailed context and purpose of the task..." rows={2} className="text-xs rounded-lg" />
+            {editErrors.description && <p className="text-[10px] text-red-500">{editErrors.description.message}</p>}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700">Priority</label>
+              <select
+                {...registerEdit('priority')}
+                className="w-full h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs text-slate-800"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700">Due Date & Time *</label>
+              <Input type="datetime-local" {...registerEdit('due_date')} className="h-8 text-xs rounded-lg" />
+              {editErrors.due_date && <p className="text-[10px] text-red-500">{editErrors.due_date.message}</p>}
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-700">Instructions</label>
+            <Textarea {...registerEdit('instructions')} placeholder="1. Checkout branch... 2. Run migrations..." rows={2} className="text-xs rounded-lg" />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-700">Acceptance Requirements</label>
+            <Textarea {...registerEdit('requirements')} placeholder="All unit tests green, zero lint errors..." rows={2} className="text-xs rounded-lg" />
+          </div>
+
+          {/* Deliverables Checklist */}
+          <div className="space-y-1.5 pt-2 border-t border-slate-100">
+            <span className="text-[11px] font-semibold text-slate-700 block">Required Deliverables on Submission:</span>
+            <div className="flex flex-wrap gap-3 text-xs">
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-600">
+                <input type="checkbox" {...registerEdit('require_github')} className="rounded text-indigo-600" />
+                <span className="text-[11px]">GitHub Repository</span>
+              </label>
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-600">
+                <input type="checkbox" {...registerEdit('require_deployment')} className="rounded text-indigo-600" />
+                <span className="text-[11px]">Live Preview</span>
+              </label>
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-600">
+                <input type="checkbox" {...registerEdit('require_drive')} className="rounded text-indigo-600" />
+                <span className="text-[11px]">Drive Assets</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Additional Assignees */}
+          <div className="space-y-1.5 pt-2 border-t border-slate-100">
+            <span className="text-[11px] font-semibold text-slate-700 block">Assignees (Add more mentees):</span>
+            <div className="pt-1 space-y-1 text-xs max-h-36 overflow-y-auto">
+              {myInterns.map((intern: any) => {
+                const isChecked = selectedEditInternIds.includes(intern.intern_id);
+                return (
+                  <label key={intern.intern_id} className="flex items-center gap-2 cursor-pointer text-slate-600 hover:text-slate-900">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setValueEdit('intern_ids', [...selectedEditInternIds, intern.intern_id]);
+                        } else {
+                          setValueEdit('intern_ids', selectedEditInternIds.filter((id) => id !== intern.intern_id));
+                        }
+                      }}
+                      className="rounded text-indigo-600"
+                    />
+                    <span className="text-[11px]">{intern.full_name} ({intern.role_title})</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button type="button" variant="outline" size="sm" onClick={handleCloseEditDialog} className="h-8 text-xs rounded-lg">
+              Cancel
+            </Button>
+            <Button type="submit" size="sm" disabled={updateTaskMutation.isPending} className="h-8 text-xs rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium">
+              {updateTaskMutation.isPending ? 'Saving changes...' : 'Save Changes'}
             </Button>
           </DialogFooter>
         </form>
