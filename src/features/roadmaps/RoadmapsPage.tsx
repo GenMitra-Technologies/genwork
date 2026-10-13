@@ -2,16 +2,12 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  Compass,
   Search,
   BookOpen,
   Edit,
   Trash2,
-  ExternalLink,
-  Layers,
   Sparkles,
   Download,
-  Maximize2,
   Plus,
   RotateCcw,
   AlertTriangle,
@@ -20,8 +16,6 @@ import {
   ArrowLeft,
   ChevronRight,
   Eye,
-  FileCode,
-  CheckCircle2,
 } from 'lucide-react';
 import { roadmapsApi } from './api';
 import { useAuth } from '../../hooks/useAuth';
@@ -37,11 +31,11 @@ export function RoadmapsPage() {
   const isAdmin = role === 'admin';
   const queryClient = useQueryClient();
 
-  // Active view:
+  // Navigation states:
   // selectedFolder: null -> shows Folders list
-  // selectedFolder: 'Web Development' -> shows inside that folder
+  // selectedFolder: 'Web Development' -> shows items inside that folder
   // selectedRoadmap: RoadmapItem -> in-tab viewer right here in the page
-  const [selectedFolder, setSelectedFolder] = useState<string | null>('Web Development');
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [selectedRoadmap, setSelectedRoadmap] = useState<RoadmapItem | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,13 +78,13 @@ export function RoadmapsPage() {
     return map;
   }, [roadmaps]);
 
-  // Roadmaps inside the current selected folder
+  // Roadmaps inside the selected folder
   const currentFolderRoadmaps = useMemo(() => {
     if (!selectedFolder) return [];
     return foldersMap.get(selectedFolder) || [];
   }, [foldersMap, selectedFolder]);
 
-  // Extract categories within the current folder
+  // Categories in the selected folder
   const categories = useMemo(() => {
     const set = new Set<string>(['All']);
     currentFolderRoadmaps.forEach((r) => {
@@ -158,7 +152,7 @@ export function RoadmapsPage() {
     mutationFn: () => roadmapsApi.resetToDefaults(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['roadmaps'] });
-      showToast('All 59 2026 roadmaps restored to defaults.');
+      showToast('All roadmaps restored to defaults.');
     },
   });
 
@@ -183,7 +177,7 @@ export function RoadmapsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-[1360px] mx-auto pb-16">
+    <div className="space-y-4 max-w-[1360px] mx-auto pb-12 px-1 sm:px-2">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-20 right-6 z-50 rounded-xl bg-slate-900/95 text-white px-4 py-3 text-xs font-semibold shadow-2xl flex items-center gap-2 border border-slate-700 animate-in fade-in slide-in-from-top-2">
@@ -192,34 +186,24 @@ export function RoadmapsPage() {
         </div>
       )}
 
-      {/* Header Banner */}
-      <div className="rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50/90 via-indigo-50/50 to-white p-5 sm:p-6 shadow-2xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="space-y-1">
+      {/* VIEW 1: ROOT FOLDERS VIEW (Clean, without big redundant header banner) */}
+      {!selectedFolder && !selectedRoadmap && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between py-1">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-sky-600 text-white shadow-xs">
-                <Compass className="h-5 w-5" />
-              </span>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-                Engineering Roadmaps & Learning Paths
-              </h1>
+              <Folder className="h-5 w-5 text-sky-600" />
+              <h2 className="text-base font-bold text-slate-900 tracking-tight">Folders</h2>
             </div>
-            <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
-              Organized technical curriculums and high-definition architectural roadmaps. Click into folders to explore
-              milestones from Beginner to Expert.
-            </p>
-          </div>
 
-          <div className="flex items-center gap-2 shrink-0">
             {isAdmin && (
-              <>
+              <div className="flex items-center gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => resetMutation.mutate()}
-                  className="h-9 px-3 text-xs font-medium border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl"
-                  title="Reset all deleted or modified roadmaps back to original defaults"
+                  className="h-8 px-3 text-xs border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl"
+                  title="Reset all roadmaps to original defaults"
                 >
                   <RotateCcw className="h-3.5 w-3.5 mr-1 text-slate-400" />
                   Restore Defaults
@@ -228,78 +212,13 @@ export function RoadmapsPage() {
                   type="button"
                   size="sm"
                   onClick={openCreateModal}
-                  className="h-9 px-3.5 text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-xl shadow-2xs"
+                  className="h-8 px-3 text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-xl shadow-2xs"
                 >
-                  <Plus className="h-4 w-4 mr-1.5" />
+                  <Plus className="h-3.5 w-3.5 mr-1" />
                   Add Roadmap
                 </Button>
-              </>
+              </div>
             )}
-            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-white border border-sky-200/90 text-sky-700 shadow-2xs">
-              {roadmaps.length} Roadmaps Available
-            </span>
-          </div>
-        </div>
-
-        {/* Breadcrumb Navigation Bar */}
-        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-sky-100/70 text-xs">
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedFolder(null);
-              setSelectedRoadmap(null);
-            }}
-            className={cn(
-              'font-semibold px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5',
-              !selectedFolder
-                ? 'bg-sky-600 text-white shadow-2xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
-            )}
-          >
-            <Folder className="h-3.5 w-3.5" />
-            Roadmaps Directory
-          </button>
-
-          {selectedFolder && (
-            <>
-              <ChevronRight className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-              <button
-                type="button"
-                onClick={() => setSelectedRoadmap(null)}
-                className={cn(
-                  'font-semibold px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5',
-                  selectedFolder && !selectedRoadmap
-                    ? 'bg-sky-600 text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
-                )}
-              >
-                <FolderOpen className="h-3.5 w-3.5" />
-                {selectedFolder} ({currentFolderRoadmaps.length})
-              </button>
-            </>
-          )}
-
-          {selectedRoadmap && (
-            <>
-              <ChevronRight className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-              <span className="px-2.5 py-1 rounded-lg bg-sky-100 text-sky-900 font-bold truncate max-w-xs flex items-center gap-1.5">
-                <FileCode className="h-3.5 w-3.5 text-sky-600" />
-                {selectedRoadmap.title}
-              </span>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* VIEW 1: DIRECTORY / FOLDERS VIEW (When no folder is selected) */}
-      {!selectedFolder && !selectedRoadmap && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-              <Folder className="h-4 w-4 text-sky-600" />
-              Curriculum Folders
-            </h2>
-            <span className="text-xs text-slate-500">{foldersMap.size} Folders</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -326,7 +245,7 @@ export function RoadmapsPage() {
                     {folderName}
                   </h3>
                   <p className="text-xs text-slate-500 line-clamp-2">
-                    59 interactive SVG roadmaps from beginner to expert in Core Web, Frontend, Backend, AI, and Stacks.
+                    Complete 2026 learning milestones covering Beginner to Expert.
                   </p>
                 </div>
 
@@ -340,11 +259,11 @@ export function RoadmapsPage() {
         </div>
       )}
 
-      {/* VIEW 2: INSIDE FOLDER - ROADMAPS GRID */}
+      {/* VIEW 2: INSIDE FOLDER (Compact, clean header with proper padding) */}
       {selectedFolder && !selectedRoadmap && (
-        <div className="space-y-5">
-          {/* Top Folder Control Bar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+        <div className="space-y-4">
+          {/* Compact Folder Control Bar */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-2xs">
             <div className="flex items-center gap-2">
               <Button
                 type="button"
@@ -354,31 +273,45 @@ export function RoadmapsPage() {
                 className="h-8 px-2.5 text-xs text-slate-600 hover:text-slate-900 rounded-lg"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
-                <span>All Folders</span>
+                <span>Folders</span>
               </Button>
               <div className="h-4 w-px bg-slate-200 mx-1" />
               <div className="flex items-center gap-1.5">
                 <FolderOpen className="h-4 w-4 text-sky-600" />
                 <span className="text-sm font-bold text-slate-900">{selectedFolder}</span>
-                <span className="text-xs text-slate-500 font-medium">({filteredRoadmaps.length} roadmaps)</span>
+                <span className="text-xs text-slate-500 font-medium">({filteredRoadmaps.length})</span>
               </div>
             </div>
 
-            {/* Search Input */}
-            <div className="relative sm:w-80">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-              <Input
-                type="text"
-                placeholder="Search roadmaps (e.g. React, Next.js, AI)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-8 text-xs rounded-xl bg-slate-50/50 border-slate-200"
-              />
+            <div className="flex items-center gap-2">
+              {/* Search Input */}
+              <div className="relative flex-1 sm:w-72">
+                <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+                <Input
+                  type="text"
+                  placeholder="Search in folder..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-8 h-8 text-xs rounded-xl bg-slate-50/50 border-slate-200"
+                />
+              </div>
+
+              {isAdmin && (
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={openCreateModal}
+                  className="h-8 px-3 text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-xl shadow-2xs shrink-0"
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1" />
+                  Add
+                </Button>
+              )}
             </div>
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none px-0.5">
             {categories.map((cat) => (
               <button
                 key={cat}
@@ -410,17 +343,17 @@ export function RoadmapsPage() {
               </div>
               <h3 className="text-sm font-semibold text-slate-800">No roadmaps found</h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Try searching with different keywords or switch the category filter above.
+                Try searching with different terms or select a different category pill.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredRoadmaps.map((item) => (
                 <div
                   key={item.id}
                   className="group rounded-2xl border border-slate-200/80 bg-white shadow-2xs hover:shadow-md hover:border-sky-300 transition-all flex flex-col overflow-hidden"
                 >
-                  {/* Thumbnail / Preview: Click opens inside this tab */}
+                  {/* Thumbnail / Preview: Click opens in this tab */}
                   <div
                     className="relative h-44 bg-slate-900/5 overflow-hidden cursor-pointer border-b border-slate-100 flex items-center justify-center"
                     onClick={() => setSelectedRoadmap(item)}
@@ -432,7 +365,6 @@ export function RoadmapsPage() {
                       loading="lazy"
                     />
 
-                    {/* Overlay on hover */}
                     <div className="absolute inset-0 bg-slate-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <span className="px-3 py-1.5 rounded-lg bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-xs">
                         <Eye className="h-3.5 w-3.5 text-sky-600" />
@@ -440,7 +372,6 @@ export function RoadmapsPage() {
                       </span>
                     </div>
 
-                    {/* Category pill */}
                     <div className="absolute top-2.5 left-2.5">
                       <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/80 text-white backdrop-blur-xs">
                         {item.category}
@@ -516,11 +447,11 @@ export function RoadmapsPage() {
         </div>
       )}
 
-      {/* VIEW 3: IN-TAB FULL ROADMAP VIEWER (Renders directly in this tab without popup) */}
+      {/* VIEW 3: IN-TAB FULL ROADMAP VIEWER (Renders directly in this tab) */}
       {selectedRoadmap && (
-        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           {/* Header Controls for in-tab viewer */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-3">
             <div className="flex items-center gap-3">
               <Button
                 type="button"
@@ -530,7 +461,7 @@ export function RoadmapsPage() {
                 className="h-8 px-3 text-xs font-semibold rounded-xl text-slate-700 hover:bg-slate-100"
               >
                 <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
-                Back to {selectedFolder || 'Roadmaps'}
+                Back to {selectedFolder || 'Folder'}
               </Button>
               <div className="space-y-0.5">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600">
