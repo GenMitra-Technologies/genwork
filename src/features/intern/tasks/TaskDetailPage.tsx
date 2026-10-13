@@ -1,6 +1,5 @@
-// src/features/intern/tasks/TaskDetailPage.tsx
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,9 +17,11 @@ import {
   Clock,
   ShieldCheck,
   Pencil,
+  Trash2,
 } from 'lucide-react';
 import { internApi } from '../api';
 import { mentorApi } from '../../mentor/api';
+import { adminApi } from '../../admin/api';
 import { useAuth } from '../../../hooks/useAuth';
 import { StatusBadge } from '../../../components/shared/StatusBadge';
 import { PriorityBadge } from '../../../components/shared/PriorityBadge';
@@ -35,9 +36,11 @@ import { cn } from '../../../lib/utils';
 
 export function TaskDetailPage() {
   const { code } = useParams<{ code: string }>();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [editFormError, setEditFormError] = useState<string | null>(null);
 
@@ -179,10 +182,28 @@ export function TaskDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['task', code] });
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['mentor-created-tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-all-tasks'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard', 'mentor'] });
     },
     onError: (err: any) => {
       setEditFormError(err.message || 'Failed to update task');
+    },
+  });
+
+  const deleteTaskMutation = useMutation({
+    mutationFn: async () => {
+      if (!taskObj?.id) return;
+      await adminApi.deleteTask(taskObj.id);
+    },
+    onSuccess: () => {
+      setDeleteDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: ['admin-all-tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['mentor-created-tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      navigate('/admin/tasks');
+    },
+    onError: (err: any) => {
+      setActionError(err.message || 'Failed to delete task');
     },
   });
 
@@ -279,6 +300,16 @@ export function TaskDetailPage() {
                 className="gap-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
               >
                 <Pencil className="h-4 w-4" /> Edit Task
+              </Button>
+            )}
+
+            {isAdmin && (
+              <Button
+                onClick={() => setDeleteDialogOpen(true)}
+                variant="outline"
+                className="gap-2 border-rose-200 text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/50"
+              >
+                <Trash2 className="h-4 w-4" /> Delete Task
               </Button>
             )}
 
@@ -769,6 +800,36 @@ export function TaskDetailPage() {
             </Button>
           </DialogFooter>
         </form>
+      </Dialog>
+
+      {/* Admin Delete Task Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogHeader>
+          <DialogTitle className="text-destructive flex items-center gap-2">
+            <Trash2 className="h-5 w-5" /> Delete Curriculum Task
+          </DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete <span className="font-semibold text-foreground">{taskObj.code}: {taskObj.title}</span>? This will archive the task and remove it from active assignments.
+          </DialogDescription>
+        </DialogHeader>
+
+        <DialogFooter className="gap-2 sm:gap-0 pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setDeleteDialogOpen(false)}
+            disabled={deleteTaskMutation.isPending}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => deleteTaskMutation.mutate()}
+            disabled={deleteTaskMutation.isPending}
+          >
+            {deleteTaskMutation.isPending ? 'Deleting...' : 'Confirm Delete'}
+          </Button>
+        </DialogFooter>
       </Dialog>
     </div>
   );

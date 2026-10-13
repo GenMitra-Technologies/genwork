@@ -253,6 +253,7 @@ export const router = createBrowserRouter([
               { path: '/admin/attendance', element: <AdminAttendancePage /> },
               { path: '/admin/credentials', element: <CredentialsPage /> },
               { path: '/admin/tasks', element: <AdminTasksPage /> },
+              { path: '/admin/tasks/:code', element: <TaskDetailPage /> },
               { path: '/admin/assignments', element: <AdminAssignmentsPage /> },
               { path: '/admin/reviews', element: <ReviewsPage /> },
               { path: '/admin/notifications', element: <NotificationsPage /> },

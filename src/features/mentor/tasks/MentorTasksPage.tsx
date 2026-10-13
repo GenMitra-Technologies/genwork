@@ -207,7 +207,7 @@ export function MentorTasksPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => navigate(`/intern/tasks/${task.code}`)}
+                    onClick={() => navigate(`/mentor/tasks/${task.code}`)}
                     className="h-7 px-2 text-[11px] rounded-lg text-slate-500 hover:text-slate-800 gap-1"
                   >
                     <Eye className="h-3 w-3" /> View

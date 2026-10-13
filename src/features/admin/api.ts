@@ -1,7 +1,8 @@
 // src/features/admin/api.ts
 import { supabase } from '../../lib/supabase';
 import { TaskStatus } from '../../types/database.types';
-import { CreateAssignmentInput } from '../../lib/validators';
+import { CreateAssignmentInput, CreateTaskInput } from '../../lib/validators';
+import { mentorApi } from '../mentor/api';
 
 export const adminApi = {
   async getDashboardStats() {
@@ -431,6 +432,7 @@ export const adminApi = {
             intern:interns(id, profile:profiles(full_name))
           )
         `)
+        .eq('archived', false)
         .order('created_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
@@ -439,6 +441,21 @@ export const adminApi = {
     } catch {}
 
     return list;
+  },
+
+  async updateTask(taskId: string, payload: Partial<CreateTaskInput>) {
+    return mentorApi.updateTask(taskId, payload);
+  },
+
+  async deleteTask(taskId: string) {
+    const { error } = await supabase
+      .from('tasks')
+      .update({ archived: true, updated_at: new Date().toISOString() })
+      .eq('id', taskId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
   },
 
   async adminOverrideTaskStatus(taskAssignmentId: string, newStatus: TaskStatus, reason: string) {
