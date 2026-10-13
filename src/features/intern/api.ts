@@ -84,6 +84,7 @@ export const internApi = {
       .from('v_task_cards')
       .select('*')
       .eq('intern_id', internId)
+      .eq('archived', false)
       .order('assigned_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
@@ -103,7 +104,9 @@ export const internApi = {
         .eq('intern_id', internId);
 
       if (directData && directData.length > 0) {
-        return directData.map((d: any) => ({
+        return directData
+          .filter((d: any) => !d.task?.archived)
+          .map((d: any) => ({
           task_assignment_id: d.id,
           task_id: d.task_id,
           intern_id: d.intern_id,

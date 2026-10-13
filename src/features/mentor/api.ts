@@ -99,6 +99,7 @@ export const mentorApi = {
         )
       `)
       .eq('mentor_id', mentorId)
+      .eq('archived', false)
       .order('created_at', { ascending: false });
 
     if (error || !data) return [];
