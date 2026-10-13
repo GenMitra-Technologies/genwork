@@ -49,6 +49,9 @@ import { AdminBackupPage } from '../features/admin/backup/AdminBackupPage';
 import { SupabaseDatabasePage } from '../features/admin/database/SupabaseDatabasePage';
 import { AdminCoursesPage } from '../features/courses/admin/AdminCoursesPage';
 
+// Roadmaps
+import { RoadmapsPage } from '../features/roadmaps/RoadmapsPage';
+
 // Shared
 import { NotificationsPage } from '../features/notifications/NotificationsPage';
 import { useAuth } from '../hooks/useAuth';
@@ -206,6 +209,7 @@ export const router = createBrowserRouter([
             element: <AppShell />,
             children: [
               { path: '/intern', element: <InternDashboard /> },
+              { path: '/intern/roadmaps', element: <RoadmapsPage /> },
               { path: '/intern/courses', element: <InternCoursesPage /> },
               { path: '/intern/courses/:id', element: <InternCourseLearnPage /> },
               { path: '/intern/tasks', element: <TasksPage /> },
@@ -229,6 +233,7 @@ export const router = createBrowserRouter([
             element: <AppShell />,
             children: [
               { path: '/mentor', element: <MentorDashboard /> },
+              { path: '/mentor/roadmaps', element: <RoadmapsPage /> },
               { path: '/mentor/courses', element: <MentorCoursesPage /> },
               { path: '/mentor/courses/new', element: <MentorCourseEditorPage /> },
               { path: '/mentor/courses/:id/edit', element: <MentorCourseEditorPage /> },
@@ -257,6 +262,7 @@ export const router = createBrowserRouter([
             element: <AppShell />,
             children: [
               { path: '/admin', element: <AdminDashboard /> },
+              { path: '/admin/roadmaps', element: <RoadmapsPage /> },
               { path: '/admin/courses', element: <AdminCoursesPage /> },
               { path: '/admin/internships', element: <InternshipsPage /> },
               { path: '/admin/interns', element: <InternsAdminPage /> },

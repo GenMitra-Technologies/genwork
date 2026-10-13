@@ -25,6 +25,7 @@ import {
   HardDrive,
   Database,
   Keyboard,
+  Compass,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useUIStore } from '../../stores/ui.store';
@@ -63,6 +64,7 @@ export function Sidebar() {
         {
           title: 'WORK & DELIVERABLES',
           items: [
+            { label: 'Roadmaps', to: '/intern/roadmaps', icon: Compass },
             { label: 'Courses', to: '/intern/courses', icon: GraduationCap },
             { label: 'Tasks', to: '/intern/tasks', icon: CheckSquare },
             { label: 'Assignments', to: '/intern/assignments', icon: FileText },
@@ -103,6 +105,7 @@ export function Sidebar() {
         {
           title: 'CURRICULUM & REVIEWS',
           items: [
+            { label: 'Roadmaps', to: '/mentor/roadmaps', icon: Compass },
             { label: 'Courses', to: '/mentor/courses', icon: GraduationCap },
             { label: 'Tasks', to: '/mentor/tasks', icon: CheckSquare },
             { label: 'Assignments', to: '/mentor/assignments', icon: FileText },
@@ -140,6 +143,7 @@ export function Sidebar() {
       {
         title: 'CURRICULUM & REVIEWS',
         items: [
+          { label: 'Roadmaps', to: '/admin/roadmaps', icon: Compass },
           { label: 'Courses', to: '/admin/courses', icon: GraduationCap },
           { label: 'Tasks', to: '/admin/tasks', icon: CheckSquare },
           { label: 'Assignments', to: '/admin/assignments', icon: FileText },

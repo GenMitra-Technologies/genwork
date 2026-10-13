@@ -1,0 +1,474 @@
+﻿[
+    {
+        "id":  "01-core-web-html",
+        "title":  "HTML",
+        "category":  "Core web",
+        "svgPath":  "/roadmaps/01-core-web/html.svg",
+        "slug":  "01-core-web/html.svg",
+        "description":  "Complete 2026 learning roadmap for HTML covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "01-core-web-css",
+        "title":  "CSS",
+        "category":  "Core web",
+        "svgPath":  "/roadmaps/01-core-web/css.svg",
+        "slug":  "01-core-web/css.svg",
+        "description":  "Complete 2026 learning roadmap for CSS covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "01-core-web-javascript",
+        "title":  "JavaScript",
+        "category":  "Core web",
+        "svgPath":  "/roadmaps/01-core-web/javascript.svg",
+        "slug":  "01-core-web/javascript.svg",
+        "description":  "Complete 2026 learning roadmap for JavaScript covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "01-core-web-typescript",
+        "title":  "TypeScript",
+        "category":  "Core web",
+        "svgPath":  "/roadmaps/01-core-web/typescript.svg",
+        "slug":  "01-core-web/typescript.svg",
+        "description":  "Complete 2026 learning roadmap for TypeScript covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "01-core-web-git-github",
+        "title":  "Git and GitHub",
+        "category":  "Core web",
+        "svgPath":  "/roadmaps/01-core-web/git-github.svg",
+        "slug":  "01-core-web/git-github.svg",
+        "description":  "Complete 2026 learning roadmap for Git and GitHub covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "01-core-web-web-performance-seo",
+        "title":  "Web Performance and SEO",
+        "category":  "Core web",
+        "svgPath":  "/roadmaps/01-core-web/web-performance-seo.svg",
+        "slug":  "01-core-web/web-performance-seo.svg",
+        "description":  "Complete 2026 learning roadmap for Web Performance and SEO covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "01-core-web-web-security-auth",
+        "title":  "Web Security and Authentication",
+        "category":  "Core web",
+        "svgPath":  "/roadmaps/01-core-web/web-security-auth.svg",
+        "slug":  "01-core-web/web-security-auth.svg",
+        "description":  "Complete 2026 learning roadmap for Web Security and Authentication covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "02-frontend-react",
+        "title":  "React",
+        "category":  "Frontend",
+        "svgPath":  "/roadmaps/02-frontend/react.svg",
+        "slug":  "02-frontend/react.svg",
+        "description":  "Complete 2026 learning roadmap for React covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "02-frontend-nextjs",
+        "title":  "Next.js",
+        "category":  "Frontend",
+        "svgPath":  "/roadmaps/02-frontend/nextjs.svg",
+        "slug":  "02-frontend/nextjs.svg",
+        "description":  "Complete 2026 learning roadmap for Next.js covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "02-frontend-vue-nuxt",
+        "title":  "Vue and Nuxt",
+        "category":  "Frontend",
+        "svgPath":  "/roadmaps/02-frontend/vue-nuxt.svg",
+        "slug":  "02-frontend/vue-nuxt.svg",
+        "description":  "Complete 2026 learning roadmap for Vue and Nuxt covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "02-frontend-angular",
+        "title":  "Angular",
+        "category":  "Frontend",
+        "svgPath":  "/roadmaps/02-frontend/angular.svg",
+        "slug":  "02-frontend/angular.svg",
+        "description":  "Complete 2026 learning roadmap for Angular covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "02-frontend-svelte-sveltekit",
+        "title":  "Svelte and SvelteKit",
+        "category":  "Frontend",
+        "svgPath":  "/roadmaps/02-frontend/svelte-sveltekit.svg",
+        "slug":  "02-frontend/svelte-sveltekit.svg",
+        "description":  "Complete 2026 learning roadmap for Svelte and SvelteKit covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "02-frontend-tailwind-ui",
+        "title":  "Tailwind CSS and UI Libraries",
+        "category":  "Frontend",
+        "svgPath":  "/roadmaps/02-frontend/tailwind-ui.svg",
+        "slug":  "02-frontend/tailwind-ui.svg",
+        "description":  "Complete 2026 learning roadmap for Tailwind CSS and UI Libraries covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "02-frontend-state-data-fetching",
+        "title":  "State Management and Data Fetching",
+        "category":  "Frontend",
+        "svgPath":  "/roadmaps/02-frontend/state-data-fetching.svg",
+        "slug":  "02-frontend/state-data-fetching.svg",
+        "description":  "Complete 2026 learning roadmap for State Management and Data Fetching covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "03-backend-nodejs",
+        "title":  "Node.js",
+        "category":  "Backend",
+        "svgPath":  "/roadmaps/03-backend/nodejs.svg",
+        "slug":  "03-backend/nodejs.svg",
+        "description":  "Complete 2026 learning roadmap for Node.js covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "03-backend-express",
+        "title":  "Express.js",
+        "category":  "Backend",
+        "svgPath":  "/roadmaps/03-backend/express.svg",
+        "slug":  "03-backend/express.svg",
+        "description":  "Complete 2026 learning roadmap for Express.js covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "03-backend-nestjs",
+        "title":  "NestJS",
+        "category":  "Backend",
+        "svgPath":  "/roadmaps/03-backend/nestjs.svg",
+        "slug":  "03-backend/nestjs.svg",
+        "description":  "Complete 2026 learning roadmap for NestJS covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "03-backend-rest-api-design",
+        "title":  "REST API Design",
+        "category":  "Backend",
+        "svgPath":  "/roadmaps/03-backend/rest-api-design.svg",
+        "slug":  "03-backend/rest-api-design.svg",
+        "description":  "Complete 2026 learning roadmap for REST API Design covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "03-backend-graphql-realtime-apis",
+        "title":  "GraphQL, tRPC and Realtime",
+        "category":  "Backend",
+        "svgPath":  "/roadmaps/03-backend/graphql-realtime-apis.svg",
+        "slug":  "03-backend/graphql-realtime-apis.svg",
+        "description":  "Complete 2026 learning roadmap for GraphQL, tRPC and Realtime covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "04-databases-sql-postgresql",
+        "title":  "SQL and PostgreSQL",
+        "category":  "Databases",
+        "svgPath":  "/roadmaps/04-databases/sql-postgresql.svg",
+        "slug":  "04-databases/sql-postgresql.svg",
+        "description":  "Complete 2026 learning roadmap for SQL and PostgreSQL covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "04-databases-mongodb",
+        "title":  "MongoDB and Mongoose",
+        "category":  "Databases",
+        "svgPath":  "/roadmaps/04-databases/mongodb.svg",
+        "slug":  "04-databases/mongodb.svg",
+        "description":  "Complete 2026 learning roadmap for MongoDB and Mongoose covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "04-databases-redis-caching",
+        "title":  "Redis and Caching",
+        "category":  "Databases",
+        "svgPath":  "/roadmaps/04-databases/redis-caching.svg",
+        "slug":  "04-databases/redis-caching.svg",
+        "description":  "Complete 2026 learning roadmap for Redis and Caching covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "04-databases-orm-data-modeling",
+        "title":  "ORMs and Data Modelling",
+        "category":  "Databases",
+        "svgPath":  "/roadmaps/04-databases/orm-data-modeling.svg",
+        "slug":  "04-databases/orm-data-modeling.svg",
+        "description":  "Complete 2026 learning roadmap for ORMs and Data Modelling covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "05-languages-python",
+        "title":  "Python",
+        "category":  "Languages and frameworks",
+        "svgPath":  "/roadmaps/05-languages/python.svg",
+        "slug":  "05-languages/python.svg",
+        "description":  "Complete 2026 learning roadmap for Python covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "05-languages-django",
+        "title":  "Django",
+        "category":  "Languages and frameworks",
+        "svgPath":  "/roadmaps/05-languages/django.svg",
+        "slug":  "05-languages/django.svg",
+        "description":  "Complete 2026 learning roadmap for Django covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "05-languages-fastapi-flask",
+        "title":  "FastAPI and Flask",
+        "category":  "Languages and frameworks",
+        "svgPath":  "/roadmaps/05-languages/fastapi-flask.svg",
+        "slug":  "05-languages/fastapi-flask.svg",
+        "description":  "Complete 2026 learning roadmap for FastAPI and Flask covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "05-languages-java-spring-boot",
+        "title":  "Java and Spring Boot",
+        "category":  "Languages and frameworks",
+        "svgPath":  "/roadmaps/05-languages/java-spring-boot.svg",
+        "slug":  "05-languages/java-spring-boot.svg",
+        "description":  "Complete 2026 learning roadmap for Java and Spring Boot covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "05-languages-dotnet-csharp",
+        "title":  "C# and .NET",
+        "category":  "Languages and frameworks",
+        "svgPath":  "/roadmaps/05-languages/dotnet-csharp.svg",
+        "slug":  "05-languages/dotnet-csharp.svg",
+        "description":  "Complete 2026 learning roadmap for C# and .NET covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "05-languages-php-laravel",
+        "title":  "PHP and Laravel",
+        "category":  "Languages and frameworks",
+        "svgPath":  "/roadmaps/05-languages/php-laravel.svg",
+        "slug":  "05-languages/php-laravel.svg",
+        "description":  "Complete 2026 learning roadmap for PHP and Laravel covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "05-languages-go",
+        "title":  "Go",
+        "category":  "Languages and frameworks",
+        "svgPath":  "/roadmaps/05-languages/go.svg",
+        "slug":  "05-languages/go.svg",
+        "description":  "Complete 2026 learning roadmap for Go covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "06-devops-cloud-docker-kubernetes",
+        "title":  "Docker and Kubernetes",
+        "category":  "DevOps and cloud",
+        "svgPath":  "/roadmaps/06-devops-cloud/docker-kubernetes.svg",
+        "slug":  "06-devops-cloud/docker-kubernetes.svg",
+        "description":  "Complete 2026 learning roadmap for Docker and Kubernetes covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "06-devops-cloud-ci-cd",
+        "title":  "CI/CD and DevOps",
+        "category":  "DevOps and cloud",
+        "svgPath":  "/roadmaps/06-devops-cloud/ci-cd.svg",
+        "slug":  "06-devops-cloud/ci-cd.svg",
+        "description":  "Complete 2026 learning roadmap for CI/CD and DevOps covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "06-devops-cloud-aws-cloud",
+        "title":  "AWS and Cloud",
+        "category":  "DevOps and cloud",
+        "svgPath":  "/roadmaps/06-devops-cloud/aws-cloud.svg",
+        "slug":  "06-devops-cloud/aws-cloud.svg",
+        "description":  "Complete 2026 learning roadmap for AWS and Cloud covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "06-devops-cloud-linux-nginx-networking",
+        "title":  "Linux, Nginx and Networking",
+        "category":  "DevOps and cloud",
+        "svgPath":  "/roadmaps/06-devops-cloud/linux-nginx-networking.svg",
+        "slug":  "06-devops-cloud/linux-nginx-networking.svg",
+        "description":  "Complete 2026 learning roadmap for Linux, Nginx and Networking covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "06-devops-cloud-messaging-queues",
+        "title":  "Messaging and Queues",
+        "category":  "DevOps and cloud",
+        "svgPath":  "/roadmaps/06-devops-cloud/messaging-queues.svg",
+        "slug":  "06-devops-cloud/messaging-queues.svg",
+        "description":  "Complete 2026 learning roadmap for Messaging and Queues covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "07-ai-ai-rag-llm-apps",
+        "title":  "AI Engineering: LLM Apps and RAG",
+        "category":  "AI engineering",
+        "svgPath":  "/roadmaps/07-ai/ai-rag-llm-apps.svg",
+        "slug":  "07-ai/ai-rag-llm-apps.svg",
+        "description":  "Complete 2026 learning roadmap for AI Engineering: LLM Apps and RAG covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "07-ai-ai-agents",
+        "title":  "AI Agents and Tool Use",
+        "category":  "AI engineering",
+        "svgPath":  "/roadmaps/07-ai/ai-agents.svg",
+        "slug":  "07-ai/ai-agents.svg",
+        "description":  "Complete 2026 learning roadmap for AI Agents and Tool Use covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "08-mobile-react-native-expo",
+        "title":  "React Native and Expo",
+        "category":  "Mobile",
+        "svgPath":  "/roadmaps/08-mobile/react-native-expo.svg",
+        "slug":  "08-mobile/react-native-expo.svg",
+        "description":  "Complete 2026 learning roadmap for React Native and Expo covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "08-mobile-flutter-dart",
+        "title":  "Flutter and Dart",
+        "category":  "Mobile",
+        "svgPath":  "/roadmaps/08-mobile/flutter-dart.svg",
+        "slug":  "08-mobile/flutter-dart.svg",
+        "description":  "Complete 2026 learning roadmap for Flutter and Dart covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "09-quality-architecture-testing-qa",
+        "title":  "Testing and QA",
+        "category":  "Quality and architecture",
+        "svgPath":  "/roadmaps/09-quality-architecture/testing-qa.svg",
+        "slug":  "09-quality-architecture/testing-qa.svg",
+        "description":  "Complete 2026 learning roadmap for Testing and QA covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "09-quality-architecture-system-design",
+        "title":  "System Design",
+        "category":  "Quality and architecture",
+        "svgPath":  "/roadmaps/09-quality-architecture/system-design.svg",
+        "slug":  "09-quality-architecture/system-design.svg",
+        "description":  "Complete 2026 learning roadmap for System Design covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "09-quality-architecture-design-patterns-architecture",
+        "title":  "Design Patterns and Architecture",
+        "category":  "Quality and architecture",
+        "svgPath":  "/roadmaps/09-quality-architecture/design-patterns-architecture.svg",
+        "slug":  "09-quality-architecture/design-patterns-architecture.svg",
+        "description":  "Complete 2026 learning roadmap for Design Patterns and Architecture covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "09-quality-architecture-dsa",
+        "title":  "Data Structures and Algorithms",
+        "category":  "Quality and architecture",
+        "svgPath":  "/roadmaps/09-quality-architecture/dsa.svg",
+        "slug":  "09-quality-architecture/dsa.svg",
+        "description":  "Complete 2026 learning roadmap for Data Structures and Algorithms covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "10-integrations-baas-firebase-supabase",
+        "title":  "Firebase and Supabase",
+        "category":  "Integrations",
+        "svgPath":  "/roadmaps/10-integrations/baas-firebase-supabase.svg",
+        "slug":  "10-integrations/baas-firebase-supabase.svg",
+        "description":  "Complete 2026 learning roadmap for Firebase and Supabase covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "10-integrations-payments-email-storage",
+        "title":  "Payments, Email and Storage",
+        "category":  "Integrations",
+        "svgPath":  "/roadmaps/10-integrations/payments-email-storage.svg",
+        "slug":  "10-integrations/payments-email-storage.svg",
+        "description":  "Complete 2026 learning roadmap for Payments, Email and Storage covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-mern-stack",
+        "title":  "MERN Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/mern-stack.svg",
+        "slug":  "11-full-stacks/mern-stack.svg",
+        "description":  "Complete 2026 learning roadmap for MERN Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-mean-stack",
+        "title":  "MEAN Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/mean-stack.svg",
+        "slug":  "11-full-stacks/mean-stack.svg",
+        "description":  "Complete 2026 learning roadmap for MEAN Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-mevn-stack",
+        "title":  "MEVN Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/mevn-stack.svg",
+        "slug":  "11-full-stacks/mevn-stack.svg",
+        "description":  "Complete 2026 learning roadmap for MEVN Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-pern-stack",
+        "title":  "PERN Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/pern-stack.svg",
+        "slug":  "11-full-stacks/pern-stack.svg",
+        "description":  "Complete 2026 learning roadmap for PERN Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-t3-stack",
+        "title":  "T3 Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/t3-stack.svg",
+        "slug":  "11-full-stacks/t3-stack.svg",
+        "description":  "Complete 2026 learning roadmap for T3 Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-lamp-lemp-stack",
+        "title":  "LAMP and LEMP Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/lamp-lemp-stack.svg",
+        "slug":  "11-full-stacks/lamp-lemp-stack.svg",
+        "description":  "Complete 2026 learning roadmap for LAMP and LEMP Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-django-react-stack",
+        "title":  "Django + React Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/django-react-stack.svg",
+        "slug":  "11-full-stacks/django-react-stack.svg",
+        "description":  "Complete 2026 learning roadmap for Django + React Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-fastapi-react-stack",
+        "title":  "FastAPI + React Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/fastapi-react-stack.svg",
+        "slug":  "11-full-stacks/fastapi-react-stack.svg",
+        "description":  "Complete 2026 learning roadmap for FastAPI + React Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-spring-react-stack",
+        "title":  "Spring Boot + React/Angular Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/spring-react-stack.svg",
+        "slug":  "11-full-stacks/spring-react-stack.svg",
+        "description":  "Complete 2026 learning roadmap for Spring Boot + React/Angular Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-dotnet-angular-stack",
+        "title":  ".NET + Angular/React Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/dotnet-angular-stack.svg",
+        "slug":  "11-full-stacks/dotnet-angular-stack.svg",
+        "description":  "Complete 2026 learning roadmap for .NET + Angular/React Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-jamstack",
+        "title":  "JAMstack and Static-First",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/jamstack.svg",
+        "slug":  "11-full-stacks/jamstack.svg",
+        "description":  "Complete 2026 learning roadmap for JAMstack and Static-First covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-serverless-stack",
+        "title":  "Serverless Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/serverless-stack.svg",
+        "slug":  "11-full-stacks/serverless-stack.svg",
+        "description":  "Complete 2026 learning roadmap for Serverless Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-mern-ai-stack",
+        "title":  "MERN + AI Stack",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/mern-ai-stack.svg",
+        "slug":  "11-full-stacks/mern-ai-stack.svg",
+        "description":  "Complete 2026 learning roadmap for MERN + AI Stack covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    },
+    {
+        "id":  "11-full-stacks-fullstack-master-2026",
+        "title":  "Full-Stack Master Roadmap 2026",
+        "category":  "Full-stack combinations",
+        "svgPath":  "/roadmaps/11-full-stacks/fullstack-master-2026.svg",
+        "slug":  "11-full-stacks/fullstack-master-2026.svg",
+        "description":  "Complete 2026 learning roadmap for Full-Stack Master Roadmap 2026 covering Beginner, Intermediate, Advanced, Practice, and Expert milestones."
+    }
+]
