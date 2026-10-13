@@ -83,6 +83,7 @@ export function MobileDrawer() {
         {
           title: 'WORK & DELIVERABLES',
           items: [
+            { label: 'Courses', to: '/intern/courses', icon: GraduationCap },
             { label: 'Tasks', to: '/intern/tasks', icon: CheckSquare },
             { label: 'Assignments', to: '/intern/assignments', icon: FileText },
             { label: 'Typing Test', to: '/intern/typing-test', icon: Keyboard },
@@ -122,6 +123,7 @@ export function MobileDrawer() {
         {
           title: 'CURRICULUM & REVIEWS',
           items: [
+            { label: 'Courses', to: '/mentor/courses', icon: GraduationCap },
             { label: 'Tasks', to: '/mentor/tasks', icon: CheckSquare },
             { label: 'Assignments', to: '/mentor/assignments', icon: FileText },
             { label: 'Review Queue', to: '/mentor/reviews', icon: Eye },
@@ -157,6 +159,7 @@ export function MobileDrawer() {
       {
         title: 'CURRICULUM & REVIEWS',
         items: [
+          { label: 'Courses', to: '/admin/courses', icon: GraduationCap },
           { label: 'Tasks', to: '/admin/tasks', icon: CheckSquare },
           { label: 'Assignments', to: '/admin/assignments', icon: FileText },
           { label: 'Reviews', to: '/admin/reviews', icon: Eye },

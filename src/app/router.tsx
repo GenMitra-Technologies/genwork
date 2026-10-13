@@ -15,6 +15,8 @@ import { AssignmentsPage } from '../features/intern/assignments/AssignmentsPage'
 import { InternProfilePage } from '../features/intern/profile/InternProfilePage';
 import { AttendancePage } from '../features/intern/attendance/AttendancePage';
 import { TypingTestPage } from '../features/intern/typing-test/TypingTestPage';
+import { InternCoursesPage } from '../features/courses/intern/InternCoursesPage';
+import { InternCourseLearnPage } from '../features/courses/intern/InternCourseLearnPage';
 
 // Mentor features
 import { MentorDashboard } from '../features/mentor/dashboard/MentorDashboard';
@@ -24,6 +26,8 @@ import { MentorAssignmentsPage } from '../features/mentor/assignments/MentorAssi
 import { ReviewsPage } from '../features/mentor/reviews/ReviewsPage';
 import { MentorAttendancePage } from '../features/mentor/attendance/MentorAttendancePage';
 import { MentorProfilePage } from '../features/mentor/profile/MentorProfilePage';
+import { MentorCoursesPage } from '../features/courses/mentor/MentorCoursesPage';
+import { MentorCourseEditorPage } from '../features/courses/mentor/MentorCourseEditorPage';
 
 // Admin features
 import { AdminDashboard } from '../features/admin/dashboard/AdminDashboard';
@@ -43,6 +47,7 @@ import { AdminAuthSecurityPage } from '../features/admin/auth-security/AdminAuth
 import { TeamPermissionsPage } from '../features/admin/permissions/TeamPermissionsPage';
 import { AdminBackupPage } from '../features/admin/backup/AdminBackupPage';
 import { SupabaseDatabasePage } from '../features/admin/database/SupabaseDatabasePage';
+import { AdminCoursesPage } from '../features/courses/admin/AdminCoursesPage';
 
 // Shared
 import { NotificationsPage } from '../features/notifications/NotificationsPage';
@@ -201,6 +206,8 @@ export const router = createBrowserRouter([
             element: <AppShell />,
             children: [
               { path: '/intern', element: <InternDashboard /> },
+              { path: '/intern/courses', element: <InternCoursesPage /> },
+              { path: '/intern/courses/:id', element: <InternCourseLearnPage /> },
               { path: '/intern/tasks', element: <TasksPage /> },
               { path: '/intern/tasks/:code', element: <TaskDetailPage /> },
               { path: '/intern/assignments', element: <AssignmentsPage /> },
@@ -222,6 +229,9 @@ export const router = createBrowserRouter([
             element: <AppShell />,
             children: [
               { path: '/mentor', element: <MentorDashboard /> },
+              { path: '/mentor/courses', element: <MentorCoursesPage /> },
+              { path: '/mentor/courses/new', element: <MentorCourseEditorPage /> },
+              { path: '/mentor/courses/:id/edit', element: <MentorCourseEditorPage /> },
               { path: '/mentor/interns', element: <MyInternsPage /> },
               { path: '/mentor/interns/:internId', element: <MyInternsPage /> },
               { path: '/mentor/tasks', element: <MentorTasksPage /> },
@@ -247,6 +257,7 @@ export const router = createBrowserRouter([
             element: <AppShell />,
             children: [
               { path: '/admin', element: <AdminDashboard /> },
+              { path: '/admin/courses', element: <AdminCoursesPage /> },
               { path: '/admin/internships', element: <InternshipsPage /> },
               { path: '/admin/interns', element: <InternsAdminPage /> },
               { path: '/admin/mentors', element: <MentorsAdminPage /> },
