@@ -11,10 +11,10 @@ import {
 } from '../../types/courses';
 import { extractYouTubeId, getYouTubeThumbnail } from '../../lib/youtube';
 
-const COURSES_STORAGE_KEY = 'genmitra_courses_data';
-const ENROLLMENTS_STORAGE_KEY = 'genmitra_course_enrollments';
-const PROGRESS_STORAGE_KEY = 'genmitra_course_progress';
-const REVIEWS_STORAGE_KEY = 'genmitra_course_reviews';
+const COURSES_STORAGE_KEY = 'genmitra_courses_data_v2';
+const ENROLLMENTS_STORAGE_KEY = 'genmitra_course_enrollments_v2';
+const PROGRESS_STORAGE_KEY = 'genmitra_course_progress_v2';
+const REVIEWS_STORAGE_KEY = 'genmitra_course_reviews_v2';
 
 // Initial high-quality seed courses including user's requested example
 const INITIAL_COURSES: Course[] = [
@@ -72,10 +72,10 @@ const INITIAL_COURSES: Course[] = [
     ],
     created_at: '2026-10-10T10:00:00.000Z',
     updated_at: '2026-10-12T14:30:00.000Z',
-    enrolled_count: 3,
-    completed_count: 1,
-    review_count: 1,
-    average_rating: 5.0,
+    enrolled_count: 0,
+    completed_count: 0,
+    review_count: 0,
+    average_rating: 0,
   },
   {
     id: 'course-react-cloud-002',
@@ -183,29 +183,7 @@ function getStoredReviews(): CourseReviewRecord[] {
       if (Array.isArray(parsed)) return parsed;
     }
   } catch {}
-  return [
-    {
-      id: 'rev-sample-01',
-      course_id: 'course-python-telugu-001',
-      course_title: 'Python Full Course: From Basics to Advanced Engineering',
-      intern_id: '20000000-0000-0000-0000-000000000001',
-      intern_name: 'SINDHU GANGISETTY',
-      intern_avatar: null,
-      rating: 5,
-      learned_summary:
-        'I gained complete mastery of core Python data structures, list comprehensions, and object-oriented architecture patterns.',
-      understanding_summary:
-        'I thoroughly understood how exceptions, virtual environments, and modular script separation function in real projects.',
-      useful_concepts:
-        'The breakdown of dictionaries, lambda expressions, and decorators was exceptionally clear and helpful.',
-      practical_application:
-        'I am using these concepts directly to build automated data extractors and integrate backend APIs for our internship deliverables.',
-      improvement_feedback: 'More deep dives into asynchronous Python (asyncio) would be an awesome future addition.',
-      overall_feedback:
-        'Outstanding course with clear step-by-step guidance! Very easy to follow and highly relevant for our engineering track.',
-      submitted_at: '2026-10-12T16:45:00.000Z',
-    },
-  ];
+  return [];
 }
 
 function saveStoredReviews(reviews: CourseReviewRecord[]) {
