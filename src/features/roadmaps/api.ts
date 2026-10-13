@@ -2,8 +2,8 @@
 import { RoadmapItem, RoadmapEditInput } from '../../types/roadmaps';
 import initialRoadmapsData from './roadmapsData.json';
 
-const ROADMAPS_STORAGE_KEY = 'genmitra_roadmaps_data_v1';
-const ROADMAPS_DELETED_KEY = 'genmitra_roadmaps_deleted_v1';
+const ROADMAPS_STORAGE_KEY = 'genmitra_roadmaps_data_v2';
+const ROADMAPS_DELETED_KEY = 'genmitra_roadmaps_deleted_v2';
 
 // Load stored roadmaps
 function getStoredRoadmaps(): RoadmapItem[] {
@@ -14,16 +14,20 @@ function getStoredRoadmaps(): RoadmapItem[] {
     const raw = localStorage.getItem(ROADMAPS_STORAGE_KEY);
     if (raw) {
       const parsed: RoadmapItem[] = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        return parsed.filter((item) => !deletedSet.has(item.id));
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed
+          .filter((item) => !deletedSet.has(item.id))
+          .map((item) => ({ ...item, folder: item.folder || 'Web Development' }));
       }
     }
 
     // First run: fallback to all 59 roadmaps extracted from downloads
-    const initialList = (initialRoadmapsData as RoadmapItem[]).filter((item) => !deletedSet.has(item.id));
+    const initialList = (initialRoadmapsData as RoadmapItem[])
+      .filter((item) => !deletedSet.has(item.id))
+      .map((item) => ({ ...item, folder: item.folder || 'Web Development' }));
     return initialList;
   } catch {
-    return initialRoadmapsData as RoadmapItem[];
+    return (initialRoadmapsData as RoadmapItem[]).map((item) => ({ ...item, folder: item.folder || 'Web Development' }));
   }
 }
 
@@ -53,6 +57,7 @@ export const roadmapsApi = {
     const updated: RoadmapItem = {
       ...all[idx],
       title: updates.title.trim(),
+      folder: updates.folder ? updates.folder.trim() : all[idx].folder || 'Web Development',
       category: updates.category.trim(),
       description: updates.description.trim(),
       updated_at: new Date().toISOString(),
@@ -88,6 +93,7 @@ export const roadmapsApi = {
     const newItem: RoadmapItem = {
       id,
       title: input.title.trim(),
+      folder: input.folder ? input.folder.trim() : 'Web Development',
       category: input.category.trim() || 'Custom',
       description: input.description.trim(),
       svgPath: input.svgPath || '/roadmaps/11-full-stacks/fullstack-master-2026.svg',

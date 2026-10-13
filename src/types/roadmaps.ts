@@ -1,8 +1,7 @@
-// src/types/roadmaps.ts
-
 export interface RoadmapItem {
   id: string;
   title: string;
+  folder?: string;
   category: string;
   svgPath: string;
   slug: string;
@@ -14,6 +13,7 @@ export interface RoadmapItem {
 
 export interface RoadmapEditInput {
   title: string;
+  folder?: string;
   category: string;
   description: string;
   svgPath?: string;

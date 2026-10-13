@@ -15,9 +15,13 @@ import {
   Plus,
   RotateCcw,
   AlertTriangle,
-  CheckCircle2,
-  X,
+  Folder,
+  FolderOpen,
+  ArrowLeft,
+  ChevronRight,
   Eye,
+  FileCode,
+  CheckCircle2,
 } from 'lucide-react';
 import { roadmapsApi } from './api';
 import { useAuth } from '../../hooks/useAuth';
@@ -33,11 +37,17 @@ export function RoadmapsPage() {
   const isAdmin = role === 'admin';
   const queryClient = useQueryClient();
 
+  // Active view:
+  // selectedFolder: null -> shows Folders list
+  // selectedFolder: 'Web Development' -> shows inside that folder
+  // selectedRoadmap: RoadmapItem -> in-tab viewer right here in the page
+  const [selectedFolder, setSelectedFolder] = useState<string | null>('Web Development');
+  const [selectedRoadmap, setSelectedRoadmap] = useState<RoadmapItem | null>(null);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Modal states
-  const [viewingRoadmap, setViewingRoadmap] = useState<RoadmapItem | null>(null);
+  // Admin Modal states
   const [editingRoadmap, setEditingRoadmap] = useState<RoadmapItem | null>(null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [roadmapToDelete, setRoadmapToDelete] = useState<RoadmapItem | null>(null);
@@ -45,6 +55,7 @@ export function RoadmapsPage() {
 
   // Form states for edit/create
   const [editTitle, setEditTitle] = useState('');
+  const [editFolder, setEditFolder] = useState('Web Development');
   const [editCategory, setEditCategory] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [editSvgPath, setEditSvgPath] = useState('');
@@ -60,18 +71,37 @@ export function RoadmapsPage() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Extract categories
+  // Group by Folders
+  const foldersMap = useMemo(() => {
+    const map = new Map<string, RoadmapItem[]>();
+    roadmaps.forEach((r) => {
+      const folderName = r.folder || 'Web Development';
+      if (!map.has(folderName)) {
+        map.set(folderName, []);
+      }
+      map.get(folderName)!.push(r);
+    });
+    return map;
+  }, [roadmaps]);
+
+  // Roadmaps inside the current selected folder
+  const currentFolderRoadmaps = useMemo(() => {
+    if (!selectedFolder) return [];
+    return foldersMap.get(selectedFolder) || [];
+  }, [foldersMap, selectedFolder]);
+
+  // Extract categories within the current folder
   const categories = useMemo(() => {
     const set = new Set<string>(['All']);
-    roadmaps.forEach((r) => {
+    currentFolderRoadmaps.forEach((r) => {
       if (r.category) set.add(r.category);
     });
     return Array.from(set);
-  }, [roadmaps]);
+  }, [currentFolderRoadmaps]);
 
-  // Filter roadmaps
+  // Filter roadmaps by search and category
   const filteredRoadmaps = useMemo(() => {
-    return roadmaps.filter((item) => {
+    return currentFolderRoadmaps.filter((item) => {
       const matchSearch =
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -79,7 +109,7 @@ export function RoadmapsPage() {
       const matchCategory = selectedCategory === 'All' || item.category === selectedCategory;
       return matchSearch && matchCategory;
     });
-  }, [roadmaps, searchQuery, selectedCategory]);
+  }, [currentFolderRoadmaps, searchQuery, selectedCategory]);
 
   // Edit / Update Mutation
   const saveMutation = useMutation({
@@ -87,6 +117,7 @@ export function RoadmapsPage() {
       if (isCreatingNew) {
         return roadmapsApi.createRoadmap({
           title: editTitle,
+          folder: editFolder || 'Web Development',
           category: editCategory,
           description: editDescription,
           svgPath: editSvgPath || '/roadmaps/11-full-stacks/fullstack-master-2026.svg',
@@ -94,6 +125,7 @@ export function RoadmapsPage() {
       } else if (editingRoadmap) {
         return roadmapsApi.updateRoadmap(editingRoadmap.id, {
           title: editTitle,
+          folder: editFolder || 'Web Development',
           category: editCategory,
           description: editDescription,
           svgPath: editSvgPath,
@@ -114,6 +146,9 @@ export function RoadmapsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['roadmaps'] });
       setRoadmapToDelete(null);
+      if (selectedRoadmap && roadmapToDelete && selectedRoadmap.id === roadmapToDelete.id) {
+        setSelectedRoadmap(null);
+      }
       showToast('Roadmap removed.');
     },
   });
@@ -131,6 +166,7 @@ export function RoadmapsPage() {
     setEditingRoadmap(item);
     setIsCreatingNew(false);
     setEditTitle(item.title);
+    setEditFolder(item.folder || 'Web Development');
     setEditCategory(item.category);
     setEditDescription(item.description);
     setEditSvgPath(item.svgPath);
@@ -140,6 +176,7 @@ export function RoadmapsPage() {
     setIsCreatingNew(true);
     setEditingRoadmap(null);
     setEditTitle('');
+    setEditFolder(selectedFolder || 'Web Development');
     setEditCategory('Core web');
     setEditDescription('2026 learning milestones roadmap covering Beginner to Expert.');
     setEditSvgPath('/roadmaps/11-full-stacks/fullstack-master-2026.svg');
@@ -164,12 +201,12 @@ export function RoadmapsPage() {
                 <Compass className="h-5 w-5" />
               </span>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-                Web Development Roadmaps (2026 Edition)
+                Engineering Roadmaps & Learning Paths
               </h1>
             </div>
             <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
-              Explore 59 interactive high-definition learning roadmaps with 5 levels: Beginner, Intermediate, Advanced,
-              Practice, and Expert. Master modern stacks, architectures, and engineering specializations.
+              Organized technical curriculums and high-definition architectural roadmaps. Click into folders to explore
+              milestones from Beginner to Expert.
             </p>
           </div>
 
@@ -204,21 +241,144 @@ export function RoadmapsPage() {
           </div>
         </div>
 
-        {/* Search & Category Filter Bar */}
-        <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-            <Input
-              type="text"
-              placeholder="Search 59 roadmaps by technology, stack, or topic (e.g. React, Next.js, AI, MERN, Docker)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-9 text-xs rounded-xl bg-white border-slate-200"
-            />
+        {/* Breadcrumb Navigation Bar */}
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-sky-100/70 text-xs">
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedFolder(null);
+              setSelectedRoadmap(null);
+            }}
+            className={cn(
+              'font-semibold px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5',
+              !selectedFolder
+                ? 'bg-sky-600 text-white shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
+            )}
+          >
+            <Folder className="h-3.5 w-3.5" />
+            Roadmaps Directory
+          </button>
+
+          {selectedFolder && (
+            <>
+              <ChevronRight className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <button
+                type="button"
+                onClick={() => setSelectedRoadmap(null)}
+                className={cn(
+                  'font-semibold px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5',
+                  selectedFolder && !selectedRoadmap
+                    ? 'bg-sky-600 text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
+                )}
+              >
+                <FolderOpen className="h-3.5 w-3.5" />
+                {selectedFolder} ({currentFolderRoadmaps.length})
+              </button>
+            </>
+          )}
+
+          {selectedRoadmap && (
+            <>
+              <ChevronRight className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <span className="px-2.5 py-1 rounded-lg bg-sky-100 text-sky-900 font-bold truncate max-w-xs flex items-center gap-1.5">
+                <FileCode className="h-3.5 w-3.5 text-sky-600" />
+                {selectedRoadmap.title}
+              </span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* VIEW 1: DIRECTORY / FOLDERS VIEW (When no folder is selected) */}
+      {!selectedFolder && !selectedRoadmap && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+              <Folder className="h-4 w-4 text-sky-600" />
+              Curriculum Folders
+            </h2>
+            <span className="text-xs text-slate-500">{foldersMap.size} Folders</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from(foldersMap.entries()).map(([folderName, items]) => (
+              <div
+                key={folderName}
+                onClick={() => {
+                  setSelectedFolder(folderName);
+                  setSelectedCategory('All');
+                }}
+                className="group rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs hover:shadow-md hover:border-sky-400 transition-all cursor-pointer space-y-3 relative overflow-hidden"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <Folder className="h-6 w-6 fill-sky-200 text-sky-600" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 group-hover:bg-sky-50 group-hover:text-sky-700 transition-colors">
+                    {items.length} Roadmaps
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-sky-600 transition-colors">
+                    {folderName}
+                  </h3>
+                  <p className="text-xs text-slate-500 line-clamp-2">
+                    59 interactive SVG roadmaps from beginner to expert in Core Web, Frontend, Backend, AI, and Stacks.
+                  </p>
+                </div>
+
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-sky-600 font-semibold">
+                  <span>Open Folder</span>
+                  <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 2: INSIDE FOLDER - ROADMAPS GRID */}
+      {selectedFolder && !selectedRoadmap && (
+        <div className="space-y-5">
+          {/* Top Folder Control Bar */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedFolder(null)}
+                className="h-8 px-2.5 text-xs text-slate-600 hover:text-slate-900 rounded-lg"
+              >
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                <span>All Folders</span>
+              </Button>
+              <div className="h-4 w-px bg-slate-200 mx-1" />
+              <div className="flex items-center gap-1.5">
+                <FolderOpen className="h-4 w-4 text-sky-600" />
+                <span className="text-sm font-bold text-slate-900">{selectedFolder}</span>
+                <span className="text-xs text-slate-500 font-medium">({filteredRoadmaps.length} roadmaps)</span>
+              </div>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative sm:w-80">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Input
+                type="text"
+                placeholder="Search roadmaps (e.g. React, Next.js, AI)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 h-8 text-xs rounded-xl bg-slate-50/50 border-slate-200"
+              />
+            </div>
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {categories.map((cat) => (
               <button
                 key={cat}
@@ -228,195 +388,213 @@ export function RoadmapsPage() {
                   'px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all',
                   selectedCategory === cat
                     ? 'bg-sky-600 text-white shadow-2xs'
-                    : 'bg-white/80 hover:bg-white text-slate-600 border border-slate-200/80'
+                    : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 shadow-2xs'
                 )}
               >
                 {cat}
               </button>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* Roadmaps Grid */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-            <div key={n} className="h-64 rounded-2xl bg-slate-100 animate-pulse border border-slate-200" />
-          ))}
-        </div>
-      ) : filteredRoadmaps.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-12 text-center space-y-3">
-          <div className="mx-auto w-12 h-12 rounded-full bg-sky-50 flex items-center justify-center text-sky-600">
-            <BookOpen className="h-6 w-6" />
-          </div>
-          <h3 className="text-sm font-semibold text-slate-800">No roadmaps found</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Try searching for another technology or choose a different category pill above.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
-          {filteredRoadmaps.map((item) => (
-            <div
-              key={item.id}
-              className="group rounded-2xl border border-slate-200/80 bg-white shadow-2xs hover:shadow-md hover:border-sky-300 transition-all flex flex-col overflow-hidden"
-            >
-              {/* Thumbnail Container (SVG Preview) */}
-              <div
-                className="relative h-44 bg-slate-900/5 overflow-hidden cursor-pointer border-b border-slate-100 flex items-center justify-center"
-                onClick={() => setViewingRoadmap(item)}
-              >
-                <img
-                  src={item.svgPath}
-                  alt={item.title}
-                  className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
-                />
-
-                {/* Overlay hover effect */}
-                <div className="absolute inset-0 bg-slate-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <span className="px-3 py-1.5 rounded-lg bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-xs">
-                    <Maximize2 className="h-3.5 w-3.5 text-sky-600" />
-                    Open Full Roadmap
-                  </span>
-                </div>
-
-                {/* Category badge */}
-                <div className="absolute top-2.5 left-2.5">
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/80 text-white backdrop-blur-xs">
-                    {item.category}
-                  </span>
-                </div>
+          {/* Grid */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                <div key={n} className="h-64 rounded-2xl bg-slate-100 animate-pulse border border-slate-200" />
+              ))}
+            </div>
+          ) : filteredRoadmaps.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-12 text-center space-y-3">
+              <div className="mx-auto w-12 h-12 rounded-full bg-sky-50 flex items-center justify-center text-sky-600">
+                <BookOpen className="h-6 w-6" />
               </div>
-
-              {/* Content info */}
-              <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2">
-                <div className="space-y-1">
-                  <h3
-                    className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1 group-hover:text-sky-600 transition-colors cursor-pointer"
-                    onClick={() => setViewingRoadmap(item)}
+              <h3 className="text-sm font-semibold text-slate-800">No roadmaps found</h3>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                Try searching with different keywords or switch the category filter above.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+              {filteredRoadmaps.map((item) => (
+                <div
+                  key={item.id}
+                  className="group rounded-2xl border border-slate-200/80 bg-white shadow-2xs hover:shadow-md hover:border-sky-300 transition-all flex flex-col overflow-hidden"
+                >
+                  {/* Thumbnail / Preview: Click opens inside this tab */}
+                  <div
+                    className="relative h-44 bg-slate-900/5 overflow-hidden cursor-pointer border-b border-slate-100 flex items-center justify-center"
+                    onClick={() => setSelectedRoadmap(item)}
                   >
-                    {item.title}
-                  </h3>
-                  <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">{item.description}</p>
-                </div>
+                    <img
+                      src={item.svgPath}
+                      alt={item.title}
+                      className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
 
-                {/* Bottom action bar */}
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-slate-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <span className="px-3 py-1.5 rounded-lg bg-white/95 text-slate-900 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-xs">
+                        <Eye className="h-3.5 w-3.5 text-sky-600" />
+                        View in This Tab
+                      </span>
+                    </div>
+
+                    {/* Category pill */}
+                    <div className="absolute top-2.5 left-2.5">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/80 text-white backdrop-blur-xs">
+                        {item.category}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Information */}
+                  <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2">
+                    <div className="space-y-1">
+                      <h3
+                        className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1 group-hover:text-sky-600 transition-colors cursor-pointer"
+                        onClick={() => setSelectedRoadmap(item)}
+                      >
+                        {item.title}
+                      </h3>
+                      <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">{item.description}</p>
+                    </div>
+
+                    {/* Bottom Actions */}
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedRoadmap(item)}
+                        className="flex-1 h-7 text-[11px] font-semibold text-slate-700 hover:text-sky-700 hover:bg-sky-50 hover:border-sky-200"
+                      >
+                        <Eye className="h-3.5 w-3.5 mr-1 text-sky-600" />
+                        View Roadmap
+                      </Button>
+
+                      <a
+                        href={item.svgPath}
+                        download={`${item.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-roadmap.svg`}
+                        className="h-7 w-7 rounded-lg border border-slate-200 hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors"
+                        title="Download SVG"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                      </a>
+
+                      {/* Admin controls */}
+                      {isAdmin && (
+                        <>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openEditModal(item)}
+                            className="h-7 w-7 p-0 text-slate-500 hover:text-sky-600 hover:bg-sky-50"
+                            title="Edit Roadmap Title & Details"
+                          >
+                            <Edit className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setRoadmapToDelete(item)}
+                            className="h-7 w-7 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                            title="Delete Roadmap (Admin)"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* VIEW 3: IN-TAB FULL ROADMAP VIEWER (Renders directly in this tab without popup) */}
+      {selectedRoadmap && (
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+          {/* Header Controls for in-tab viewer */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedRoadmap(null)}
+                className="h-8 px-3 text-xs font-semibold rounded-xl text-slate-700 hover:bg-slate-100"
+              >
+                <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
+                Back to {selectedFolder || 'Roadmaps'}
+              </Button>
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600">
+                  {selectedRoadmap.category} • 2026 Edition
+                </span>
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                  {selectedRoadmap.title} Roadmap
+                </h2>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <a
+                href={selectedRoadmap.svgPath}
+                download={`${selectedRoadmap.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-roadmap.svg`}
+                className="h-8 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-2xs"
+              >
+                <Download className="h-3.5 w-3.5" />
+                Download SVG
+              </a>
+
+              {isAdmin && (
+                <>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setViewingRoadmap(item)}
-                    className="flex-1 h-7 text-[11px] font-semibold text-slate-700 hover:text-sky-700 hover:bg-sky-50 hover:border-sky-200"
+                    onClick={() => openEditModal(selectedRoadmap)}
+                    className="h-8 px-2.5 text-xs text-slate-700 hover:text-sky-600 rounded-xl"
                   >
-                    <Eye className="h-3.5 w-3.5 mr-1 text-sky-600" />
-                    View Roadmap
+                    <Edit className="h-3.5 w-3.5 mr-1" />
+                    Edit
                   </Button>
-
-                  <a
-                    href={item.svgPath}
-                    download={`${item.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-roadmap.svg`}
-                    className="h-7 w-7 rounded-lg border border-slate-200 hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors"
-                    title="Download SVG"
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setRoadmapToDelete(selectedRoadmap)}
+                    className="h-8 px-2.5 text-xs text-red-600 hover:bg-red-50 rounded-xl"
                   >
-                    <Download className="h-3.5 w-3.5" />
-                  </a>
-
-                  {/* Admin controls */}
-                  {isAdmin && (
-                    <>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openEditModal(item)}
-                        className="h-7 w-7 p-0 text-slate-500 hover:text-sky-600 hover:bg-sky-50"
-                        title="Edit Roadmap Title & Details"
-                      >
-                        <Edit className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setRoadmapToDelete(item)}
-                        className="h-7 w-7 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
-                        title="Delete Roadmap (Admin)"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
+                    <Trash2 className="h-3.5 w-3.5 mr-1" />
+                    Delete
+                  </Button>
+                </>
+              )}
             </div>
-          ))}
+          </div>
+
+          <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+            {selectedRoadmap.description}
+          </p>
+
+          {/* SVG Render Container directly in tab */}
+          <div className="w-full rounded-2xl bg-slate-50/70 border border-slate-200 p-2 sm:p-4 overflow-auto max-h-[85vh] flex justify-center shadow-inner">
+            <img
+              src={selectedRoadmap.svgPath}
+              alt={selectedRoadmap.title}
+              className="w-full max-w-4xl h-auto object-contain rounded-xl shadow-xs"
+            />
+          </div>
         </div>
       )}
 
-      {/* MODAL 1: FULLSCREEN / DETAILED ROADMAP VIEWER */}
-      {viewingRoadmap && (
-        <Dialog open={!!viewingRoadmap} onOpenChange={(open) => !open && setViewingRoadmap(null)}>
-          <DialogHeader className="border-b border-slate-100 pb-3">
-            <div className="flex items-center justify-between gap-3">
-              <div className="space-y-0.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600">
-                  {viewingRoadmap.category} • 2026 Edition
-                </span>
-                <DialogTitle className="text-base sm:text-lg font-bold text-slate-900">
-                  {viewingRoadmap.title} Roadmap
-                </DialogTitle>
-                <DialogDescription className="text-xs text-slate-500">{viewingRoadmap.description}</DialogDescription>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <a
-                  href={viewingRoadmap.svgPath}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs"
-                >
-                  <ExternalLink className="h-3.5 w-3.5 text-slate-500" />
-                  Open in New Tab
-                </a>
-                <a
-                  href={viewingRoadmap.svgPath}
-                  download={`${viewingRoadmap.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-roadmap.svg`}
-                  className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-2xs"
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  Download SVG
-                </a>
-              </div>
-            </div>
-          </DialogHeader>
-
-          {/* SVG Viewer Content */}
-          <div className="py-2 max-h-[75vh] overflow-auto rounded-xl bg-slate-50 p-2 border border-slate-200/80 flex justify-center">
-            <img
-              src={viewingRoadmap.svgPath}
-              alt={viewingRoadmap.title}
-              className="w-full max-w-4xl h-auto object-contain rounded-lg shadow-xs"
-            />
-          </div>
-
-          <DialogFooter className="border-t border-slate-100 pt-3">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setViewingRoadmap(null)}
-              className="text-xs h-8"
-            >
-              Close
-            </Button>
-          </DialogFooter>
-        </Dialog>
-      )}
-
-      {/* MODAL 2: ADMIN EDIT / CREATE ROADMAP */}
+      {/* MODAL: ADMIN EDIT / CREATE ROADMAP */}
       <Dialog
         open={!!editingRoadmap || isCreatingNew}
         onOpenChange={(open) => {
@@ -434,7 +612,7 @@ export function RoadmapsPage() {
           <DialogDescription className="text-xs text-slate-500">
             {isCreatingNew
               ? 'Add a new roadmap entry to the platform catalog.'
-              : 'Modify the title, category, description, or target SVG path.'}
+              : 'Modify the title, folder, category, description, or target SVG path.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -458,6 +636,17 @@ export function RoadmapsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
+              <label className="font-semibold text-slate-700 block">Folder *</label>
+              <Input
+                value={editFolder}
+                onChange={(e) => setEditFolder(e.target.value)}
+                placeholder="Web Development"
+                className="text-xs h-9"
+                required
+              />
+            </div>
+
+            <div className="space-y-1">
               <label className="font-semibold text-slate-700 block">Category *</label>
               <select
                 value={editCategory}
@@ -478,16 +667,16 @@ export function RoadmapsPage() {
                 <option value="Custom">Custom</option>
               </select>
             </div>
+          </div>
 
-            <div className="space-y-1">
-              <label className="font-semibold text-slate-700 block">SVG File Path</label>
-              <Input
-                value={editSvgPath}
-                onChange={(e) => setEditSvgPath(e.target.value)}
-                placeholder="/roadmaps/02-frontend/nextjs.svg"
-                className="text-xs h-9"
-              />
-            </div>
+          <div className="space-y-1">
+            <label className="font-semibold text-slate-700 block">SVG File Path</label>
+            <Input
+              value={editSvgPath}
+              onChange={(e) => setEditSvgPath(e.target.value)}
+              placeholder="/roadmaps/02-frontend/nextjs.svg"
+              className="text-xs h-9"
+            />
           </div>
 
           <div className="space-y-1">
@@ -527,7 +716,7 @@ export function RoadmapsPage() {
         </form>
       </Dialog>
 
-      {/* MODAL 3: DELETE CONFIRMATION (ADMIN) */}
+      {/* MODAL: DELETE CONFIRMATION (ADMIN) */}
       <Dialog open={!!roadmapToDelete} onOpenChange={(open) => !open && setRoadmapToDelete(null)}>
         <DialogHeader>
           <DialogTitle className="text-base font-bold text-red-600 flex items-center gap-2">
