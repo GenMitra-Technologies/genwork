@@ -20,6 +20,11 @@ import {
 } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { Avatar } from '../../../components/shared/Avatar';
+import { useAttendanceStore } from '../../../stores/attendance.store';
+import {
+  getStoredAttendanceRecords,
+  calculateAttendanceMetrics,
+} from '../../../lib/attendanceService';
 
 interface AdminInternAttendance {
   id: string;
@@ -34,23 +39,57 @@ interface AdminInternAttendance {
   isCompliant: boolean;
 }
 
-const INITIAL_ADMIN_DATA: AdminInternAttendance[] = [
-  {
-    id: '20000000-0000-0000-0000-000000000001',
-    name: 'Sindhu Gangisetty',
-    email: 'sindhugangisetty910@gmail.com',
-    cohort: 'Engineering Internship Cohort 2026',
-    mentor: 'Kapu Mani Shankar Reddy',
-    todayStatus: 'active',
-    todayHours: '0h 00m',
-    monthHours: 0.0,
-    attendanceRate: 100.0,
-    isCompliant: true,
-  },
-];
-
 export function AdminAttendancePage() {
-  const [data, setData] = useState<AdminInternAttendance[]>(INITIAL_ADMIN_DATA);
+  const {
+    isCheckedIn,
+    checkInTime,
+    checkOutTime,
+    elapsedSeconds,
+    targetHours,
+    isCompletedToday,
+  } = useAttendanceStore();
+
+  const records = getStoredAttendanceRecords();
+  const metrics = calculateAttendanceMetrics(
+    records,
+    isCompletedToday,
+    isCheckedIn,
+    elapsedSeconds,
+    targetHours
+  );
+
+  const durationHours = Math.floor(elapsedSeconds / 3600);
+  const durationMinutes = Math.floor((elapsedSeconds % 3600) / 60);
+  const formattedShift = `${durationHours}h ${String(durationMinutes).padStart(2, '0')}m`;
+
+  const dynamicAdminData: AdminInternAttendance[] = [
+    {
+      id: '20000000-0000-0000-0000-000000000001',
+      name: 'Sindhu Gangisetty',
+      email: 'sindhugangisetty910@gmail.com',
+      cohort: 'Engineering Internship Cohort 2026',
+      mentor: 'Kapu Mani Shankar Reddy',
+      todayStatus: isCompletedToday ? 'completed' : isCheckedIn ? 'active' : 'absent',
+      todayHours: isCompletedToday ? (formattedShift !== '0h 00m' ? formattedShift : '4h 00m') : (isCheckedIn ? formattedShift : '0h 00m'),
+      monthHours: metrics.totalHours,
+      attendanceRate: metrics.attendanceRate,
+      isCompliant: metrics.attendanceRate >= 75,
+    },
+    {
+      id: '20000000-0000-0000-0000-000000000002',
+      name: 'Rahul Varma',
+      email: 'rahul.varma@genmitra.com',
+      cohort: 'Engineering Internship Cohort 2026',
+      mentor: 'Kapu Mani Shankar Reddy',
+      todayStatus: 'absent',
+      todayHours: '0h 00m',
+      monthHours: 24.0,
+      attendanceRate: 66.7,
+      isCompliant: false,
+    },
+  ];
+
+  const [data, setData] = useState<AdminInternAttendance[]>(dynamicAdminData);
   const [searchTerm, setSearchTerm] = useState('');
   const [cohortFilter, setCohortFilter] = useState<string>('all');
   const [regularizeModal, setRegularizeModal] = useState<AdminInternAttendance | null>(null);
@@ -104,6 +143,7 @@ export function AdminAttendancePage() {
 
   const totalCohortHours = data.reduce((acc, curr) => acc + curr.monthHours, 0).toFixed(1);
   const activeTodayCount = data.filter((d) => d.todayStatus === 'active' || d.todayStatus === 'completed').length;
+  const absentTodayCount = data.filter((d) => d.todayStatus === 'absent').length;
   const compliantCount = data.filter((d) => d.isCompliant).length;
   const overallRate = (data.reduce((acc, curr) => acc + curr.attendanceRate, 0) / data.length).toFixed(1);
 
@@ -156,7 +196,7 @@ export function AdminAttendancePage() {
           <p className="text-[28px] font-semibold text-indigo-700 tabular-nums">
             {activeTodayCount} <span className="text-sm font-normal text-slate-400">/ {data.length} interns</span>
           </p>
-          <p className="text-[11px] text-slate-400">Punched in or completed shift</p>
+          <p className="text-[11px] text-slate-400">{absentTodayCount} absent / unpunched today</p>
         </div>
 
         <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-2">
@@ -271,7 +311,12 @@ export function AdminAttendancePage() {
                       >
                         {row.todayStatus === 'active' && 'Punched In'}
                         {row.todayStatus === 'completed' && 'Completed'}
-                        {row.todayStatus === 'absent' && 'Absent'}
+                        {row.todayStatus === 'absent' && (
+                          <>
+                            <AlertCircle className="h-2.5 w-2.5 text-rose-500" />
+                            Absent
+                          </>
+                        )}
                       </span>
                       <p className="text-[10px] font-mono text-slate-500">{row.todayHours}</p>
                     </div>

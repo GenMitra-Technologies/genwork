@@ -19,6 +19,11 @@ import {
 } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { Avatar } from '../../../components/shared/Avatar';
+import { useAttendanceStore } from '../../../stores/attendance.store';
+import {
+  getStoredAttendanceRecords,
+  calculateAttendanceMetrics,
+} from '../../../lib/attendanceService';
 
 interface InternAttendanceRecord {
   id: string;
@@ -37,26 +42,67 @@ interface InternAttendanceRecord {
   isStandupApproved: boolean;
 }
 
-const MOCK_MENTOR_INTERNS: InternAttendanceRecord[] = [
-  {
-    id: '20000000-0000-0000-0000-000000000001',
-    name: 'Sindhu Gangisetty',
-    avatarSeed: 'Sindhu',
-    roleTitle: 'Frontend Developer',
-    checkIn: '—',
-    duration: '0h 00m',
-    mode: 'remote',
-    status: 'not_checked_in',
-    targetHours: 4,
-    progressPercent: 0,
-    standupSummary: '—',
-    blockers: '—',
-    isStandupApproved: false,
-  },
-];
-
 export function MentorAttendancePage() {
-  const [interns, setInterns] = useState<InternAttendanceRecord[]>(MOCK_MENTOR_INTERNS);
+  const {
+    isCheckedIn,
+    isOnBreak,
+    checkInTime,
+    checkOutTime,
+    elapsedSeconds,
+    targetHours,
+    isCompletedToday,
+    dailySummary,
+    blockers,
+  } = useAttendanceStore();
+
+  const records = getStoredAttendanceRecords();
+  const metrics = calculateAttendanceMetrics(
+    records,
+    isCompletedToday,
+    isCheckedIn,
+    elapsedSeconds,
+    targetHours
+  );
+
+  const durationHours = Math.floor(elapsedSeconds / 3600);
+  const durationMinutes = Math.floor((elapsedSeconds % 3600) / 60);
+  const formattedShift = `${durationHours}h ${String(durationMinutes).padStart(2, '0')}m`;
+
+  const dynamicInterns: InternAttendanceRecord[] = [
+    {
+      id: '20000000-0000-0000-0000-000000000001',
+      name: 'Sindhu Gangisetty',
+      avatarSeed: 'Sindhu',
+      roleTitle: 'Frontend Developer',
+      checkIn: checkInTime ? new Date(checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : (isCompletedToday ? '09:00 AM' : '—'),
+      checkOut: checkOutTime ? new Date(checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : (isCompletedToday ? '01:04 PM' : undefined),
+      duration: isCompletedToday ? (formattedShift !== '0h 00m' ? formattedShift : '4h 00m') : (isCheckedIn ? formattedShift : '0h 00m'),
+      mode: 'remote',
+      status: isCompletedToday ? 'completed' : isCheckedIn ? (isOnBreak ? 'on_break' : 'active') : 'not_checked_in',
+      targetHours: 4,
+      progressPercent: isCompletedToday ? 100 : Math.min(100, Math.round((elapsedSeconds / 14400) * 100)),
+      standupSummary: dailySummary || (isCompletedToday ? 'Completed assigned daily sprint tasks' : '—'),
+      blockers: blockers || 'None',
+      isStandupApproved: false,
+    },
+    {
+      id: '20000000-0000-0000-0000-000000000002',
+      name: 'Rahul Varma',
+      avatarSeed: 'Rahul',
+      roleTitle: 'Fullstack Intern',
+      checkIn: '—',
+      duration: '0h 00m',
+      mode: 'remote',
+      status: 'not_checked_in',
+      targetHours: 4,
+      progressPercent: 0,
+      standupSummary: 'Absent - Did not check in & complete check out',
+      blockers: 'Unplanned absence',
+      isStandupApproved: false,
+    },
+  ];
+
+  const [interns, setInterns] = useState<InternAttendanceRecord[]>(dynamicInterns);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed' | 'absent'>('all');
   const [selectedStandup, setSelectedStandup] = useState<InternAttendanceRecord | null>(null);
@@ -93,6 +139,7 @@ export function MentorAttendancePage() {
 
   const activeCount = interns.filter((i) => i.status === 'active' || i.status === 'on_break').length;
   const completedCount = interns.filter((i) => i.status === 'completed').length;
+  const absentCount = interns.filter((i) => i.status === 'not_checked_in').length;
   const targetMetCount = interns.filter((i) => i.progressPercent >= 100).length;
 
   return (
@@ -169,8 +216,8 @@ export function MentorAttendancePage() {
               <CalendarCheck className="h-3 w-3" />
             </div>
           </div>
-          <p className="text-xl font-bold text-purple-700 tabular-nums">75%</p>
-          <p className="text-[10px] text-slate-400">3 of 4 logged in</p>
+          <p className="text-xl font-bold text-purple-700 tabular-nums">{metrics.attendanceRate}%</p>
+          <p className="text-[10px] text-slate-400">{metrics.presentDaysCount} compliant · {absentCount} absent</p>
         </div>
       </div>
 
@@ -224,10 +271,10 @@ export function MentorAttendancePage() {
               <button
                 onClick={() => setStatusFilter('absent')}
                 className={`rounded-md px-2 py-0.5 text-[11px] font-medium transition-all ${
-                  statusFilter === 'absent' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-900'
+                  statusFilter === 'absent' ? 'bg-white text-rose-700 shadow-2xs font-semibold' : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
-                Not Punched
+                Absent ({absentCount})
               </button>
             </div>
           </div>
@@ -315,8 +362,8 @@ export function MentorAttendancePage() {
                       </span>
                     )}
                     {intern.status === 'not_checked_in' && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
-                        Not Punched
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-50 text-rose-700 border border-rose-200">
+                        <AlertCircle className="h-2.5 w-2.5 text-rose-500" /> Absent
                       </span>
                     )}
                   </td>
