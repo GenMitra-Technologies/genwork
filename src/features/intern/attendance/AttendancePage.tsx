@@ -31,9 +31,12 @@ import {
   toggleYesterdayAttendanceRecord,
   formatDisplayDate,
   formatRawDate,
+  useIsDesktopDevice,
+  isDesktopDevice,
 } from '../../../lib/attendanceService';
 
 export function AttendancePage() {
+  const isDesktop = useIsDesktopDevice();
   const {
     isCheckedIn,
     isOnBreak,
@@ -54,6 +57,14 @@ export function AttendancePage() {
   const [summaryInput, setSummaryInput] = useState('');
   const [blockersInput, setBlockersInput] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'present' | 'half_day' | 'absent'>('all');
+
+  const handleCheckIn = () => {
+    if (!isDesktopDevice()) {
+      alert('Shift punch clock is restricted to PC devices only. Please log in from a laptop or desktop computer.');
+      return;
+    }
+    checkIn();
+  };
 
   // Format active shift
   const hours = Math.floor(elapsedSeconds / 3600);
@@ -235,61 +246,80 @@ export function AttendancePage() {
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center justify-start lg:justify-end gap-2.5">
-            {!isCheckedIn && !isCompletedToday && (
-              <Button
-                onClick={() => checkIn()}
-                size="default"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-sm font-semibold text-xs w-full lg:w-auto min-h-[42px] justify-center"
-              >
-                <Laptop className="h-4 w-4" /> Check In (Online Remote)
-              </Button>
-            )}
-
-            {isCheckedIn && (
-              <div className="flex items-center gap-2 w-full lg:w-auto">
-                <Button
-                  onClick={toggleBreak}
-                  variant="outline"
-                  size="default"
-                  className="flex-1 lg:flex-initial text-xs text-slate-700 border-slate-200 gap-1.5 min-h-[42px] justify-center"
-                >
-                  {isOnBreak ? (
-                    <>
-                      <Play className="h-4 w-4 text-emerald-600" /> Resume Shift
-                    </>
-                  ) : (
-                    <>
-                      <Pause className="h-4 w-4 text-amber-600" /> Take Break
-                    </>
-                  )}
-                </Button>
-                <Button
-                  onClick={() => setShowCheckOutModal(true)}
-                  size="default"
-                  className="flex-1 lg:flex-initial bg-slate-900 hover:bg-slate-800 text-white gap-2 text-xs font-semibold shadow-sm min-h-[42px] justify-center"
-                >
-                  <LogOut className="h-4 w-4" /> Check Out
-                </Button>
+          {/* Action Buttons & PC Device Restriction */}
+          <div className="flex flex-col items-start lg:items-end justify-center gap-2">
+            {/* Mobile Device Restriction Alert */}
+            <div className="flex lg:hidden rounded-xl border border-amber-200/90 bg-amber-50/90 p-3 text-xs text-amber-900 shadow-2xs items-start gap-2.5 w-full">
+              <Laptop className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <p className="font-semibold text-amber-950 flex items-center gap-1.5">
+                  PC / Desktop Device Required
+                  <span className="rounded bg-amber-200/80 px-1.5 py-0.2 text-[9px] font-bold text-amber-800">
+                    Desktop Only
+                  </span>
+                </p>
+                <p className="text-[11px] text-amber-800 leading-relaxed">
+                  Attendance check-in and check-out can only be accessed from a PC or laptop computer. Mobile device punch actions are restricted.
+                </p>
               </div>
-            )}
+            </div>
 
-            {isCompletedToday && (
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-slate-600 font-medium bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
-                  Standup logged for today
-                </span>
+            {/* Desktop Action Buttons (Visible and clickable on PC) */}
+            <div className="hidden lg:flex items-center justify-end gap-2.5 w-full">
+              {!isCheckedIn && !isCompletedToday && (
                 <Button
-                  onClick={resetDay}
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs text-slate-400 hover:text-slate-700"
+                  onClick={handleCheckIn}
+                  size="default"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-sm font-semibold text-xs min-h-[42px] justify-center"
                 >
-                  Restart Shift
+                  <Laptop className="h-4 w-4" /> Check In (Online Remote)
                 </Button>
-              </div>
-            )}
+              )}
+
+              {isCheckedIn && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={toggleBreak}
+                    variant="outline"
+                    size="default"
+                    className="text-xs text-slate-700 border-slate-200 gap-1.5 min-h-[42px] justify-center"
+                  >
+                    {isOnBreak ? (
+                      <>
+                        <Play className="h-4 w-4 text-emerald-600" /> Resume Shift
+                      </>
+                    ) : (
+                      <>
+                        <Pause className="h-4 w-4 text-amber-600" /> Take Break
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() => setShowCheckOutModal(true)}
+                    size="default"
+                    className="bg-slate-900 hover:bg-slate-800 text-white gap-2 text-xs font-semibold shadow-sm min-h-[42px] justify-center"
+                  >
+                    <LogOut className="h-4 w-4" /> Check Out
+                  </Button>
+                </div>
+              )}
+
+              {isCompletedToday && (
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-slate-600 font-medium bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                    Standup logged for today
+                  </span>
+                  <Button
+                    onClick={resetDay}
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs text-slate-400 hover:text-slate-700"
+                  >
+                    Restart Shift
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -512,7 +542,7 @@ export function AttendancePage() {
                       <p className="text-[11px] text-slate-400">{r.dayName}</p>
                     </td>
                     <td className="py-3.5 px-3">
-                      {isAbsent ? (
+                      {isAbsent || r.mode === '—' || !r.mode ? (
                         <span className="text-slate-400">—</span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
@@ -520,10 +550,10 @@ export function AttendancePage() {
                         </span>
                       )}
                     </td>
-                    <td className="py-3.5 px-3 text-slate-700 font-mono">{r.checkIn}</td>
-                    <td className="py-3.5 px-3 text-slate-700 font-mono">{r.checkOut}</td>
-                    <td className={`py-3.5 px-3 font-mono font-semibold ${isAbsent ? 'text-slate-400' : 'text-slate-800'}`}>
-                      {r.duration}
+                    <td className="py-3.5 px-3 text-slate-700 font-mono">{r.checkIn || '—'}</td>
+                    <td className="py-3.5 px-3 text-slate-700 font-mono">{r.checkOut || '—'}</td>
+                    <td className={`py-3.5 px-3 font-mono font-semibold ${isAbsent || r.duration === '—' ? 'text-slate-400' : 'text-slate-800'}`}>
+                      {r.duration || '—'}
                     </td>
                     <td className="py-3.5 px-3">
                       {isAbsent ? (
@@ -544,12 +574,16 @@ export function AttendancePage() {
                       )}
                     </td>
                     <td className="py-3.5 pl-4 max-w-xs">
-                      <p
-                        className={`truncate ${isAbsent ? 'text-rose-700 font-medium' : 'text-slate-800'}`}
-                        title={r.summary}
-                      >
-                        {r.summary}
-                      </p>
+                      {r.summary === '—' || !r.summary ? (
+                        <span className="text-slate-400">—</span>
+                      ) : (
+                        <p
+                          className={`truncate ${isAbsent ? 'text-rose-700 font-medium' : 'text-slate-800'}`}
+                          title={r.summary}
+                        >
+                          {r.summary}
+                        </p>
+                      )}
                       {r.blockers && r.blockers !== 'None' && (
                         <p
                           className="text-[10px] text-rose-500 truncate"

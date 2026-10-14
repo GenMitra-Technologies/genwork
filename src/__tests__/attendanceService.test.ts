@@ -1,5 +1,5 @@
 // src/__tests__/attendanceService.test.ts
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   calculateAttendanceMetrics,
   backfillMissingPastWorkdays,
@@ -7,14 +7,53 @@ import {
   formatDisplayDate,
   getPreviousWorkday,
   AttendanceRecord,
+  isDesktopDevice,
 } from '../lib/attendanceService';
 
-describe('attendanceService - Absent & Streak Rules', () => {
+describe('attendanceService - Historical Clean Present & Device Rules', () => {
   const refDate = new Date('2026-10-14T10:00:00'); // Wednesday Oct 14, 2026
   const prevWorkday = getPreviousWorkday(refDate); // Tuesday Oct 13, 2026
   const prevDateStr = formatRawDate(prevWorkday); // '2026-10-13'
 
-  it('marks streak as 0 when yesterday was absent and today is not completed yet', () => {
+  it('marks all past workdays up to 13-10-2026 as present with empty fields', () => {
+    const emptyRecords: AttendanceRecord[] = [];
+    const backfilled = backfillMissingPastWorkdays(emptyRecords, refDate);
+
+    // From Oct 1 to Oct 13 (Mon-Fri only): 9 workdays
+    expect(backfilled.length).toBe(9);
+    for (const record of backfilled) {
+      expect(record.status).toBe('present');
+      expect(record.checkIn).toBe('—');
+      expect(record.checkOut).toBe('—');
+      expect(record.duration).toBe('—');
+      expect(record.mode).toBe('—');
+      expect(record.summary).toBe('—');
+      // No weekends
+      const d = new Date(record.rawDate);
+      expect(d.getDay()).not.toBe(0); // Not Sunday
+      expect(d.getDay()).not.toBe(6); // Not Saturday
+    }
+  });
+
+  it('calculates unbroken 9-day streak for workdays up to 13-10-2026', () => {
+    const records = backfillMissingPastWorkdays([], refDate);
+    // Today not completed yet
+    const stats = calculateAttendanceMetrics(records, false, false, 0, 4, refDate);
+    expect(stats.yesterdayStatus).toBe('present');
+    expect(stats.currentStreak).toBe(9);
+    expect(stats.longestStreak).toBe(9);
+    expect(stats.attendanceRate).toBe(100);
+  });
+
+  it('increments streak to 10 when today is completed after unbroken 9-day history', () => {
+    const records = backfillMissingPastWorkdays([], refDate);
+    // Today completed
+    const stats = calculateAttendanceMetrics(records, true, false, 14400, 4, refDate);
+    expect(stats.yesterdayStatus).toBe('present');
+    expect(stats.currentStreak).toBe(10);
+  });
+
+  it('marks streak as 0 if yesterday was absent and today is not completed yet', () => {
     const records: AttendanceRecord[] = [
       {
         id: 'att-1',
@@ -28,130 +67,31 @@ describe('attendanceService - Absent & Streak Rules', () => {
         mode: '—',
         status: 'absent',
         summary: 'Absent - Did not check in & complete check out',
-      },
-      {
-        id: 'att-2',
-        rawDate: '2026-10-12',
-        date: '12 Oct 2026',
-        dayName: 'Monday',
-        checkIn: '09:00 AM',
-        checkOut: '01:00 PM',
-        duration: '4h 00m',
-        durationSeconds: 14400,
-        mode: 'remote',
-        status: 'present',
-        summary: 'Tasks completed',
       },
     ];
 
     const stats = calculateAttendanceMetrics(records, false, false, 0, 4, refDate);
     expect(stats.yesterdayStatus).toBe('absent');
-    expect(stats.currentStreak).toBe(0); // Streak broken because yesterday was absent!
+    expect(stats.currentStreak).toBe(0);
   });
 
-  it('sets streak to 1 when yesterday was absent but today is checked in and checked out', () => {
-    const records: AttendanceRecord[] = [
-      {
-        id: 'att-1',
-        rawDate: prevDateStr,
-        date: formatDisplayDate(prevWorkday),
-        dayName: 'Tuesday',
-        checkIn: '—',
-        checkOut: '—',
-        duration: '0h 00m',
-        durationSeconds: 0,
-        mode: '—',
-        status: 'absent',
-        summary: 'Absent - Did not check in & complete check out',
-      },
-    ];
+  it('auto-backfills missing workdays after 13-10-2026 as absent', () => {
+    // Reference date: Friday Oct 16, 2026
+    const futureDate = new Date('2026-10-16T10:00:00');
+    const records = backfillMissingPastWorkdays([], futureDate);
+    
+    // Dates <= 2026-10-13 should be 'present'
+    const cleanRecords = records.filter((r) => r.rawDate <= '2026-10-13');
+    expect(cleanRecords.length).toBe(9);
+    expect(cleanRecords.every((r) => r.status === 'present')).toBe(true);
 
-    // Today is completed (isCompletedToday = true)
-    const stats = calculateAttendanceMetrics(records, true, false, 14400, 4, refDate);
-    expect(stats.yesterdayStatus).toBe('absent');
-    expect(stats.currentStreak).toBe(1);
+    // Dates > 2026-10-13 (Oct 14 and Oct 15) should be 'absent'
+    const absentRecords = records.filter((r) => r.rawDate > '2026-10-13');
+    expect(absentRecords.length).toBe(2);
+    expect(absentRecords.every((r) => r.status === 'absent')).toBe(true);
   });
 
-  it('continues streak when yesterday was completed and today is not completed yet', () => {
-    const records: AttendanceRecord[] = [
-      {
-        id: 'att-1',
-        rawDate: prevDateStr,
-        date: formatDisplayDate(prevWorkday),
-        dayName: 'Tuesday',
-        checkIn: '09:00 AM',
-        checkOut: '01:00 PM',
-        duration: '4h 00m',
-        durationSeconds: 14400,
-        mode: 'remote',
-        status: 'present',
-        summary: 'Tasks completed',
-      },
-      {
-        id: 'att-2',
-        rawDate: '2026-10-12',
-        date: '12 Oct 2026',
-        dayName: 'Monday',
-        checkIn: '09:00 AM',
-        checkOut: '01:00 PM',
-        duration: '4h 00m',
-        durationSeconds: 14400,
-        mode: 'remote',
-        status: 'present',
-        summary: 'Tasks completed',
-      },
-    ];
-
-    const stats = calculateAttendanceMetrics(records, false, true, 3600, 4, refDate);
-    expect(stats.yesterdayStatus).toBe('present');
-    expect(stats.currentStreak).toBe(2);
-  });
-
-  it('increments streak when yesterday was completed and today is also completed', () => {
-    const records: AttendanceRecord[] = [
-      {
-        id: 'att-1',
-        rawDate: prevDateStr,
-        date: formatDisplayDate(prevWorkday),
-        dayName: 'Tuesday',
-        checkIn: '09:00 AM',
-        checkOut: '01:00 PM',
-        duration: '4h 00m',
-        durationSeconds: 14400,
-        mode: 'remote',
-        status: 'present',
-        summary: 'Tasks completed',
-      },
-      {
-        id: 'att-2',
-        rawDate: '2026-10-12',
-        date: '12 Oct 2026',
-        dayName: 'Monday',
-        checkIn: '09:00 AM',
-        checkOut: '01:00 PM',
-        duration: '4h 00m',
-        durationSeconds: 14400,
-        mode: 'remote',
-        status: 'present',
-        summary: 'Tasks completed',
-      },
-    ];
-
-    // Today completed
-    const stats = calculateAttendanceMetrics(records, true, false, 14400, 4, refDate);
-    expect(stats.yesterdayStatus).toBe('present');
-    expect(stats.currentStreak).toBe(3);
-  });
-
-  it('auto-backfills missing past workdays as absent', () => {
-    const emptyRecords: AttendanceRecord[] = [];
-    const backfilled = backfillMissingPastWorkdays(emptyRecords, refDate);
-
-    // From Oct 1 to Oct 13, all weekdays should be populated
-    expect(backfilled.length).toBeGreaterThan(5);
-    const absentRecords = backfilled.filter((r) => r.status === 'absent');
-    expect(absentRecords.length).toBe(backfilled.length);
-    expect(absentRecords[0].duration).toBe('0h 00m');
-    expect(absentRecords[0].checkIn).toBe('—');
+  it('provides desktop device detection', () => {
+    expect(typeof isDesktopDevice()).toBe('boolean');
   });
 });

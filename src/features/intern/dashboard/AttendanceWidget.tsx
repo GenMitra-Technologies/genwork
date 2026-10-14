@@ -15,8 +15,18 @@ import {
 import { useAttendanceStore } from '../../../stores/attendance.store';
 import { Button } from '../../../components/ui/button';
 import { Textarea } from '../../../components/ui/textarea';
+import {
+  useIsDesktopDevice,
+  isDesktopDevice,
+  getStoredAttendanceRecords,
+  saveStoredAttendanceRecords,
+  formatDisplayDate,
+  formatRawDate,
+  AttendanceRecord,
+} from '../../../lib/attendanceService';
 
 export function AttendanceWidget() {
+  const isDesktop = useIsDesktopDevice();
   const {
     isCheckedIn,
     isOnBreak,
@@ -48,13 +58,47 @@ export function AttendanceWidget() {
   const isTargetAchieved = elapsedSeconds >= targetSeconds;
 
   const handleOpenCheckOut = () => {
+    if (!isDesktopDevice()) {
+      alert('Shift punch clock is restricted to PC devices only. Please use a computer.');
+      return;
+    }
     setShowCheckOutModal(true);
+  };
+
+  const handleCheckIn = () => {
+    if (!isDesktopDevice()) {
+      alert('Shift punch clock is restricted to PC devices only. Please log in from a laptop or desktop computer.');
+      return;
+    }
+    checkIn();
   };
 
   const handleConfirmCheckOut = (e: React.FormEvent) => {
     e.preventDefault();
     if (!summaryInput.trim()) return;
     checkOut(summaryInput, blockersInput);
+
+    const now = new Date();
+    const durationHours = Math.floor(elapsedSeconds / 3600);
+    const durationMinutes = Math.floor((elapsedSeconds % 3600) / 60);
+    const newRecord: AttendanceRecord = {
+      id: `att-${Date.now()}`,
+      internId: '20000000-0000-0000-0000-000000000001',
+      date: formatDisplayDate(now),
+      rawDate: formatRawDate(now),
+      dayName: now.toLocaleDateString('en-US', { weekday: 'long' }),
+      checkIn: checkInTime ? new Date(checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '09:00 AM',
+      checkOut: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      duration: `${durationHours}h ${String(durationMinutes).padStart(2, '0')}m`,
+      durationSeconds: elapsedSeconds,
+      mode: 'remote',
+      status: elapsedSeconds >= targetSeconds ? 'present' : 'half_day',
+      summary: summaryInput,
+      blockers: blockersInput || 'None',
+    };
+    const currentRecords = getStoredAttendanceRecords();
+    saveStoredAttendanceRecords([newRecord, ...currentRecords]);
+
     setShowCheckOutModal(false);
   };
 
@@ -155,59 +199,76 @@ export function AttendanceWidget() {
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center justify-start md:justify-end gap-2">
-            {!isCheckedIn && !isCompletedToday && (
-              <Button
-                onClick={() => checkIn()}
-                size="sm"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 shadow-sm w-full md:w-auto"
-              >
-                <Laptop className="h-3.5 w-3.5" /> Check In (Online Remote)
-              </Button>
-            )}
-
-            {isCheckedIn && (
-              <div className="flex items-center gap-2 w-full md:w-auto">
-                <Button
-                  onClick={toggleBreak}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 md:flex-initial text-xs text-slate-700 border-slate-200 gap-1 min-h-[38px] justify-center"
-                >
-                  {isOnBreak ? (
-                    <>
-                      <Play className="h-3.5 w-3.5 text-emerald-600" /> Resume Shift
-                    </>
-                  ) : (
-                    <>
-                      <Pause className="h-3.5 w-3.5 text-amber-600" /> Take Break
-                    </>
-                  )}
-                </Button>
-                <Button
-                  onClick={handleOpenCheckOut}
-                  size="sm"
-                  className="flex-1 md:flex-initial bg-slate-900 hover:bg-slate-800 text-white gap-1.5 text-xs shadow-sm min-h-[38px] justify-center"
-                >
-                  <LogOut className="h-3.5 w-3.5" /> Check Out
-                </Button>
+          {/* Action Buttons & PC Restriction */}
+          <div className="flex flex-col items-start md:items-end justify-center gap-2">
+            {/* Mobile Device Restriction Alert */}
+            <div className="flex md:hidden rounded-lg border border-amber-200/90 bg-amber-50/90 p-2.5 text-xs text-amber-900 shadow-2xs items-start gap-2 w-full">
+              <Laptop className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <p className="font-semibold text-amber-950 text-[11px] flex items-center gap-1.5">
+                  PC Device Required
+                  <span className="rounded bg-amber-200/80 px-1 py-0.2 text-[9px] font-bold text-amber-800">Desktop Only</span>
+                </p>
+                <p className="text-[10.5px] text-amber-800 leading-tight">
+                  Attendance check-in and check-out can only be accessed on PC/laptop devices.
+                </p>
               </div>
-            )}
+            </div>
 
-            {isCompletedToday && (
-              <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-between md:justify-end">
-                <span className="text-xs text-slate-500 font-medium truncate max-w-[200px]">Logged: {dailySummary ? `"${dailySummary.slice(0, 32)}..."` : 'Standup submitted'}</span>
+            {/* Desktop Action Buttons (Visible and clickable on PC) */}
+            <div className="hidden md:flex items-center justify-end gap-2 w-full">
+              {!isCheckedIn && !isCompletedToday && (
                 <Button
-                  onClick={resetDay}
-                  variant="ghost"
+                  onClick={handleCheckIn}
                   size="sm"
-                  className="text-xs text-slate-400 hover:text-slate-700"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 shadow-sm"
                 >
-                  Restart
+                  <Laptop className="h-3.5 w-3.5" /> Check In (Online Remote)
                 </Button>
-              </div>
-            )}
+              )}
+
+              {isCheckedIn && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={toggleBreak}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs text-slate-700 border-slate-200 gap-1 min-h-[36px] justify-center"
+                  >
+                    {isOnBreak ? (
+                      <>
+                        <Play className="h-3.5 w-3.5 text-emerald-600" /> Resume Shift
+                      </>
+                    ) : (
+                      <>
+                        <Pause className="h-3.5 w-3.5 text-amber-600" /> Take Break
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={handleOpenCheckOut}
+                    size="sm"
+                    className="bg-slate-900 hover:bg-slate-800 text-white gap-1.5 text-xs shadow-sm min-h-[36px] justify-center"
+                  >
+                    <LogOut className="h-3.5 w-3.5" /> Check Out
+                  </Button>
+                </div>
+              )}
+
+              {isCompletedToday && (
+                <div className="flex flex-wrap items-center gap-2 justify-end">
+                  <span className="text-xs text-slate-500 font-medium truncate max-w-[200px]">Logged: {dailySummary ? `"${dailySummary.slice(0, 32)}..."` : 'Standup submitted'}</span>
+                  <Button
+                    onClick={resetDay}
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs text-slate-400 hover:text-slate-700"
+                  >
+                    Restart
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

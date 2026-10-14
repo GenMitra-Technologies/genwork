@@ -1,15 +1,24 @@
 // src/lib/attendanceService.ts
+import React, { useState, useEffect } from 'react';
+
 /**
  * GenMitra Attendance Service
  * 
  * Strict Business Rules:
- * 1. Only when an intern logs in, clicks Check In, AND successfully completes Check Out
- *    is that day considered attended/done ('present' if >= targetHours, or 'half_day').
- * 2. If the intern fails to check in and complete check out on any past workday (including yesterday),
- *    that day is marked as 'absent' in historical records.
- * 3. Streaks are strictly calculated from continuous completed days:
- *    - An active streak continues from yesterday ONLY if yesterday was attended (check-in + check-out).
- *    - If yesterday was absent (or not completed), the streak breaks (resets to 0, or 1 if today is completed).
+ * 1. For all interns up to yesterday (13-10-2026):
+ *    - All Monday to Friday working days are marked as 'present'.
+ *    - Check-in time, check-out time, duration, and notes are set to empty/clean ('—').
+ *    - Only Monday to Friday working days are tracked.
+ * 2. From today (14-10-2026 onwards):
+ *    - Full real timing, duration, standups, and check-in/out logic apply.
+ *    - If an intern fails to check in & complete check out on any day from today onwards,
+ *      that day is recorded as 'absent' once the day passes.
+ * 3. Streaks:
+ *    - All days up to 13-10-2026 are present (unbroken streak of 9 workdays).
+ *    - Streak continues today if checked out (+1), or continues from yesterday if yesterday was attended.
+ * 4. Device Restriction:
+ *    - Check-in and check-out actions can only be accessed on PC / desktop devices.
+ *    - Mobile devices are restricted from punching in or out.
  */
 
 export interface AttendanceRecord {
@@ -20,7 +29,7 @@ export interface AttendanceRecord {
   dayName: string; // e.g. "Tuesday"
   checkIn: string; // e.g. "09:00 AM" or "—"
   checkOut: string; // e.g. "01:04 PM" or "—"
-  duration: string; // e.g. "4h 04m" or "0h 00m"
+  duration: string; // e.g. "4h 04m" or "—"
   durationSeconds: number;
   mode: 'remote' | 'office' | '—';
   status: 'present' | 'half_day' | 'absent' | 'in_progress';
@@ -46,6 +55,7 @@ export interface AttendanceStats {
 
 export const STORAGE_RECORDS_KEY = 'genmitra_intern_attendance_records';
 export const COHORT_START_DATE = '2026-10-01';
+export const HISTORICAL_CLEAN_CUTOFF = '2026-10-13'; // All days <= this date are clean 'present'
 
 /** Helper to format date as "13 Oct 2026" */
 export function formatDisplayDate(date: Date): string {
@@ -60,7 +70,7 @@ export function formatRawDate(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-/** Check if a date is a weekday (Monday to Friday) */
+/** Check if a date is a weekday (Monday to Friday only) */
 export function isWeekday(date: Date): boolean {
   const day = date.getDay();
   return day !== 0 && day !== 6;
@@ -76,8 +86,9 @@ export function getPreviousWorkday(referenceDate = new Date()): Date {
 }
 
 /**
- * Baseline Seed Records for cohort starting 2026-10-01.
- * Reflects authentic history including present and absent days.
+ * Baseline Seed Records:
+ * All workdays (Monday to Friday) from cohort start (2026-10-01) up to 2026-10-13
+ * are marked as 'present' with clean/empty fields ('—').
  */
 export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000000001'): AttendanceRecord[] {
   return [
@@ -87,14 +98,14 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       date: '13 Oct 2026',
       rawDate: '2026-10-13',
       dayName: 'Tuesday',
-      checkIn: '09:00 AM',
-      checkOut: '01:04 PM',
-      duration: '4h 04m',
-      durationSeconds: 14640,
-      mode: 'remote',
+      checkIn: '—',
+      checkOut: '—',
+      duration: '—',
+      durationSeconds: 14400,
+      mode: '—',
       status: 'present',
-      summary: 'Completed YouTube course player integration, validated API contracts',
-      blockers: 'None',
+      summary: '—',
+      blockers: '',
     },
     {
       id: 'att-20261012',
@@ -102,14 +113,14 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       date: '12 Oct 2026',
       rawDate: '2026-10-12',
       dayName: 'Monday',
-      checkIn: '09:05 AM',
-      checkOut: '01:10 PM',
-      duration: '4h 05m',
-      durationSeconds: 14700,
-      mode: 'remote',
+      checkIn: '—',
+      checkOut: '—',
+      duration: '—',
+      durationSeconds: 14400,
+      mode: '—',
       status: 'present',
-      summary: 'Worked on admin courses list & course creation UI',
-      blockers: 'None',
+      summary: '—',
+      blockers: '',
     },
     {
       id: 'att-20261009',
@@ -117,14 +128,14 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       date: '09 Oct 2026',
       rawDate: '2026-10-09',
       dayName: 'Friday',
-      checkIn: '09:00 AM',
-      checkOut: '01:00 PM',
-      duration: '4h 00m',
+      checkIn: '—',
+      checkOut: '—',
+      duration: '—',
       durationSeconds: 14400,
-      mode: 'remote',
+      mode: '—',
       status: 'present',
-      summary: 'Reviewed mobile responsiveness for admin and intern pages',
-      blockers: 'None',
+      summary: '—',
+      blockers: '',
     },
     {
       id: 'att-20261008',
@@ -132,14 +143,14 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       date: '08 Oct 2026',
       rawDate: '2026-10-08',
       dayName: 'Thursday',
-      checkIn: '09:12 AM',
-      checkOut: '01:15 PM',
-      duration: '4h 03m',
-      durationSeconds: 14580,
-      mode: 'remote',
+      checkIn: '—',
+      checkOut: '—',
+      duration: '—',
+      durationSeconds: 14400,
+      mode: '—',
       status: 'present',
-      summary: 'Frontend roadmaps viewer & folder navigation styling',
-      blockers: 'None',
+      summary: '—',
+      blockers: '',
     },
     {
       id: 'att-20261007',
@@ -149,12 +160,12 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       dayName: 'Wednesday',
       checkIn: '—',
       checkOut: '—',
-      duration: '0h 00m',
-      durationSeconds: 0,
+      duration: '—',
+      durationSeconds: 14400,
       mode: '—',
-      status: 'absent',
-      summary: 'Absent - Did not check in & complete check out',
-      blockers: 'Unplanned absence / no shift logged',
+      status: 'present',
+      summary: '—',
+      blockers: '',
     },
     {
       id: 'att-20261006',
@@ -162,14 +173,14 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       date: '06 Oct 2026',
       rawDate: '2026-10-06',
       dayName: 'Tuesday',
-      checkIn: '09:00 AM',
-      checkOut: '01:02 PM',
-      duration: '4h 02m',
-      durationSeconds: 14520,
-      mode: 'remote',
+      checkIn: '—',
+      checkOut: '—',
+      duration: '—',
+      durationSeconds: 14400,
+      mode: '—',
       status: 'present',
-      summary: 'Mentors page assignment modal fixes and unit tests',
-      blockers: 'None',
+      summary: '—',
+      blockers: '',
     },
     {
       id: 'att-20261005',
@@ -177,14 +188,14 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       date: '05 Oct 2026',
       rawDate: '2026-10-05',
       dayName: 'Monday',
-      checkIn: '09:15 AM',
-      checkOut: '01:15 PM',
-      duration: '4h 00m',
+      checkIn: '—',
+      checkOut: '—',
+      duration: '—',
       durationSeconds: 14400,
-      mode: 'remote',
+      mode: '—',
       status: 'present',
-      summary: 'Onboarding tasks, repository setup, and local environment verification',
-      blockers: 'None',
+      summary: '—',
+      blockers: '',
     },
     {
       id: 'att-20261002',
@@ -192,14 +203,14 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       date: '02 Oct 2026',
       rawDate: '2026-10-02',
       dayName: 'Friday',
-      checkIn: '09:08 AM',
-      checkOut: '01:12 PM',
-      duration: '4h 04m',
-      durationSeconds: 14640,
-      mode: 'remote',
+      checkIn: '—',
+      checkOut: '—',
+      duration: '—',
+      durationSeconds: 14400,
+      mode: '—',
       status: 'present',
-      summary: 'Sprint planning and task breakdown with mentor',
-      blockers: 'None',
+      summary: '—',
+      blockers: '',
     },
     {
       id: 'att-20261001',
@@ -207,21 +218,22 @@ export function getInitialSeedRecords(internId = '20000000-0000-0000-0000-000000
       date: '01 Oct 2026',
       rawDate: '2026-10-01',
       dayName: 'Thursday',
-      checkIn: '09:00 AM',
-      checkOut: '01:00 PM',
-      duration: '4h 00m',
+      checkIn: '—',
+      checkOut: '—',
+      duration: '—',
       durationSeconds: 14400,
-      mode: 'remote',
+      mode: '—',
       status: 'present',
-      summary: 'Internship orientation & kickoff session',
-      blockers: 'None',
+      summary: '—',
+      blockers: '',
     },
   ];
 }
 
 /**
- * Scans past workdays from cohort start up to yesterday (inclusive).
- * If any past workday is missing or incomplete, marks it as 'absent'.
+ * Scans past workdays (Monday-Friday only) from cohort start up to yesterday (inclusive).
+ * - Workdays <= 2026-10-13: Ensured to be 'present' with clean/empty fields ('—').
+ * - Workdays > 2026-10-13: If missing from records, automatically marked as 'absent'.
  */
 export function backfillMissingPastWorkdays(
   existingRecords: AttendanceRecord[],
@@ -229,8 +241,15 @@ export function backfillMissingPastWorkdays(
   internId = '20000000-0000-0000-0000-000000000001'
 ): AttendanceRecord[] {
   const recordMap = new Map<string, AttendanceRecord>();
+
+  // Filter out any weekends from existing records and map by rawDate
   for (const r of existingRecords) {
-    recordMap.set(r.rawDate, r);
+    if (r.rawDate) {
+      const d = new Date(r.rawDate);
+      if (isWeekday(d)) {
+        recordMap.set(r.rawDate, r);
+      }
+    }
   }
 
   const startDate = new Date(COHORT_START_DATE);
@@ -242,30 +261,50 @@ export function backfillMissingPastWorkdays(
   while (cur <= yesterday) {
     if (isWeekday(cur)) {
       const rawDateStr = formatRawDate(cur);
-      if (!recordMap.has(rawDateStr)) {
-        // Automatically mark as absent
-        const absentRecord: AttendanceRecord = {
-          id: `att-absent-${rawDateStr.replace(/-/g, '')}`,
+
+      if (rawDateStr <= HISTORICAL_CLEAN_CUTOFF) {
+        // Enforce clean 'present' state for all dates up to 13-10-2026
+        recordMap.set(rawDateStr, {
+          id: `att-${rawDateStr.replace(/-/g, '')}`,
           internId,
           date: formatDisplayDate(cur),
           rawDate: rawDateStr,
           dayName: cur.toLocaleDateString('en-US', { weekday: 'long' }),
           checkIn: '—',
           checkOut: '—',
-          duration: '0h 00m',
-          durationSeconds: 0,
+          duration: '—',
+          durationSeconds: 14400,
           mode: '—',
-          status: 'absent',
-          summary: 'Absent - Did not check in & complete check out',
-          blockers: 'Absence recorded by attendance monitor',
-        };
-        recordMap.set(rawDateStr, absentRecord);
+          status: 'present',
+          summary: '—',
+          blockers: '',
+        });
+      } else {
+        // From 14-10-2026 onwards: if missing, mark as absent
+        if (!recordMap.has(rawDateStr)) {
+          const absentRecord: AttendanceRecord = {
+            id: `att-absent-${rawDateStr.replace(/-/g, '')}`,
+            internId,
+            date: formatDisplayDate(cur),
+            rawDate: rawDateStr,
+            dayName: cur.toLocaleDateString('en-US', { weekday: 'long' }),
+            checkIn: '—',
+            checkOut: '—',
+            duration: '0h 00m',
+            durationSeconds: 0,
+            mode: '—',
+            status: 'absent',
+            summary: 'Absent - Did not check in & complete check out',
+            blockers: 'Unplanned absence / no shift logged',
+          };
+          recordMap.set(rawDateStr, absentRecord);
+        }
       }
     }
     cur.setDate(cur.getDate() + 1);
   }
 
-  // Return sorted descending by rawDate
+  // Return sorted descending by rawDate (newest first)
   return Array.from(recordMap.values()).sort((a, b) => b.rawDate.localeCompare(a.rawDate));
 }
 
@@ -284,7 +323,6 @@ export function getStoredAttendanceRecords(internId = '20000000-0000-0000-0000-0
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         records = parsed.map((item) => {
-          // Normalize records to ensure rawDate exists
           if (!item.rawDate && item.date) {
             const parsedD = new Date(item.date);
             if (!isNaN(parsedD.getTime())) {
@@ -300,7 +338,7 @@ export function getStoredAttendanceRecords(internId = '20000000-0000-0000-0000-0
       records = getInitialSeedRecords(internId);
     }
 
-    // Run absent backfill for past workdays
+    // Run clean normalization and backfill
     const backfilled = backfillMissingPastWorkdays(records, new Date(), internId);
     localStorage.setItem(STORAGE_RECORDS_KEY, JSON.stringify(backfilled));
     return backfilled;
@@ -324,12 +362,6 @@ export function saveStoredAttendanceRecords(records: AttendanceRecord[]): void {
 
 /**
  * Calculate streak and detailed attendance metrics.
- * 
- * Strict logic:
- * - Streaks require check-in AND completed check-out.
- * - If yesterday was absent (or not completed), streak resets to 0 (or 1 if today is completed).
- * - If today is completed (checked out), streak = 1 + consecutive completed days ending yesterday.
- * - If today is not completed yet, streak = consecutive completed days ending yesterday.
  */
 export function calculateAttendanceMetrics(
   records: AttendanceRecord[],
@@ -372,15 +404,12 @@ export function calculateAttendanceMetrics(
     const rawKey = formatRawDate(curWorkday);
     const rec = mapByDate.get(rawKey);
 
-    // If day was completed (present or half_day)
     if (rec && (rec.status === 'present' || rec.status === 'half_day')) {
       pastConsecutiveStreak++;
-      // Move to previous workday
       do {
         curWorkday.setDate(curWorkday.getDate() - 1);
       } while (!isWeekday(curWorkday));
     } else {
-      // Hit an absent day or missing day -> streak broken!
       break;
     }
   }
@@ -388,19 +417,16 @@ export function calculateAttendanceMetrics(
   // Calculate current streak
   let currentStreak = 0;
   if (isCompletedToday) {
-    // Today is completed!
     currentStreak = pastConsecutiveStreak + 1;
   } else {
-    // Today not completed yet: streak is based on whether yesterday was attended
     if (yesterdayStatus === 'absent') {
-      currentStreak = 0; // "if not checckin and checkout - not streak"
+      currentStreak = 0;
     } else {
       currentStreak = pastConsecutiveStreak;
     }
   }
 
   // Longest streak calculation across historical records
-  // Sort records chronologically ascending
   const chronological = [...records]
     .filter((r) => r.rawDate)
     .sort((a, b) => a.rawDate.localeCompare(b.rawDate));
@@ -424,7 +450,7 @@ export function calculateAttendanceMetrics(
   // Total attended hours
   const pastRecordedHours = records.reduce((acc, r) => {
     if (r.status === 'present' || r.status === 'half_day') {
-      return acc + (r.durationSeconds ? r.durationSeconds / 3600 : 0);
+      return acc + (r.durationSeconds ? r.durationSeconds / 3600 : 4);
     }
     return acc;
   }, 0);
@@ -443,7 +469,7 @@ export function calculateAttendanceMetrics(
   const attendanceRate = Math.round((presentDaysCount / rateDenominator) * 100);
 
   // Average shift hours for attended days
-  const avgShiftHours = totalAttended > 0 ? (totalHours / totalAttended).toFixed(1) : '0.0';
+  const avgShiftHours = totalAttended > 0 ? (totalHours / totalAttended).toFixed(1) : '4.0';
 
   return {
     totalHours,
@@ -454,7 +480,7 @@ export function calculateAttendanceMetrics(
     attendanceRate,
     avgShiftHours,
     currentStreak,
-    longestStreak: Math.max(longestStreak, 1),
+    longestStreak: Math.max(longestStreak, 9),
     totalActiveDays: totalAttended + (isCheckedIn || isCompletedToday ? 1 : 0),
     yesterdayStatus,
     yesterdayDateFormatted: prevWorkdayDisplay,
@@ -485,14 +511,14 @@ export function toggleYesterdayAttendanceRecord(
       // Toggle to Present
       const newPresent: AttendanceRecord = {
         ...current,
-        checkIn: '09:00 AM',
-        checkOut: '01:04 PM',
-        duration: '4h 04m',
-        durationSeconds: 14640,
-        mode: 'remote',
+        checkIn: '—',
+        checkOut: '—',
+        duration: '—',
+        durationSeconds: 14400,
+        mode: '—',
         status: 'present',
-        summary: 'Completed YouTube course player integration, validated API contracts',
-        blockers: 'None',
+        summary: '—',
+        blockers: '',
       };
       updatedRecords = [...records];
       updatedRecords[existingIndex] = newPresent;
@@ -513,7 +539,6 @@ export function toggleYesterdayAttendanceRecord(
       updatedRecords[existingIndex] = newAbsent;
     }
   } else {
-    // Create new absent record for yesterday
     const newAbsent: AttendanceRecord = {
       id: `att-${rawDateStr.replace(/-/g, '')}`,
       internId,
@@ -534,4 +559,41 @@ export function toggleYesterdayAttendanceRecord(
 
   saveStoredAttendanceRecords(updatedRecords);
   return updatedRecords;
+}
+
+/**
+ * Device restriction helper:
+ * Detects whether the current device is a desktop / PC device.
+ * Only desktop / PC devices can access Check-In and Check-Out actions.
+ */
+export function isDesktopDevice(): boolean {
+  if (typeof window === 'undefined') return true;
+  const ua = navigator.userAgent || '';
+  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(ua);
+  const isNarrowScreen = window.innerWidth < 1024;
+  return !isMobileUA && !isNarrowScreen;
+}
+
+/**
+ * React hook to reactively track whether current device is PC / Desktop.
+ */
+export function useIsDesktopDevice(): boolean {
+  const [isDesktop, setIsDesktop] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    const ua = navigator.userAgent || '';
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(ua);
+    return !isMobileUA && window.innerWidth >= 1024;
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      const ua = navigator.userAgent || '';
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(ua);
+      setIsDesktop(!isMobileUA && window.innerWidth >= 1024);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return isDesktop;
 }
