@@ -26,6 +26,18 @@ import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } fr
 import { cn } from '../../lib/utils';
 import { RoadmapItem, RoadmapEditInput } from '../../types/roadmaps';
 
+const FOLDER_DESCRIPTIONS: Record<string, string> = {
+  'Web Development': 'Frontend, Backend, DevOps, Databases, Security & Full-Stack tracks.',
+  'Data Structures and Algorithms': 'Core fundamentals, trees, graphs, DP, and interview patterns.',
+  'Python': 'Modern Python 3.15, OOP, async, data science, and web frameworks.',
+  'C Programming': 'Memory management, pointers, system programming, and low-level code.',
+  'C++': 'Modern C++26 standards, STL, templates, memory, and performance engineering.',
+  'Java': 'Java 25 LTS & 27, JVM internals, concurrency, Spring, and enterprise architecture.',
+  'Artificial Intelligence': 'Math fundamentals, ML algorithms, deep learning, NLP, and computer vision.',
+  'Generative AI': 'LLMs, prompt engineering, RAG, agentic systems, and fine-tuning.',
+  'AI Engineering': 'MLOps, model serving, vector databases, evaluation, and production systems.',
+};
+
 export function RoadmapsPage() {
   const { role } = useAuth();
   const isAdmin = role === 'admin';
@@ -245,7 +257,7 @@ export function RoadmapsPage() {
                     {folderName}
                   </h3>
                   <p className="text-xs text-slate-500 line-clamp-2">
-                    Complete 2026 learning milestones covering Beginner to Expert.
+                    {FOLDER_DESCRIPTIONS[folderName] || 'Complete 2026 learning milestones covering Beginner to Expert.'}
                   </p>
                 </div>
 
@@ -590,11 +602,18 @@ export function RoadmapsPage() {
                 <option value="Databases">Databases</option>
                 <option value="Languages and frameworks">Languages and frameworks</option>
                 <option value="DevOps and cloud">DevOps and cloud</option>
-                <option value="AI engineering">AI engineering</option>
                 <option value="Mobile">Mobile</option>
                 <option value="Quality and architecture">Quality and architecture</option>
                 <option value="Integrations">Integrations</option>
                 <option value="Full-stack combinations">Full-stack combinations</option>
+                <option value="DSA">DSA</option>
+                <option value="Python">Python</option>
+                <option value="C Programming">C Programming</option>
+                <option value="C++">C++</option>
+                <option value="Java">Java</option>
+                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                <option value="Generative AI">Generative AI</option>
+                <option value="AI Engineering">AI Engineering</option>
                 <option value="Custom">Custom</option>
               </select>
             </div>

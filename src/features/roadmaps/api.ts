@@ -2,8 +2,8 @@
 import { RoadmapItem, RoadmapEditInput } from '../../types/roadmaps';
 import initialRoadmapsData from './roadmapsData.json';
 
-const ROADMAPS_STORAGE_KEY = 'genmitra_roadmaps_data_v2';
-const ROADMAPS_DELETED_KEY = 'genmitra_roadmaps_deleted_v2';
+const ROADMAPS_STORAGE_KEY = 'genmitra_roadmaps_data_v3';
+const ROADMAPS_DELETED_KEY = 'genmitra_roadmaps_deleted_v3';
 
 // Load stored roadmaps
 function getStoredRoadmaps(): RoadmapItem[] {
@@ -21,7 +21,7 @@ function getStoredRoadmaps(): RoadmapItem[] {
       }
     }
 
-    // First run: fallback to all 59 roadmaps extracted from downloads
+    // First run: fallback to all 216 roadmaps extracted from downloads
     const initialList = (initialRoadmapsData as RoadmapItem[])
       .filter((item) => !deletedSet.has(item.id))
       .map((item) => ({ ...item, folder: item.folder || 'Web Development' }));
